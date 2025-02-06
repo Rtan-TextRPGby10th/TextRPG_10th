@@ -1,7 +1,12 @@
-﻿class Program
+﻿namespace TextRPG_by_10th
 {
-    static void Main(string[] args)
+    class Program
     {
-        Console.WriteLine("TextRPG");
+        static void Main(string[] args)
+        {
+            //외부에서도 SceneManager.currentScene을 변경해 Scene 상태를 바꿀 수 있음
+            SceneManager.GameScecne(SceneManager.currentScene);
+        }
     }
 }
+
