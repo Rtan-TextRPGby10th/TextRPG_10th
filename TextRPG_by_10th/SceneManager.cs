@@ -8,7 +8,12 @@ namespace TextRPG_by_10th
 {
     public class SceneManager
     {
-        static SceneManager sceneManager = new SceneManager();
+        public static SceneManager instance = new SceneManager();
+
+        SceneManager()
+        {
+            instance = this;
+        }
 
         public enum Scene
         {
@@ -25,18 +30,19 @@ namespace TextRPG_by_10th
             Dungeon,
         }
 
-        public static Scene currentScene = Scene.Start;
+        public Scene currentScene = Scene.Start;
 
-        static public void GameScecne(Scene scene)
+        public void GameScecne(Scene scene)
         {
             switch(scene)
             {
                 case Scene.Start:
                     //게임 시작 기능 실행
-                    Console.WriteLine("게임 시작");
+                    StartScene();
                     break;
                 case Scene.Town:
                     //마을에서 필요한 기능 실행
+                    TownScene();
                     break;
                 case Scene.Shop:
                     //상점 기능 실행
@@ -50,5 +56,18 @@ namespace TextRPG_by_10th
             }
         }
 
+        //각 Scene에서 실행할 기능을 수행하는 함수
+        void StartScene()
+        {
+            Console.WriteLine("게임 시작");
+        }
+
+        void TownScene()
+        {
+            Console.WriteLine("마을에 진입했다.");
+        }
+
     }
+
+    
 }
