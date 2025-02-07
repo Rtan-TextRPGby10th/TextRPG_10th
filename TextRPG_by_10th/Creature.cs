@@ -8,13 +8,13 @@ namespace TextRPG_by_10th
 {
     internal class Creature
     {
-        public string Name { get; set; }
-        public float Health { get; set; }
-        public float AttackPower { get; set; }
-        public float Defense { get; set; }
-        public int Lv { get; set; }
-
-        public Creature(string name, float health, float attackPower, float defense, int lv) 
+        public string Name { get; set; } // 이름
+        public float Health { get; set; } // 체력
+        public float AttackPower { get; set; } // 공격력
+        public float Defense { get; set; } // 방어력
+        public int Lv { get; set; } // 레벨
+        public bool isDie = false; // 크리처 사망 확인
+        public Creature(string name, float health, float attackPower, float defense, int lv) // 크리처 생성자
         {
             Name = name;
             Health = health;
@@ -23,21 +23,23 @@ namespace TextRPG_by_10th
             Lv = lv;
         }
 
-        public void TakeDamage(float damage)
+        public void TakeDamage(float damage) // 몬스터나 캐릭터의 공격력을 받아와 데미지를 받는 함수
         {
             Health -= damage;
             if (Health < 0)
             {
-                Health = 0;
+                Health = 0; // 체력의 최소값으로 강제 설정
+                isDie = true;
             } 
         }
 
-        public void Healing(float heal)
+        public void Healing(float heal) // 체력을 회복하는 함수
         {
             Health += heal;
+            isDie = false;
             if (Health > 100)
             {
-                Health = 100;
+                Health = 100; // 체력의 최대값으로 강제 설정
             }
         }
     }
