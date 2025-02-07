@@ -119,12 +119,16 @@ namespace TextRPG_by_10th
         {
             while (currentScene == Scene.Start)
             {
-                CreatPlayer();
+                if (player == null)
+                    CreatPlayer();
+                else
+                    currentScene = Scene.Town;
             }
         }
 
         void CreatPlayer()
         {
+            Console.Clear();
             Console.Write("이름을 입력하세요 : ");
             string playerName = Console.ReadLine();
 
@@ -139,13 +143,13 @@ namespace TextRPG_by_10th
             switch (input)
             {
                 case "1":
-                    player = new Warrior(playerName, 100, 10, 10, 0, 1, Job.전사);
+                    player = new Warrior(playerName, 100, 100, 10, 10, 0, 1, Job.전사);
                     break;
                 case "2":
-                    player = new Warrior(playerName, 75, 15, 7, 0, 1, Job.도적);
+                    player = new Assassin(playerName, 75, 75, 15, 7, 0, 1, Job.도적);
                     break;
                 case "3":
-                    player = new Warrior(playerName, 50, 20, 5, 0, 1, Job.도적);
+                    player = new Archer(playerName, 50, 50, 20, 5, 0, 1, Job.궁수);
                     break;
                 default:
                     Console.WriteLine("잘못된 입력입니다. 다시 입력하세요.");
