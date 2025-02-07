@@ -68,8 +68,8 @@ namespace TextRPG_by_10th
         // Defense : 기본 능력치면서 통합 방어력을 표시
         public float ItemDefense(float itemValue) // itemValue = Invetory.GetTotalDef() 메서드의 반환값을 가져옴
         {
-            Defense -= addItemDefense; // 처음 호출되면 합쳐진 값에서 현재 착용중인 장비 능력치를 빼준다.
-            addItemDefense = 0.0f;  // 처음 호출 되면 0으로 초기화
+            Defense -= addItemDefense; // 호출되면 합쳐진 값에서 현재 착용중인 장비 능력치를 빼준다.
+            addItemDefense = 0.0f;  // 호출 되면 장비 능력치를 0으로 초기화
             addItemDefense += itemValue; 
             return Defense += addItemDefense;
         }
