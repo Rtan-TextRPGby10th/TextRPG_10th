@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 using static TextRPG_by_10th.SceneManager;
 
 namespace TextRPG_by_10th
@@ -28,7 +29,7 @@ namespace TextRPG_by_10th
 
             this.player = player;
 
-            LoadMonsterList();
+            //LoadMonsterList();
 
             if(monsters == null)
             {
@@ -49,9 +50,13 @@ namespace TextRPG_by_10th
 
                 if (deadCount == monsters.Count()) battleEnd = true;
 
+                deadCount = 0;
+
             }
 
             Console.WriteLine("전투 종료");
+            battleEnd = false;
+            monsters = null;
             SceneManager.instance.currentScene = Scene.Town;
             
         }
@@ -72,8 +77,24 @@ namespace TextRPG_by_10th
 
             for(int i = 0; i < monsterCount; i++)
             {
-                int monsterIndex = random.Next(0,monsterList.Count);
-                monsters[i] = monsterList[monsterIndex];
+                int monsterIndex = random.Next(0,4);
+
+                switch(monsterIndex)
+                {
+                    case 0:
+                        monsters[i] = new MonsterType1("test1", 1f, 1f, 1f, 1, 1);
+                        break;
+                    case 1:
+                        monsters[i] = new MonsterType1("test2", 1f, 1f, 1f, 1, 1);
+                        break;
+                    case 2:
+                        monsters[i] = new MonsterType1("test3", 1f, 1f, 1f, 1, 1);
+                        break;
+                    case 3:
+                        monsters[i] = new MonsterType1("test4", 1f, 1f, 1f, 1, 1);
+                        break;
+                }
+                
             }
         }
 
@@ -131,9 +152,9 @@ namespace TextRPG_by_10th
 
             string input = Console.ReadLine();
 
-            if (int.Parse(input)+1 < monsters.Length)
+            if (int.Parse(input) < monsters.Length+1)
             {
-                targetMonster = monsters[int.Parse(input)+1];
+                targetMonster = monsters[int.Parse(input)-1];
             }
             else
             {
@@ -147,8 +168,12 @@ namespace TextRPG_by_10th
 
             Console.WriteLine($"{attacker.Name}의 {target.Name} 공격");
             float previousHp = target.Health;
+            float damage = attacker.AttackPower;
             target.TakeDamage(attacker.AttackPower);
-            Console.WriteLine($"Lv.{target.Lv} {target.Name} HP {previousHp}->{target.Health}");
+            Console.WriteLine($"{attacker.Name}의 공격!");
+            Console.WriteLine($"Lv.{target.Lv} {target.Name}을 맞췄다. [데미지 : {damage}]");
+            Console.WriteLine($"Lv.{target.Lv} {target.Name}");
+            Console.WriteLine($"HP {previousHp}->{target.Health}");
         }
 
     }
