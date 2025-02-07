@@ -9,6 +9,8 @@ namespace TextRPG_by_10th
     public class SceneManager
     {
         public static SceneManager instance = new SceneManager();
+        Inventory inventory;
+        Shop shop;
 
         SceneManager()
         {
