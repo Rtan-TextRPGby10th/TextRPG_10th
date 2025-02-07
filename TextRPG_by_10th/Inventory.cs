@@ -9,12 +9,15 @@ namespace TextRPG_by_10th
     
     public class Inventory
     {
-        static public List<Equipment> equipmentList = Equipment.GetEquipmentCatalog(); // 장비 리스트
-        static public List<ConsumableItem> consumableList = ConsumableItem.GetItemCatalog(); // 소모품 리스트
-        static public List<MiscItem> miscList = MiscItem.GetMiscCatalog(); // 기타 아이템 리스트
-        static Dictionary<string, bool> equippedItems = new Dictionary<string, bool>(); // 장착 상태 관리
 
         private static bool isInitialized = false;           //최초 실행시 인벤토리에 기본아이템 추가.
+
+        static List<Equipment> equipmentList = new List<Equipment>();
+        static List<ConsumableItem> consumableList = new List<ConsumableItem>();
+        static List<MiscItem> miscList = new List<MiscItem>();
+
+        static Dictionary<string, bool> equippedItems = new Dictionary<string, bool>(); // 장착 상태 관리
+
         static Dictionary<string, string> equippedSlots = new Dictionary<string, string>()
         {
             {"머리", "-" },
