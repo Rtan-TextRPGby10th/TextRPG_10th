@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TextRPG_by_10th;
 
 namespace TextRPG_by_10th
 {
@@ -22,12 +23,16 @@ namespace TextRPG_by_10th
         public int experience = 0; // 경험치
         public int[] maxexperience = { 10, 35, 65, 100 }; // 레벨업시 필요한 경험치량
 
+        public float addItemPower;
+        public float addItemDefense;
+        public float addItemHealth;
+
         // 캐릭터 생성자, 크리처 생성자를 가져옴
-        public Player(string name, float health, float attackPower, float defense,  int gold, int lv, Job job) 
+        public Player(string name, float health, float maxHealth, float attackPower, float defense,  int gold, int lv, Job job) 
                         : base(name, health, attackPower, defense, lv)
         {
             playerJob = job;
-            
+            MaxHealth = maxHealth;
         }
 
         public void AddGold(int addGold) // Monster 클리어 골드를 가져와 캐릭터 보유 골드 증가 함수
@@ -59,61 +64,94 @@ namespace TextRPG_by_10th
             Defense += 1.0f;
             Console.WriteLine("레벨이 증가하였습니다");
         }
+        // 아이템을 착용 및 해제를 통한 방어력 증가
+        // Defense : 기본 능력치면서 통합 방어력을 표시
+        public float ItemDefense(float itemValue) // itemValue = Invetory.GetTotalDef() 메서드의 반환값을 가져옴
+        {
+            Defense -= addItemDefense; // 처음 호출되면 합쳐진 값에서 현재 착용중인 장비 능력치를 빼준다.
+            addItemDefense = 0.0f;  // 처음 호출 되면 0으로 초기화
+            addItemDefense += itemValue; 
+            return Defense += addItemDefense;
+        }
+        // 아이템을 착용하면 공격력 증가
+
+        public float ItemAtkPower(float itemValue)
+        {
+            AttackPower -= addItemPower;
+            addItemPower = 0.0f;
+            addItemPower += itemValue;
+            return AttackPower += addItemPower;
+        }
+        // 아이템을 착용하면 체력 증가
+        public float ItemHealth(float itemValue)
+        {
+            MaxHealth -= addItemHealth;
+            addItemHealth = 0.0f;
+            addItemHealth += itemValue;
+            MaxHealth += addItemPower;
+            return MaxHealth;
+        }
     }
 
     // 직업 클래스
     class Warrior : Player 
     {
-        public Warrior(string name, float health, float attackPower, float defense, int gold, int lv, Job job)
-                        : base(name, health, attackPower, defense, gold, lv, job)
+        public Warrior(string name, float health, float maxHealth, float attackPower, float defense, int gold, int lv, Job job)
+                        : base(name, health, maxHealth, attackPower, defense, gold, lv, job)
         {
 
         }
     }
     class Assassin : Player
     {
-        public Assassin(string name, float health, float attackPower, float defense, int gold, int lv, Job job)
-                        : base(name, health, attackPower, defense, gold, lv, job)
+        public Assassin(string name, float health, float maxHealth, float attackPower, float defense, int gold, int lv, Job job)
+                        : base(name, health, maxHealth, attackPower, defense, gold, lv, job)
         {
 
         }
     }
     class Archer : Player
     {
-        public Archer(string name, float health, float attackPower, float defense, int gold, int lv, Job job)
-                        : base(name, health, attackPower, defense, gold, lv, job)
+        public Archer(string name, float health, float maxHealth,float attackPower, float defense, int gold, int lv, Job job)
+                        : base(name, health, maxHealth, attackPower, defense, gold, lv, job)
         {
 
         }
     }
-        //    static void Main(string[] args)
-        //{
-        //    Console.WriteLine("이름을 정해주세요");
-        //    string nameInput = Console.ReadLine();
-        //    Console.WriteLine("직업을 선택해 주세요");
-        //    Console.WriteLine("1. 전사, 2. 도적, 3. 궁수");
-        //    Console.Write(">> ");
-        //    int jobInput;
-        //    if (int.TryParse(Console.ReadLine(), out jobInput) && 0 < jobInput && jobInput < 4)
-        //    {
-        //        Job selectedJob = (Job)(jobInput);
-        //        if (jobInput > 0 && jobInput < 4)
-        //        {
-        //            if (jobInput == 1)
-        //            {
-        //                Warrior warrior = new Warrior(nameInput, 100, 50, 20, 1000, 1, selectedJob);
-        //                Console.WriteLine($"{warrior.Name},  {warrior.playerJob}");
-        //            }
-        //            else if (jobInput == 2)
-        //            {
-        //                Assassin assassin = new Assassin(nameInput, 100, 50, 20, 1000, 1, selectedJob);
-        //                Console.WriteLine($"{assassin.Name},  {assassin.playerJob}");
-        //            }
-        //            else if (jobInput == 3)
-        //            {
-        //                Archer archer = new Archer(nameInput, 100, 50, 20, 1000, 1, selectedJob);
-        //                Console.WriteLine($"{archer.Name},  {archer.playerJob}");
-        //            }
-        //        }
-        //    }
-        }
+ }
+
+//// 이름 및 직업 선택 예시
+//Console.WriteLine("이름을 정해주세요");
+//string nameInput = Console.ReadLine();
+//Console.WriteLine("직업을 선택해 주세요");
+//Console.WriteLine("1. 전사, 2. 도적, 3. 궁수");
+//Console.Write(">> ");
+//int jobInput;
+//Player player = null;
+//if (int.TryParse(Console.ReadLine(), out jobInput) && 0 < jobInput && jobInput < 4)
+//{
+//    Job selectedJob = (Job)(jobInput);
+//    if (jobInput > 0 && jobInput < 4)
+//    {
+//        if (jobInput == 1)
+//        {
+//            player = new Warrior(nameInput, 100, 50, 20, 1000, 1, selectedJob);
+//            Console.WriteLine($"{player.Name},  {player.playerJob}");
+//        }
+//        else if (jobInput == 2)
+//        {
+//            player = new Assassin(nameInput, 100, 50, 20, 1000, 1, selectedJob);
+//            Console.WriteLine($"{player.Name},  {player.playerJob}");
+//        }
+//        else if (jobInput == 3)
+//        {
+//            player = new Archer(nameInput, 100, 50, 20, 1000, 1, selectedJob);
+//            Console.WriteLine($"{player.Name},  {player.playerJob}");
+//        }
+//    }
+//}
+
+//// 장비 장착 예시
+//float itemvalue = 10.0f;
+//player.ItemAtkPower(itemvalue);
+//Console.WriteLine($"{player.Name},  {player.playerJob}, {player.AttackPower}");
