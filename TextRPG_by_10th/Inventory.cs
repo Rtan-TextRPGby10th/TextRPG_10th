@@ -67,6 +67,7 @@ namespace TextRPG_by_10th
 
             if (input == "1")
                 ShowEquipmentScreen();
+
             if (input == "0")
             {
                 SceneManager.instance.currentScene = SceneManager.Scene.Start;

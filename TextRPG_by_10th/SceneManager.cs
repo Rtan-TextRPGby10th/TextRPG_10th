@@ -11,12 +11,12 @@ namespace TextRPG_by_10th
         public static SceneManager instance = new SceneManager();
 
         public Inventory inventory = new Inventory();
+
         Shop shop;
 
         SceneManager()
         {
             instance = this;
-            inventory = new Inventory();
             shop = new Shop(inventory);
         }
 
@@ -67,6 +67,7 @@ namespace TextRPG_by_10th
         void StartScene()
         {
             Console.WriteLine("게임 시작");
+
             Inventory playerInventory = new Inventory();
 
             while (currentScene == Scene.Start)

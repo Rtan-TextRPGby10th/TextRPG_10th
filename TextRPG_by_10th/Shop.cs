@@ -53,7 +53,9 @@ namespace TextRPG_by_10th
 
                 if (input == "1") BuyItem(itemMap);
                 else if (input == "2") SellItem();
+
                 else if (input == "0") SceneManager.instance.currentScene = SceneManager.Scene.Start;
+
                 else Console.WriteLine("잘못된 입력입니다. 다시 선택하세요.");
             }
         }
