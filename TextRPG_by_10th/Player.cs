@@ -31,6 +31,7 @@ namespace TextRPG_by_10th
         public Player(string name, float health, float maxHealth, float attackPower, float defense,  int gold, int lv, Job job) 
                         : base(name, health, attackPower, defense, lv)
         {
+            Gold = gold;
             playerJob = job;
             MaxHealth = maxHealth;
         }
@@ -96,24 +97,24 @@ namespace TextRPG_by_10th
     // 직업 클래스
     public class Warrior : Player 
     {
-        public Warrior(string name, float health, float maxHealth, float attackPower, float defense, int gold, int lv, Job job)
-                        : base(name, health, maxHealth, attackPower, defense, gold, lv, job)
+        public Warrior(string name)
+                        : base(name, 100.0f, 100.0f, 10.0f, 20.0f, 0, 1, Job.전사)
         {
 
         }
     }
     public class Assassin : Player
     {
-        public Assassin(string name, float health, float maxHealth, float attackPower, float defense, int gold, int lv, Job job)
-                        : base(name, health, maxHealth, attackPower, defense, gold, lv, job)
+        public Assassin(string name)
+                        : base(name, 75.0f, 75.0f, 15.0f, 15.0f, 0, 1, Job.도적)
         {
 
         }
     }
     public class Archer : Player
     {
-        public Archer(string name, float health, float maxHealth,float attackPower, float defense, int gold, int lv, Job job)
-                        : base(name, health, maxHealth, attackPower, defense, gold, lv, job)
+        public Archer(string name)
+                        : base(name, 50.0f, 50.0f, 20.0f, 10.0f, 0, 1, Job.궁수)
         {
 
         }
