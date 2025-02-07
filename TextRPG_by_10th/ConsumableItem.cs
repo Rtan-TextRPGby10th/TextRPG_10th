@@ -4,17 +4,17 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
 
-public class ConsumableItem
+public class ConsumableItem     //소모품 아이템 클래스
 {
     public int Id { get; set; }
     public string Name { get; set; }
     public int Turn { get; set; } // 지속 턴 (힐링포션은 0, 맹독포션은 지속됨)
-    public int Value { get; set; } // 회복량 또는 공격력 증가량
+    public int Value { get; set; } // 회복량
     public string Description { get; set; }
-    public int Amount { get; set; } // 수량
+    public int Amount { get; set; } 
     public int Price { get; set; }
 
-    public ConsumableItem()
+    public ConsumableItem()     //기본값
     {
         Id = 0;
         Name = "기본";
@@ -36,14 +36,14 @@ public class ConsumableItem
         Price = price;
     }
 
-    public static List<ConsumableItem> GetItemCatalog()
+    public static List<ConsumableItem> GetItemCatalog()                                 //소모품 도감
     {
-        return new List<ConsumableItem>
+        return new List<ConsumableItem>                                                 //소모품 아이템 데이터 추가하려면 여기에 수정
         {
-            new ConsumableItem(1, "힐링포션(소)", 0, 50, "소량의 체력을 회복하는 포션", 1, 100),
-            new ConsumableItem(2, "힐링포션(중)", 0, 100, "중간 정도의 체력을 회복하는 포션", 1, 250),
-            new ConsumableItem(3, "힐링포션(대)", 0, 200, "대량의 체력을 회복하는 포션", 1, 500),
-            new ConsumableItem(4, "맹독포션", 5, 10, "5턴 동안 무기에 발라 공격력을 증가시킨다.", 1, 400)
+            new ConsumableItem(1001, "힐링포션(소)", 0, 30, "30의 체력을 회복하는 포션", 1, 100),
+            new ConsumableItem(1002, "힐링포션(중)", 0, 50, "50의 체력을 회복하는 포션", 1, 170),
+            new ConsumableItem(1003, "힐링포션(대)", 0, 70, "70의 체력을 회복하는 포션", 1, 220),
+            new ConsumableItem(1004, "맹독포션", 5, 10, "무기에 바를 수 있는 맹독성 포션", 1, 120)
         };
     }
 }
