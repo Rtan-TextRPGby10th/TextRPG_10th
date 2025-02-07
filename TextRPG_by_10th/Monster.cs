@@ -63,28 +63,28 @@
     }
     class Spider : Monster
     {
-        public Spider() : base("거미", 70, 14, 6, 10, 50)
+        public Spider() : base("거미", 70.0f, 14.0f, 6.0f, 10, 50)
         {
 
         }
     }
     class Wolf : Monster
     {
-        public Wolf() : base("늑대", 110, 18, 8, 15, 75)
+        public Wolf() : base("늑대", 110.0f, 18.0f, 8.0f, 15, 75)
         {
 
         }
     } 
     class Minotaur : Monster
     {
-        public Minotaur() : base("미노타우르스", 150, 22, 10, 20, 100)
+        public Minotaur() : base("미노타우르스", 150.0f, 22.0f, 10.0f, 20, 100)
         {
 
         }
     } 
     class Dragon : Monster
     {
-        public Dragon() : base("드래곤", 200, 30, 15, 25, 200)
+        public Dragon() : base("드래곤", 200.0f, 30.0f, 15.0f, 25, 200)
         {
 
         }
