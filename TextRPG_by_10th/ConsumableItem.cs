@@ -31,7 +31,7 @@ public class ConsumableItem     //소모품 아이템 클래스
         Name = name;
         Turn = turn;
         Value = value;
-        Description = $"| {(value > 0 ? $"체력+{value}" : "")} {(turn > 0 ? $"(지속 {turn}턴)" : "")} | {description}";
+        Description = $"| {description}";
         Amount = amount;
         Price = price;
     }
@@ -40,10 +40,14 @@ public class ConsumableItem     //소모품 아이템 클래스
     {
         return new List<ConsumableItem>                                                 //소모품 아이템 데이터 추가하려면 여기에 수정
         {
-            new ConsumableItem(1001, "힐링포션(소)", 0, 30, "30의 체력을 회복하는 포션", 1, 100),
-            new ConsumableItem(1002, "힐링포션(중)", 0, 50, "50의 체력을 회복하는 포션", 1, 170),
-            new ConsumableItem(1003, "힐링포션(대)", 0, 70, "70의 체력을 회복하는 포션", 1, 220),
-            new ConsumableItem(1004, "맹독포션", 5, 10, "무기에 바를 수 있는 맹독성 포션", 1, 120)
+
+
+         //                    도감id               턴, 값                            수량,가격
+            new ConsumableItem(1001, "힐링포션(소)", 0, 30, "30의 체력을 회복하는 포션.", 1, 100),
+            new ConsumableItem(1002, "힐링포션(중)", 0, 50, "50의 체력을 회복하는 포션.", 1, 170),
+            new ConsumableItem(1003, "힐링포션(대)", 0, 70, "70의 체력을 회복하는 포션.", 1, 220),
+            new ConsumableItem(1004, "맹독포션", 5, -1, "무기에 바를 수 있는 맹독성 포션.", 1, 120)
+
         };
     }
 }
