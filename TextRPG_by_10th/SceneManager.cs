@@ -16,7 +16,7 @@ namespace TextRPG_by_10th
 
         Battle battle = new Battle();
 
-        Player player;
+        public Player player { get; private set; }  // 수정 전 - Player player 
 
         SceneManager()
         {
@@ -43,7 +43,7 @@ namespace TextRPG_by_10th
 
         public void GameScecne(Scene scene)
         {
-            switch(scene)
+            switch (scene)
             {
                 case Scene.Start:
                     //게임 시작 기능 실행
@@ -79,8 +79,8 @@ namespace TextRPG_by_10th
             {
                 Console.Clear();
                 Console.WriteLine("===== Sparta Dungeon =====");
-                Console.WriteLine("1. 상태 보기");
-                Console.WriteLine("2. 인벤토리");
+                Console.WriteLine("1. -");
+                Console.WriteLine("2. 상태 보기");
                 Console.WriteLine("3. 상점");
                 Console.WriteLine("4. 던전");
                 Console.WriteLine("0. 나가기");
@@ -90,12 +90,12 @@ namespace TextRPG_by_10th
                 switch (input)
                 {
                     case "1":
-                        Console.WriteLine("플레이어 상태 보기...");
+                        Console.WriteLine("-");
                         Console.WriteLine("아무 키나 누르면 돌아갑니다...");
                         Console.ReadKey();
                         break;
                     case "2":
-                        Console.WriteLine("인벤토리 실행");
+                        Console.WriteLine("상태 보기");
                         currentScene = Scene.Inventory;
                         break;
                     case "3":
@@ -156,12 +156,12 @@ namespace TextRPG_by_10th
                     break;
             }
 
-            if(player != null)
+            if (player != null)
             {
                 Console.WriteLine($"{player.playerJob.ToString()}을 선택했습니다.");
                 currentScene = Scene.Town;
             }
-                
+            player.Gold = 1500; // 초기 소지금
 
             Thread.Sleep(1000);
         }
@@ -180,8 +180,5 @@ namespace TextRPG_by_10th
         {
             //battle.BattleProcess(player);
         }
-
     }
-
-    
 }
