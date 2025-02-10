@@ -122,6 +122,7 @@ namespace TextRPG_by_10th
                 Console.Clear();
 
                 Console.WriteLine("===== 아이템 구매 =====\n");
+                Console.WriteLine("[보유 골드] " + player.Gold + " G\n");
                 Dictionary<int, object> itemMap = new Dictionary<int, object>();
                 int index = 1;
 
