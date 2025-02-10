@@ -194,5 +194,7 @@ namespace TextRPG_by_10th
             deadCount = 0;
         }
 
+        //test
+
     }
 }
