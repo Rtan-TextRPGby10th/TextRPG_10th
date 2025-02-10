@@ -436,8 +436,7 @@ namespace TextRPG_by_10th
                     // 힐링 포션 사용 (체력 회복)
                     if (selectedItem.Value > 0)
                     {
-                        player.Health += selectedItem.Value;
-                        if (player.Health > player.MaxHealth) player.Health = player.MaxHealth;
+                        player.Healing(selectedItem.Value);
                         Console.WriteLine($"{selectedItem.Name}을 사용하여 체력을 {selectedItem.Value} 회복했습니다!");
                         RemoveInventory(selectedItem.Id, 1);
                         Console.ReadKey();

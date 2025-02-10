@@ -176,7 +176,7 @@ namespace TextRPG_by_10th
 
         void DungeonScene()
         {
-            battle.BattleProcess(player);
+            battle.BattleProcess(player, inventory);
         }
     }
 }
