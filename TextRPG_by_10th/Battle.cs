@@ -17,7 +17,7 @@ namespace TextRPG_by_10th
 
         List<Monster> monsterList = new List<Monster>();
 
-        List<ConsumableItem> consumableItems = Inventory.consumableList;
+        //List<ConsumableItem> consumableItems = Inventory.consumableList;
 
         int deadCount = 0;
         bool battleEnd = false;
@@ -33,7 +33,7 @@ namespace TextRPG_by_10th
 
             if(monsters == null)
             {
-                SummonMonsters();
+                //SummonMonsters();
             }
 
             while (!battleEnd)
