@@ -39,6 +39,7 @@ namespace TextRPG_by_10th
                 return;
             }
 
+
         }
 
         private void ShowQuestDetail(Quest quest)
