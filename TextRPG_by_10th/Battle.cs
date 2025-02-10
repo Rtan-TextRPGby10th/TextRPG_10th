@@ -10,6 +10,15 @@ namespace TextRPG_by_10th
 {
     public class Battle
     {
+        public enum DebuffType
+        {
+            POISON, 
+            FROST,
+            PARALYZE
+        }
+
+        List<OnDebuf> onDebufList = new List<OnDebuf>();
+
         Random random = new Random();
 
         Player player;
@@ -194,7 +203,30 @@ namespace TextRPG_by_10th
             deadCount = 0;
         }
 
-        //test
+        void ApplyDebuff(Creature target)
+        {
+            onDebufList[0] = new OnDebuf()
 
+        }
+
+        void Burn(Creature attacker, Creature target)
+        {
+            target.TakeDamage(MathF.Round(attacker.AttackPower * 0.1f));
+        }
+
+    }
+
+    class OnDebuf : Battle
+    {
+        public Creature target;
+        public DebuffType type;
+        public int turns;
+
+        public OnDebuf(Creature _target, DebuffType _debuffType, int _turns)
+        {
+            this.target = target;
+            this.type = _debuffType;
+            this.turns = _turns;
+        }
     }
 }
