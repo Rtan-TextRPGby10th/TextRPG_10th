@@ -178,13 +178,25 @@ namespace TextRPG_by_10th
             ShowBattleInfo();
 
             Console.WriteLine($"{attacker.Name}의 {target.Name} 공격");
-            float previousHp = target.Health;
-            float damage = attacker.AttackPower;
-            target.TakeDamage(attacker.AttackPower);
-            Console.WriteLine($"{attacker.Name}의 공격!");
-            Console.WriteLine($"Lv.{target.Lv} {target.Name}을(를) 맞췄다. [데미지 : {damage}]");
-            Console.WriteLine($"Lv.{target.Lv} {target.Name}");
-            Console.WriteLine($"HP {previousHp}->{target.Health}");
+
+            Random random = new Random();
+            float hitRoll = (float)random.NextDouble();  // 0.0 ~ 1.0 사이 랜덤 값
+
+            // 공격자의 명중률과 대상의 회피율을 비교하여 공격 성공 여부 결정
+            if (hitRoll < attacker.HitChance - target.DodgeChance)
+            {
+                float previousHp = target.Health;
+                float damage = MathF.Max(0, attacker.AttackPower - target.Defense);
+                target.TakeDamage(damage);
+
+                Console.WriteLine($"명중! {attacker.Name}이(가) {target.Name}에게 {damage} 데미지를 입혔다.");
+                Console.WriteLine($"Lv.{target.Lv} {target.Name} | HP {previousHp} → {target.Health}");
+            }
+            else
+            {
+                Console.WriteLine($"{attacker.Name}의 공격이 빗나갔다!");
+            }
+            
             Thread.Sleep(1000);
         }
 

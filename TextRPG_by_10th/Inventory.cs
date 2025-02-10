@@ -227,7 +227,8 @@ namespace TextRPG_by_10th
                 {
                     Console.WriteLine($"{slot.Key} : {slot.Value}");
                 }
-
+                Console.WriteLine();
+                Console.WriteLine();
                 Console.WriteLine("\n<소모품>\n");                        //소모품 출력
                 if (consumableList.Count == 0)
                     Console.WriteLine("  -");
@@ -342,26 +343,28 @@ namespace TextRPG_by_10th
             Console.WriteLine($"{player.Name} ( {player.playerJob} )");
             Console.SetCursorPosition(30, 5);
 
-            if (plusAtk == 0)
-            Console.WriteLine($"공격력 : {player.AttackPower}");
-            else
-            Console.WriteLine($"공격력 : {player.AttackPower} (+{plusAtk})");
-
-            Console.SetCursorPosition(30, 6);
-
-            if (plusDef == 0)
-            Console.WriteLine($"방어력 : {player.Defense}");
-            else
-            Console.WriteLine($"방어력 : {player.Defense} (+{plusDef})");
-
-            Console.SetCursorPosition(30, 7);
-
             if (player.Health == player.MaxHealth)
             Console.WriteLine($"체력 : {player.Health}");
             else
             Console.WriteLine($"체력 : {player.Health}/{player.MaxHealth}");
 
+            Console.SetCursorPosition(30, 6);
+            if (plusAtk == 0)
+            Console.WriteLine($"공격력 : {player.AttackPower}");
+            else
+            Console.WriteLine($"공격력 : {player.AttackPower} (+{plusAtk})");
+
+            Console.SetCursorPosition(30, 7);
+            if (plusDef == 0)
+            Console.WriteLine($"방어력 : {player.Defense}");
+            else
+            Console.WriteLine($"방어력 : {player.Defense} (+{plusDef})");
+
             Console.SetCursorPosition(30, 8);
+            Console.WriteLine($"명중률 : {player.HitChance * 100} %");
+            Console.SetCursorPosition(30, 9);
+            Console.WriteLine($"회피율 : {player.DodgeChance * 100} %");
+            Console.SetCursorPosition(30, 10);
             Console.WriteLine($"Gold : {player.Gold}");
             Console.WriteLine("");
         }
