@@ -148,6 +148,8 @@ namespace TextRPG_by_10th
             {
                 bool b = inven.GetMiscList().Where(x => x.Id == item.Id).Select(y => y.Amount >= item.Amount).FirstOrDefault();
 
+                b = b || inven.player.Gold > q.gold;
+
                 if (b)
                 {
                     continue;
@@ -157,6 +159,7 @@ namespace TextRPG_by_10th
                     return "재료 부족";
                 }
             }
+
             return "업그레이드 가능";
         }
 
