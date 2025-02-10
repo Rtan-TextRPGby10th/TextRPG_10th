@@ -205,11 +205,11 @@ namespace TextRPG_by_10th
 
         void ApplyDebuff(Creature target)
         {
-            onDebufList[0] = new OnDebuf()
+            onDebufList[0] = new OnDebuf(target, DebuffType.POISON, 3);
 
         }
 
-        void Burn(Creature attacker, Creature target)
+        void Poision(Creature attacker, Creature target)
         {
             target.TakeDamage(MathF.Round(attacker.AttackPower * 0.1f));
         }
