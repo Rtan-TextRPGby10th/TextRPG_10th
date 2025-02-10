@@ -18,7 +18,7 @@ namespace TextRPG_by_10th
             Console.Clear();
             Console.WriteLine("===== 장비 업그레이드 =====");
             Console.WriteLine("현재 착용중인 장비를 업그레이드 할 수 있습니다.\n");
-
+            Console.WriteLine($"소지 골드 : {inven.player.Gold}\n");
             foreach (var item in myQuest)
             {
                 ShowQuestDetail(item);
@@ -51,6 +51,8 @@ namespace TextRPG_by_10th
             {
                 Console.Write($"{item.Name} {item.Amount}개 \t");
             }
+            Console.Write($"{quest.gold}G");
+
             Console.WriteLine();
             Console.WriteLine();
 
@@ -96,7 +98,8 @@ namespace TextRPG_by_10th
                 name = "초심자의 목검 업그레이드",
                 des = "설명1",
                 canClear = false,
-                miscItems = new List<MiscItem>()
+                miscItems = new List<MiscItem>(),
+                gold = 100
             };
 
             MiscItem item = MiscItem.GetMiscCatalog().First();
@@ -113,7 +116,8 @@ namespace TextRPG_by_10th
                 name = "널빤지 업그레이드",
                 des = "설명2",
                 canClear = false,
-                miscItems = new List<MiscItem>()
+                miscItems = new List<MiscItem>(),
+                gold = 300
             };
 
 
@@ -127,7 +131,8 @@ namespace TextRPG_by_10th
                 name = "천 옷 업그레이드",
                 des = "설명3",
                 canClear = false,
-                miscItems = new List<MiscItem>()
+                miscItems = new List<MiscItem>(),
+                gold = 6000000
             };
             MiscItem item4 = MiscItem.GetMiscCatalog().LastOrDefault();
             item4.Amount = 1;
@@ -151,7 +156,7 @@ namespace TextRPG_by_10th
             {
                 bool b = inven.GetMiscList().Where(x => x.Id == item.Id).Select(y => y.Amount >= item.Amount).FirstOrDefault();
 
-                b = b || inven.player.Gold > q.gold;
+                b = b && inven.player.Gold > q.gold;
 
                 if (b)
                 {
@@ -183,9 +188,12 @@ namespace TextRPG_by_10th
         public List<MiscItem> miscItems { get; set; }
 
         // 기반 아이템
-        public Equipment equipment { get; set; }
+        public Equipment baseEquip { get; set; }
 
         // 소모 골드
         public int gold { get; set; }
+
+        // 업그레이드 보상 아이템
+        public Equipment resultEquip { get; set; }
     }
 }
