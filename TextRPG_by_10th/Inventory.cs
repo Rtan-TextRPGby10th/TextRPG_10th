@@ -378,7 +378,7 @@ namespace TextRPG_by_10th
 
 
 
-        public (int tier, int specialEffect) GetEquippedWeaponEffect()                          //착용중인 무기의 티어와 특수효과를 반환
+        static public (int tier, int specialEffect) GetEquippedWeaponEffect()                          //착용중인 무기의 티어와 특수효과를 반환
         {                                                                                       //tier는 1~5  specialEffect는 0~4 0없음 1독(지속데미지) 2빙결(턴넘김) 3감전(피격시 추가 데미지) 4화상(공격시 데미지)
             // "무기" 슬롯에 장착된 장비가 있는지 확인
             if (equippedSlots.ContainsKey("무기") && equippedSlots["무기"] != "-")
@@ -439,8 +439,7 @@ namespace TextRPG_by_10th
                     // 힐링 포션 사용 (체력 회복)
                     if (selectedItem.Value > 0)
                     {
-                        player.Health += selectedItem.Value;
-                        if (player.Health > player.MaxHealth) player.Health = player.MaxHealth;
+                        player.Healing(selectedItem.Value);
                         Console.WriteLine($"{selectedItem.Name}을 사용하여 체력을 {selectedItem.Value} 회복했습니다!");
                         RemoveInventory(selectedItem.Id, 1);
                         Console.ReadKey();

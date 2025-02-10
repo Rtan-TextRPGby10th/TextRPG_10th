@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -176,7 +176,7 @@ namespace TextRPG_by_10th
 
         void DungeonScene()
         {
-            battle.BattleProcess(player);
+            battle.BattleProcess(player, inventory);
         }
     }
 }
