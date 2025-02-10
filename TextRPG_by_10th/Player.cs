@@ -8,14 +8,14 @@ using TextRPG_by_10th;
 namespace TextRPG_by_10th
 {
     // 플레이어의 입력 1, 2, 3 으로 직업 선택
-    enum Job
+    public enum Job
     {
         전사 = 1,
         도적 = 2,
         궁수 = 3
     }
 
-    internal class Player : Creature
+    public class Player : Creature
     {
         public Job playerJob { get; set; }
         public int Gold { get; set; } // 캐릭터의 보유 골드
@@ -94,7 +94,7 @@ namespace TextRPG_by_10th
     }
 
     // 직업 클래스
-    class Warrior : Player 
+    public class Warrior : Player 
     {
         public Warrior(string name, float health, float maxHealth, float attackPower, float defense, int gold, int lv, Job job)
                         : base(name, health, maxHealth, attackPower, defense, gold, lv, job)
@@ -102,7 +102,7 @@ namespace TextRPG_by_10th
 
         }
     }
-    class Assassin : Player
+    public class Assassin : Player
     {
         public Assassin(string name, float health, float maxHealth, float attackPower, float defense, int gold, int lv, Job job)
                         : base(name, health, maxHealth, attackPower, defense, gold, lv, job)
@@ -110,7 +110,7 @@ namespace TextRPG_by_10th
 
         }
     }
-    class Archer : Player
+    public class Archer : Player
     {
         public Archer(string name, float health, float maxHealth,float attackPower, float defense, int gold, int lv, Job job)
                         : base(name, health, maxHealth, attackPower, defense, gold, lv, job)

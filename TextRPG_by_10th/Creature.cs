@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TextRPG_by_10th
 {
-    internal class Creature
+    public class Creature
     {
         public string Name { get; set; } // 이름
         public float Health { get; set; } // 현재 체력
