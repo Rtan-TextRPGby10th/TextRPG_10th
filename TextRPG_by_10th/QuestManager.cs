@@ -53,6 +53,7 @@ namespace TextRPG_by_10th
             Console.WriteLine();
             Console.WriteLine();
 
+
         }
 
         public void AddQuest(int index)
