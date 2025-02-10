@@ -143,13 +143,13 @@ namespace TextRPG_by_10th
             switch (input)
             {
                 case "1":
-                    player = new Warrior(playerName, 100, 100, 10, 10, 0, 1, Job.전사);
+                    player = new Warrior(playerName);
                     break;
                 case "2":
-                    player = new Assassin(playerName, 75, 75, 15, 7, 0, 1, Job.도적);
+                    player = new Assassin(playerName);
                     break;
                 case "3":
-                    player = new Archer(playerName, 50, 50, 20, 5, 0, 1, Job.궁수);
+                    player = new Archer(playerName);
                     break;
                 default:
                     Console.WriteLine("잘못된 입력입니다. 다시 입력하세요.");
@@ -162,8 +162,6 @@ namespace TextRPG_by_10th
                 currentScene = Scene.Town;
             }
             player.Gold = 1500; // 초기 소지금
-
-            Thread.Sleep(1000);
         }
 
         void ShopScene()
@@ -178,7 +176,7 @@ namespace TextRPG_by_10th
 
         void DungeonScene()
         {
-            //battle.BattleProcess(player);
+            battle.BattleProcess(player);
         }
     }
 }

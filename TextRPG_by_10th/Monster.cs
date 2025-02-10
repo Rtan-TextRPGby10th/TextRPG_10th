@@ -6,6 +6,16 @@
         public static List<ConsumableItem> consum = ConsumableItem.GetItemCatalog(); // 소모품 도감에서 소모품을 가져온다
         public static List<MiscItem> miscItem = MiscItem.GetMiscCatalog(); // 기타템 도감에서 기타템을 가져온다
 
+        public static Func<Monster>[] LoadMonster =
+        {
+            () => new Slime(),
+            () => new Mandrake(),
+            () => new Spider(),
+            () => new Wolf(),
+            () => new Minotaur(),
+            () => new Dragon(),
+        };
+
         int ClearGold;
         public Monster(string name,float health, float attackPower,float defense, int lv, int clearGold)
                         : base(name, health, attackPower, defense, lv)
@@ -45,11 +55,10 @@
         }
     }
 
-    class slime : Monster
+    class Slime : Monster
     {
-        public slime() : base("슬라임", 20.0f, 5.0f, 2.0f, 1, 10)
+        public Slime() : base("슬라임", 20.0f, 5.0f, 2.0f, 1, 10)
         {
-    
         }
 
        
