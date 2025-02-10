@@ -6,6 +6,16 @@
         public static List<ConsumableItem> consum = ConsumableItem.GetItemCatalog(); // 소모품 도감에서 소모품을 가져온다
         public static List<MiscItem> miscItem = MiscItem.GetMiscCatalog(); // 기타템 도감에서 기타템을 가져온다
 
+        public static Func<Monster>[] LoadMonster =
+        {
+            () => new Slime(),
+            () => new Mandrake(),
+            () => new Spider(),
+            () => new Wolf(),
+            () => new Minotaur(),
+            () => new Dragon(),
+        };
+
         int ClearGold;
         public Monster(string name,float health, float attackPower,float defense, int lv, int clearGold)
                         : base(name, health, attackPower, defense, lv)
@@ -45,24 +55,47 @@
         }
     }
 
-    class MonsterType1 : Monster
+    class Slime : Monster
     {
-        public MonsterType1(string name, float health, float attackPower, float defense, int lv, int clearGold)
-                        : base(name, health, attackPower, defense,lv, clearGold)
+        public Slime() : base("슬라임", 20.0f, 5.0f, 2.0f, 1, 10)
         {
-    
         }
 
        
     }
-    class MonsterType2 : Monster
+    class Mandrake : Monster
     {
-        public MonsterType2(string name, float health, float attackPower, float defense, int lv, int clearGold)
-                        : base(name, health, attackPower, defense,lv, clearGold)
+        public Mandrake() : base("맨드레이크", 40.0f, 9.0f, 4.0f, 5, 25)
         {
 
         }
+    }
+    class Spider : Monster
+    {
+        public Spider() : base("거미", 70, 14, 6, 10, 50)
+        {
 
+        }
+    }
+    class Wolf : Monster
+    {
+        public Wolf() : base("늑대", 110, 18, 8, 15, 75)
+        {
 
+        }
+    } 
+    class Minotaur : Monster
+    {
+        public Minotaur() : base("미노타우르스", 150, 22, 10, 20, 100)
+        {
+
+        }
+    } 
+    class Dragon : Monster
+    {
+        public Dragon() : base("드래곤", 200, 30, 15, 25, 200)
+        {
+
+        }
     }
 }

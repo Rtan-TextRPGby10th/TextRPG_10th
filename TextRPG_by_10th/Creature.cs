@@ -27,7 +27,7 @@ namespace TextRPG_by_10th
         public void TakeDamage(float damage) // 몬스터나 캐릭터의 공격력을 받아와 데미지를 받는 함수
         {
             Health -= damage;
-            if (Health < 0)
+            if (Health <= 0)
             {
                 Health = 0; // 체력의 최소값으로 강제 설정
                 isDie = true;
