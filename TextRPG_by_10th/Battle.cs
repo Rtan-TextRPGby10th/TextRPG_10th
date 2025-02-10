@@ -157,7 +157,8 @@ namespace TextRPG_by_10th
                     //타겟이 선정되면 공격
                     if (targetMonster != null)
                     {
-                        ApplyDebuff(player, targetMonster, DebuffType.FROST);
+                        //ApplyDebuff(player, targetMonster, DebuffType.FROST);
+                        ApplyDebuff(player, targetMonster, DebuffType.PARALYZE);
                     }
                     break;
                 case "3":
@@ -223,6 +224,8 @@ namespace TextRPG_by_10th
         {
             ShowBattleInfo();
 
+            ParalyzeDamage(attacker);
+
             Console.WriteLine($"{attacker.Name}의 {target.Name} 공격");
             float previousHp = target.Health;
             float damage = attacker.AttackPower;
@@ -268,7 +271,10 @@ namespace TextRPG_by_10th
                             Poision(debuffData.statusSource, debuffData.statusTarget);
                             break;
                         case DebuffType.FROST:
-                            Frost(debuffData.statusSource, debuffData.statusTarget);
+                            Frost(debuffData.statusTarget);
+                            break;
+                        case DebuffType.PARALYZE:
+                            Paralyze(debuffData.statusTarget);
                             break;
                     }
                     Console.WriteLine($"남은 지속 기간 : {debuffData.turns}\n");
@@ -312,9 +318,37 @@ namespace TextRPG_by_10th
 
             Thread.Sleep(1000);
         }
-        void Frost(Creature attacker, Creature target)
+        void Frost(Creature target)
         {
             Console.WriteLine($"{target.Name}은(는) 빙결상태라 행동할 수 없다.");
+
+            Thread.Sleep(1000);
+        }
+
+        void Paralyze(Creature target)
+        {
+            Console.WriteLine($"{target.Name}은(는) 감전 데미지를 받고 있다.");
+
+            Thread.Sleep(1000);
+        }
+
+        void ParalyzeDamage(Creature target)
+        {
+            if (target.debuffType != DebuffType.PARALYZE)
+                return;
+
+            Creature attacker = null;
+            foreach(DebuffData findingData in debuffDatas)
+            {
+                if (findingData.statusTarget == target)
+                    attacker = findingData.statusSource;
+            }
+
+            float previousHp = target.Health;
+            Console.WriteLine("감전 데미지 적용");
+            target.TakeDamage(MathF.Round(attacker.AttackPower * 0.1f));
+            Console.WriteLine($"Lv.{target.Lv} {target.Name}");
+            Console.WriteLine($"HP {previousHp}->{target.Health}");
 
             Thread.Sleep(1000);
         }
