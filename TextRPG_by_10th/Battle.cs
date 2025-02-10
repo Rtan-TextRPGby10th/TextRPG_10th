@@ -10,22 +10,25 @@ namespace TextRPG_by_10th
 {
     public class Battle
     {
+        //상태이상 목록
         public enum DebuffType
         {
             NONE,
-            POISON, 
+            POISON,
             FROST,
             PARALYZE
         }
-
+        //디버프 적용받는 객체 정보를 저장하는 리스트
         List<DebuffData> debuffDatas = new List<DebuffData>();
 
         Random random = new Random();
 
         Player player;
+        //소환된 몬스터 배열
         Monster[] monsters;
-
+        //죽은 몬스터 수를 저장
         int deadCount = 0;
+        //전투 종료 판단 변수
         bool battleEnd = false;
 
         //전체 전투 과정
@@ -38,7 +41,7 @@ namespace TextRPG_by_10th
             this.player = player;
 
             //전투할 몬스터 배열이 비어있을 경우 몬스터를 소환
-            if(monsters == null)
+            if (monsters == null)
             {
                 SummonMonsters();
             }
@@ -48,11 +51,9 @@ namespace TextRPG_by_10th
             {
                 //플레이어 공격 차례
                 PlayerTurn();
-                //몬스터 사망 체크
-                DeathCheck();
                 //몬스터 공격 차례
                 MonsterTurn();
-
+                //상태이상효과 지속상태 확인
                 DebuffCheck();
 
                 Thread.Sleep(1000);
@@ -60,27 +61,31 @@ namespace TextRPG_by_10th
 
             //전투 종료시 마을로 복귀
             Console.WriteLine("전투 종료");
-            debuffDatas.Clear();
-            foreach(DebuffData debuffData in debuffDatas)
+            //상태이상에 속해있던 객체들의 상태이상을 해제
+            foreach (DebuffData debuffData in debuffDatas)
             {
                 debuffData.statusTarget.debuffType = DebuffType.NONE;
             }
-
+            //상태이상 정보 목록을 초기화
+            debuffDatas.Clear();
+            //이후 진입시 전투가 시작되도록 함
             battleEnd = false;
+            //몬스터 소환 배열을 초기화
             monsters = null;
+            //Scene을 마을로 변경
             SceneManager.instance.currentScene = SceneManager.Scene.Town;
-            
+
         }
 
         //몬스터 소환
         void SummonMonsters()
         {
             //1~4마리의 몬스터가 소환됨
-            int monsterCount = random.Next(1,5);
+            int monsterCount = random.Next(1, 5);
             //소환될 몬스터 숫자에 따라 배열 크기를 설정
             monsters = new Monster[monsterCount];
             //해당 배열에 Monster 클래스에서 몬스터를 불러와 소환
-            for(int i = 0; i < monsterCount; i++)
+            for (int i = 0; i < monsterCount; i++)
             {
                 int monsterIndex = random.Next(0, 2);
 
@@ -97,8 +102,8 @@ namespace TextRPG_by_10th
                 Console.Write($"Lv.{monsters[i].Lv} {monsters[i].Name} ");
                 string monsterStatus = monsters[i].isDie ? "[Dead]" : $"HP {monsters[i].Health}";
                 Console.Write(monsterStatus);
-
-                if (monsters[i].debuffType != DebuffType.NONE )
+                //몬스터가 상태이상에 속해있을 경우 해당 상태이상을 표시
+                if (monsters[i].debuffType != DebuffType.NONE)
                 {
                     Console.Write($" [{monsters[i].debuffType.ToString()}]");
                 }
@@ -109,11 +114,11 @@ namespace TextRPG_by_10th
             Console.WriteLine("[내정보]");
             Console.WriteLine($"Lv.{player.Lv} {player.Name} ({player.playerJob.ToString()}) ");
             string playerStatus = player.isDie ? "[Dead]" : $"HP {player.Health}";
-            Console.WriteLine(playerStatus+ "\n");
+            Console.WriteLine(playerStatus + "\n");
         }
         //플레이어 턴에서 이루어지는 과정
         void PlayerTurn()
-        {           
+        {
             //전투 상황을 보여줌
             ShowBattleInfo();
             //선택지 제공
@@ -131,11 +136,11 @@ namespace TextRPG_by_10th
                     Monster targetMonster = null;
                     SelectTarget(ref targetMonster);
                     //타겟이 선정되면 공격
-                    if(targetMonster != null)
+                    if (targetMonster != null)
                     {
                         Attack(player, targetMonster);
                         //무기 속성에 따라 상태이상 효과 적용
-                        switch(Inventory.GetEquippedWeaponEffect().specialEffect)
+                        switch (Inventory.GetEquippedWeaponEffect().specialEffect)
                         {
                             case 1:
                                 ApplyDebuff(player, targetMonster, DebuffType.POISON);
@@ -143,12 +148,17 @@ namespace TextRPG_by_10th
                             case 2:
                                 ApplyDebuff(player, targetMonster, DebuffType.FROST);
                                 break; ;
+                            case 3:
+                                ApplyDebuff(player, targetMonster, DebuffType.PARALYZE);
+                                break;
 
                         }
-                        
-                    }
+                        //타겟이 PARALYZE 상태인 경우 추가 데미지 부여
+                        ParalyzeDamage(targetMonster);
 
+                    }
                     break;
+
                 case "2":
                     //스킬 선택 창으로 넘어감
                     //대상 선택으로 넘어감
@@ -157,6 +167,7 @@ namespace TextRPG_by_10th
                     //타겟이 선정되면 공격
                     if (targetMonster != null)
                     {
+                        //상태이상 테스트를 위해 임시로 사용
                         //ApplyDebuff(player, targetMonster, DebuffType.FROST);
                         ApplyDebuff(player, targetMonster, DebuffType.PARALYZE);
                     }
@@ -169,24 +180,32 @@ namespace TextRPG_by_10th
                     PlayerTurn();
                     break;
             }
+
+            DeathCheck();
         }
         //몬스터 턴에서 이루어지는 과정
         void MonsterTurn()
         {
-            for (int i = 0; i<monsters.Length; i++)
+            //소환된 몬스터들마다 각자 공격을 실행
+            for (int i = 0; i < monsters.Length; i++)
             {
+                //몬스터가 살아있고, FROST 상태이상이 아닐 경우 공격을 실행
                 if (!monsters[i].isDie && monsters[i].debuffType != DebuffType.FROST)
+                {
                     Attack(monsters[i], player);
+                }
+                //앞선 조건에 해당할 경우 공격 불가
                 else
                 {
                     Console.WriteLine($"{monsters[i].Name}은(는) 공격할 수 없다.");
                     Thread.Sleep(1000);
                 }
-                    
-                
+
+                //공격으로 플레이어가 사망하면 전투가 종료됨
                 if (player.isDie)
                 {
                     battleEnd = true;
+                    Console.WriteLine($"Lv.{player.Lv} {player.Name}이(가) 패배했습니다.");
                     break;
                 }
             }
@@ -204,16 +223,16 @@ namespace TextRPG_by_10th
 
             if (int.Parse(input) <= monsters.Length)
             {
-                targetMonster = monsters[int.Parse(input)-1];
+                targetMonster = monsters[int.Parse(input) - 1];
 
-                if(targetMonster.isDie)
+                if (targetMonster.isDie)
                 {
                     Console.WriteLine("잘못된 입력입니다");
                     targetMonster = null;
                     SelectTarget(ref targetMonster);
                 }
             }
-            else 
+            else
             {
                 Console.WriteLine("잘못된 입력입니다");
                 SelectTarget(ref targetMonster);
@@ -224,21 +243,24 @@ namespace TextRPG_by_10th
         {
             ShowBattleInfo();
 
-            ParalyzeDamage(attacker);
-
             Console.WriteLine($"{attacker.Name}의 {target.Name} 공격");
             float previousHp = target.Health;
-            float damage = attacker.AttackPower;
+            //방어력 적용
+            float damage = MathF.Round(attacker.AttackPower * 1 / 1 + target.Defense * 0.01f);
+            //타겟에 대한 체력 감소가 이루어짐
             target.TakeDamage(attacker.AttackPower);
+            //화면에 정보 표시
             Console.WriteLine($"{attacker.Name}의 공격!");
             Console.WriteLine($"Lv.{target.Lv} {target.Name}을(를) 맞췄다. [데미지 : {damage}]");
             Console.WriteLine($"Lv.{target.Lv} {target.Name}");
             Console.WriteLine($"HP {previousHp}->{target.Health}");
+
             Thread.Sleep(1000);
         }
         //몬스터 처치 검사
         void DeathCheck()
         {
+            //소환된 몬스터 상태를 확인
             foreach (Monster monster in monsters)
             {
                 if (monster.isDie)
@@ -247,25 +269,34 @@ namespace TextRPG_by_10th
                 }
             }
 
-            if (deadCount == monsters.Count()) battleEnd = true;
+            if (deadCount == monsters.Count())
+            {
+                battleEnd = true;
+                Console.WriteLine($"Lv.{player.Lv} {player.Name}이(가) 승리했습니다.");
+            }
 
             deadCount = 0;
         }
 
         void DebuffCheck()
         {
-            ShowBattleInfo();
-
-            if (debuffDatas.Count == 0)
+            //전투가 종료된 상황에서는 확인하지 않음
+            if (battleEnd)
                 return;
 
+            ShowBattleInfo();
+            //상태이상인 객체가 없을 때는 확인하지 않음
+            if (debuffDatas.Count == 0)
+                return;
+            //상태 이상 적용이 끝난 객체를 저장
             List<DebuffData> endDebuffs = new List<DebuffData>();
 
-            foreach(DebuffData debuffData in debuffDatas)
+            foreach (DebuffData debuffData in debuffDatas)
             {
-                if(debuffData.turns >= 0 && !debuffData.statusTarget.isDie)
+                //아직 지속기간이 남았고, 대상이 살아있는 상태이상을 적용
+                if (debuffData.turns >= 0 && !debuffData.statusTarget.isDie)
                 {
-                    switch(debuffData.debuff)
+                    switch (debuffData.debuff)
                     {
                         case DebuffType.POISON:
                             Poision(debuffData.statusSource, debuffData.statusTarget);
@@ -282,32 +313,38 @@ namespace TextRPG_by_10th
                 }
                 else
                 {
+                    //상태이상 지속이 끝난 객체의 상태를 NONE으로 변경
                     debuffData.statusTarget.debuffType = DebuffType.NONE;
-                    endDebuffs.Add( debuffData );
+                    //상태이상 지속이 끝난 목록에 추가
+                    endDebuffs.Add(debuffData);
                 }
             }
-
-            foreach(DebuffData endDebuff in endDebuffs)
+            //지속이 끝난 객체를 상태이상 목록에서 제거
+            foreach (DebuffData endDebuff in endDebuffs)
             {
-                debuffDatas.Remove( endDebuff );
+                debuffDatas.Remove(endDebuff);
             }
             endDebuffs.Clear();
+
+            DeathCheck();
         }
 
+        //입력을 다르게 하여 상태이상을 적용할 수 있음
         void ApplyDebuff(Creature source, Creature target, DebuffType debuffType)
         {
-            if(target.debuffType == DebuffType.NONE)
+            if (target.debuffType == DebuffType.NONE)
             {
                 debuffDatas.Add(new DebuffData(source, target, debuffType, 3));
                 Console.WriteLine($"{target.Name}을(를) {target.debuffType.ToString()} 상태로 만들었다.");
             }
+            //여러 상태이상에 중복 적용은 불가능
             else
                 Console.WriteLine($"{target.Name}은(는) 이미 {target.debuffType.ToString()} 상태이다.");
 
             Thread.Sleep(1000);
 
         }
-
+        //독 상태이상 데미지 적용
         void Poision(Creature attacker, Creature target)
         {
             float previousHp = target.Health;
@@ -318,26 +355,29 @@ namespace TextRPG_by_10th
 
             Thread.Sleep(1000);
         }
+        //빙결 상태이상 표시
         void Frost(Creature target)
         {
             Console.WriteLine($"{target.Name}은(는) 빙결상태라 행동할 수 없다.");
 
             Thread.Sleep(1000);
         }
-
+        //감전 상태이상 표시
         void Paralyze(Creature target)
         {
             Console.WriteLine($"{target.Name}은(는) 감전 데미지를 받고 있다.");
 
             Thread.Sleep(1000);
         }
-
+        //피격시 감전 상태이상 데미지 부여
         void ParalyzeDamage(Creature target)
         {
-            if (target.debuffType != DebuffType.PARALYZE)
+            //대상이 감전 상태이면서 살아있을 때 부여
+            if (target.debuffType != DebuffType.PARALYZE || target.isDie)
                 return;
 
             Creature attacker = null;
+            //감전 상태이상을 건 객체의 공격력에 따른 데미지를 부여
             foreach(DebuffData findingData in debuffDatas)
             {
                 if (findingData.statusTarget == target)
@@ -346,6 +386,7 @@ namespace TextRPG_by_10th
 
             float previousHp = target.Health;
             Console.WriteLine("감전 데미지 적용");
+            //감전 데미지 적용
             target.TakeDamage(MathF.Round(attacker.AttackPower * 0.1f));
             Console.WriteLine($"Lv.{target.Lv} {target.Name}");
             Console.WriteLine($"HP {previousHp}->{target.Health}");
@@ -354,7 +395,7 @@ namespace TextRPG_by_10th
         }
 
     }
-
+    //상태이상 정보를 저장하는 형식
     class DebuffData : Battle
     {
         public Creature statusSource;

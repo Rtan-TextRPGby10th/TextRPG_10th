@@ -34,8 +34,6 @@ namespace TextRPG_by_10th
             {
                 Health = 0; // 체력의 최소값으로 강제 설정
                 isDie = true;
-                //상태이상을 초기화
-                //debuffType = Battle.DebuffType.NONE;
                 Console.WriteLine($"{Name} 사망하였습니다.");
             } 
         }
