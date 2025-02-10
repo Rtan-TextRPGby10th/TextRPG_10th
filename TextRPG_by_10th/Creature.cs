@@ -15,6 +15,9 @@ namespace TextRPG_by_10th
         public float Defense { get; set; } // 방어력
         public int Lv { get; set; } // 레벨
         public bool isDie = false; // 사망 확인
+
+        public Battle.DebuffType debuffType { get; set; } = Battle.DebuffType.NONE;
+
         public Creature(string name, float health, float attackPower, float defense, int lv) // 크리처 생성자
         {
             Name = name;
@@ -31,6 +34,8 @@ namespace TextRPG_by_10th
             {
                 Health = 0; // 체력의 최소값으로 강제 설정
                 isDie = true;
+                //상태이상을 초기화
+                //debuffType = Battle.DebuffType.NONE;
                 Console.WriteLine($"{Name} 사망하였습니다.");
             } 
         }

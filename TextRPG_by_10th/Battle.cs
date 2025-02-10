@@ -12,12 +12,13 @@ namespace TextRPG_by_10th
     {
         public enum DebuffType
         {
+            NONE,
             POISON, 
             FROST,
             PARALYZE
         }
 
-        List<OnDebuf> onDebufList = new List<OnDebuf>();
+        List<DebuffData> debuffDatas = new List<DebuffData>();
 
         Random random = new Random();
 
@@ -51,11 +52,20 @@ namespace TextRPG_by_10th
                 DeathCheck();
                 //몬스터 공격 차례
                 MonsterTurn();
+
+                DebuffCheck();
+
                 Thread.Sleep(1000);
             }
 
             //전투 종료시 마을로 복귀
             Console.WriteLine("전투 종료");
+            debuffDatas.Clear();
+            foreach(DebuffData debuffData in debuffDatas)
+            {
+                debuffData.statusTarget.debuffType = DebuffType.NONE;
+            }
+
             battleEnd = false;
             monsters = null;
             SceneManager.instance.currentScene = SceneManager.Scene.Town;
@@ -86,7 +96,13 @@ namespace TextRPG_by_10th
             {
                 Console.Write($"Lv.{monsters[i].Lv} {monsters[i].Name} ");
                 string monsterStatus = monsters[i].isDie ? "[Dead]" : $"HP {monsters[i].Health}";
-                Console.WriteLine(monsterStatus);
+                Console.Write(monsterStatus);
+
+                if (monsters[i].debuffType != DebuffType.NONE )
+                {
+                    Console.Write($" [{monsters[i].debuffType.ToString()}]");
+                }
+                Console.WriteLine();
             }
 
             //Player 정보 표시
@@ -95,7 +111,7 @@ namespace TextRPG_by_10th
             string playerStatus = player.isDie ? "[Dead]" : $"HP {player.Health}";
             Console.WriteLine(playerStatus+ "\n");
         }
-
+        //플레이어 턴에서 이루어지는 과정
         void PlayerTurn()
         {           
             //전투 상황을 보여줌
@@ -116,28 +132,56 @@ namespace TextRPG_by_10th
                     SelectTarget(ref targetMonster);
                     //타겟이 선정되면 공격
                     if(targetMonster != null)
+                    {
                         Attack(player, targetMonster);
+                        //무기 속성에 따라 상태이상 효과 적용
+                        switch(Inventory.GetEquippedWeaponEffect().specialEffect)
+                        {
+                            case 1:
+                                ApplyDebuff(player, targetMonster, DebuffType.POISON);
+                                break;
+                            case 2:
+                                ApplyDebuff(player, targetMonster, DebuffType.FROST);
+                                break; ;
+
+                        }
+                        
+                    }
+
                     break;
                 case "2":
                     //스킬 선택 창으로 넘어감
+                    //대상 선택으로 넘어감
+                    targetMonster = null;
+                    SelectTarget(ref targetMonster);
+                    //타겟이 선정되면 공격
+                    if (targetMonster != null)
+                    {
+                        ApplyDebuff(player, targetMonster, DebuffType.FROST);
+                    }
                     break;
                 case "3":
                     //아이템 사용 창으로 넘어감
                     break;
                 default:
                     Console.WriteLine("잘못된 입력입니다. 다시 입력하세요.");
+                    PlayerTurn();
                     break;
             }
         }
-
+        //몬스터 턴에서 이루어지는 과정
         void MonsterTurn()
         {
             for (int i = 0; i<monsters.Length; i++)
             {
-                if (!monsters[i].isDie)
+                if (!monsters[i].isDie && monsters[i].debuffType != DebuffType.FROST)
                     Attack(monsters[i], player);
                 else
-                    Console.WriteLine($"{monsters[i].Name}은(는) 죽어있다.");
+                {
+                    Console.WriteLine($"{monsters[i].Name}은(는) 공격할 수 없다.");
+                    Thread.Sleep(1000);
+                }
+                    
                 
                 if (player.isDie)
                 {
@@ -146,7 +190,7 @@ namespace TextRPG_by_10th
                 }
             }
         }
-
+        //공격할 타겟을 선택
         void SelectTarget(ref Monster targetMonster)
         {
             //선택할 수 있는 몬스터 목록을 보여줌
@@ -165,14 +209,16 @@ namespace TextRPG_by_10th
                 {
                     Console.WriteLine("잘못된 입력입니다");
                     targetMonster = null;
+                    SelectTarget(ref targetMonster);
                 }
             }
             else 
             {
                 Console.WriteLine("잘못된 입력입니다");
+                SelectTarget(ref targetMonster);
             }
         }
-
+        //일반 공격 수행
         void Attack(Creature attacker, Creature target)
         {
             ShowBattleInfo();
@@ -187,7 +233,7 @@ namespace TextRPG_by_10th
             Console.WriteLine($"HP {previousHp}->{target.Health}");
             Thread.Sleep(1000);
         }
-
+        //몬스터 처치 검사
         void DeathCheck()
         {
             foreach (Monster monster in monsters)
@@ -203,30 +249,94 @@ namespace TextRPG_by_10th
             deadCount = 0;
         }
 
-        void ApplyDebuff(Creature target)
+        void DebuffCheck()
         {
-            onDebufList[0] = new OnDebuf(target, DebuffType.POISON, 3);
+            ShowBattleInfo();
+
+            if (debuffDatas.Count == 0)
+                return;
+
+            List<DebuffData> endDebuffs = new List<DebuffData>();
+
+            foreach(DebuffData debuffData in debuffDatas)
+            {
+                if(debuffData.turns >= 0 && !debuffData.statusTarget.isDie)
+                {
+                    switch(debuffData.debuff)
+                    {
+                        case DebuffType.POISON:
+                            Poision(debuffData.statusSource, debuffData.statusTarget);
+                            break;
+                        case DebuffType.FROST:
+                            Frost(debuffData.statusSource, debuffData.statusTarget);
+                            break;
+                    }
+                    Console.WriteLine($"남은 지속 기간 : {debuffData.turns}\n");
+                    debuffData.turns--;
+                }
+                else
+                {
+                    debuffData.statusTarget.debuffType = DebuffType.NONE;
+                    endDebuffs.Add( debuffData );
+                }
+            }
+
+            foreach(DebuffData endDebuff in endDebuffs)
+            {
+                debuffDatas.Remove( endDebuff );
+            }
+            endDebuffs.Clear();
+        }
+
+        void ApplyDebuff(Creature source, Creature target, DebuffType debuffType)
+        {
+            if(target.debuffType == DebuffType.NONE)
+            {
+                debuffDatas.Add(new DebuffData(source, target, debuffType, 3));
+                Console.WriteLine($"{target.Name}을(를) {target.debuffType.ToString()} 상태로 만들었다.");
+            }
+            else
+                Console.WriteLine($"{target.Name}은(는) 이미 {target.debuffType.ToString()} 상태이다.");
+
+            Thread.Sleep(1000);
 
         }
 
         void Poision(Creature attacker, Creature target)
         {
+            float previousHp = target.Health;
+            Console.WriteLine("독 데미지 적용");
             target.TakeDamage(MathF.Round(attacker.AttackPower * 0.1f));
+            Console.WriteLine($"Lv.{target.Lv} {target.Name}");
+            Console.WriteLine($"HP {previousHp}->{target.Health}");
+
+            Thread.Sleep(1000);
+        }
+        void Frost(Creature attacker, Creature target)
+        {
+            Console.WriteLine($"{target.Name}은(는) 빙결상태라 행동할 수 없다.");
+
+            Thread.Sleep(1000);
         }
 
     }
 
-    class OnDebuf : Battle
+    class DebuffData : Battle
     {
-        public Creature target;
-        public DebuffType type;
+        public Creature statusSource;
+        public Creature statusTarget;
+        public DebuffType debuff;
         public int turns;
 
-        public OnDebuf(Creature _target, DebuffType _debuffType, int _turns)
+        public DebuffData(Creature statusSource, Creature statusTarget, DebuffType debuff, int turns)
         {
-            this.target = target;
-            this.type = _debuffType;
-            this.turns = _turns;
+            this.statusSource = statusSource;
+            this.statusTarget = statusTarget;
+            this.debuff = debuff;
+            this.turns = turns;
+
+            statusTarget.debuffType = debuff;
         }
     }
+
 }
