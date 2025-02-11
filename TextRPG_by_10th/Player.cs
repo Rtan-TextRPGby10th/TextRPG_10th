@@ -38,7 +38,9 @@ namespace TextRPG_by_10th
 
         public void AddGold(int addGold) // Monster 클리어 골드를 가져와 캐릭터 보유 골드 증가 함수
         {
+            int previousGold = Gold;
             Gold += addGold;
+            Console.WriteLine($"{addGold}G를 획득했다! ({previousGold}->{Gold})");
         }
 
         // 몬스터의 레벨, 몬스터의 등장 숫자(등장 랜덤 값)를 가져와 경험치를 증가시키는 함수

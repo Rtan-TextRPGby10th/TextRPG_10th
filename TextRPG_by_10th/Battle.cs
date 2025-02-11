@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -52,7 +53,7 @@ namespace TextRPG_by_10th
             //전투할 몬스터 배열이 비어있을 경우 몬스터를 소환
             if (monsters == null)
             {
-                SummonMonsters();
+                SummonMonsters(SelectedStage());
             }
 
             //전투가 끝날 때까지 아래 과정을 반복
@@ -88,7 +89,7 @@ namespace TextRPG_by_10th
         }
 
         //몬스터 소환
-        void SummonMonsters()
+        void SummonMonsters(int stage)
         {
             //1~4마리의 몬스터가 소환됨
             int monsterCount = random.Next(1, 5);
@@ -97,11 +98,44 @@ namespace TextRPG_by_10th
             //해당 배열에 Monster 클래스에서 몬스터를 불러와 소환
             for (int i = 0; i < monsterCount; i++)
             {
-                int monsterIndex = random.Next(0, 2);
+                // 선택된 스테이지에 해당하는 몬스터 리스트를 가져옴
+                List<MonsterType> stageMonsterTypes = Monster.StageMonsters[stage];
+                // 해당 스테이지의 랜덤한 몬스터 인덱스 선택
+                int monsterIndex = random.Next(0, stageMonsterTypes.Count);
+                
+                MonsterType selectedType = stageMonsterTypes[monsterIndex];
 
-                monsters[i] = Monster.LoadMonster[monsterIndex]();
+                monsters[i] = Monster.LoadMonster[stage - 1](selectedType);
             }
         }
+
+        int SelectedStage()
+        {
+            int stage;
+            string[] stageStr = new string[] {"술", "던전", "심해", "설산", "화산" };
+            Console.WriteLine("스테이지를 선택해주세요");
+            Console.WriteLine("스테이지 1 : 숲");
+            Console.WriteLine("스테이지 2 : 던전");
+            Console.WriteLine("스테이지 3 : 심해");
+            Console.WriteLine("스테이지 4 : 설산");
+            Console.WriteLine("스테이지 5 : 화산");
+
+            while (true)
+            {
+                string input = Console.ReadLine();
+
+                if (int.TryParse(input, out stage) && stage >= 1 && stage <= 5)
+                {
+                    return stage;
+                }
+                else
+                {
+                    Console.WriteLine("잘못된 입력입니다. 1부터 5까지의 스테이지 번호를 입력해주세요.");
+                }
+            }
+
+        }
+
         //전투 상황을 보여줌
         void ShowBattleInfo()
         {
@@ -202,7 +236,7 @@ namespace TextRPG_by_10th
                     break;
             }
 
-            DeathCheck();
+            DeathCount();
         }
         //몬스터 턴에서 이루어지는 과정
         void MonsterTurn()
@@ -287,13 +321,14 @@ namespace TextRPG_by_10th
             Thread.Sleep(1000);
         }
         //몬스터 처치 검사
-        void DeathCheck()
+        void DeathCount()
         {
             //소환된 몬스터 상태를 확인
             foreach (Monster monster in monsters)
             {
                 if (monster.isDie)
                 {
+                    player.AddGold(monster.GetClrearGold(player));
                     deadCount++;
                 }
             }
@@ -305,6 +340,15 @@ namespace TextRPG_by_10th
             }
 
             deadCount = 0;
+        }
+
+        void DeathCheck(Monster targetMonster)
+        {
+            if(targetMonster.isDie)
+            {
+                player.AddGold(targetMonster.GetClrearGold(player));
+                deadCount++;
+            }
         }
 
         void DebuffCheck()
@@ -355,7 +399,7 @@ namespace TextRPG_by_10th
             }
             endDebuffs.Clear();
 
-            DeathCheck();
+            DeathCount();
         }
 
         //입력을 다르게 하여 상태이상을 적용할 수 있음
