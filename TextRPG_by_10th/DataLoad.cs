@@ -13,6 +13,7 @@ namespace TextRPG_by_10th
         private static string miscItemPath = "../../../../TextRPG_by_10th/MiscItemData.json";
         private static string equipItemPath = "../../../../TextRPG_by_10th/EquipItemData.json";
         private static string consumeItemPath = "../../../../TextRPG_by_10th/ConsumeItemData.json";
+        private static string QuestPath = "../../../../TextRPG_by_10th/QuestData.json";
 
 
         public static void SaveMiscItemData()
@@ -48,6 +49,19 @@ namespace TextRPG_by_10th
 
             File.WriteAllText(path, json);
         }
+        public static void SaveQuestData()
+        {
+            var data = SceneManager.instance.questManager.GetQuestList();
+
+            string path = QuestPath;
+
+            string json = JsonConvert.SerializeObject(data);
+
+            File.WriteAllText(path, json);
+        }
+
+
+
 
         public static void LoadMiscItemData()
         {
@@ -58,15 +72,14 @@ namespace TextRPG_by_10th
             {
                 string json = File.ReadAllText(path);
 
-                MiscItem.SetMiscItem(JsonConvert.DeserializeObject<List<MiscItem>>(json));
+                MiscItem.SetMiscCatalog(JsonConvert.DeserializeObject<List<MiscItem>>(json));
 
-                MiscItem.GetMiscCatalog();
             }
         }
 
         public static void LoadConsumeItemData()
         {
-            // 소재아이템 데이터 로드
+            // 소비아이템 데이터 로드
             string path = consumeItemPath;
 
             if (File.Exists(path))
@@ -75,21 +88,33 @@ namespace TextRPG_by_10th
 
                 ConsumableItem.SetConsumeItem(JsonConvert.DeserializeObject<List<ConsumableItem>>(json));
 
-                ConsumableItem.GetItemCatalog();
             }
         }
         public static void LoadEquipItemData()
         {
-            // 소재아이템 데이터 로드
+            // 장비아이템 데이터 로드
             string path = equipItemPath;
 
             if (File.Exists(path))
             {
                 string json = File.ReadAllText(path);
 
-                Equipment.SetEquipItem(JsonConvert.DeserializeObject<List<Equipment>>(json));
+                Equipment.SetEquipmentCatalog(JsonConvert.DeserializeObject<List<Equipment>>(json));
 
-                Equipment.GetEquipmentCatalog();
+            }
+        }
+        
+        public static void LoadQuestData()
+        {
+            string path = QuestPath;
+
+            if (File.Exists(path))
+            {
+                string json = File.ReadAllText(path);
+
+                SceneManager.instance.questManager.SetQuestList(JsonConvert.DeserializeObject<List<Quest>>(json));
+
+                SceneManager.instance.questManager.GetQuestList();
             }
         }
     }

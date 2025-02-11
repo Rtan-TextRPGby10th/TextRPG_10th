@@ -11,6 +11,7 @@
             DataLoad.LoadMiscItemData();
             DataLoad.LoadEquipItemData();
             DataLoad.LoadConsumeItemData();
+            DataLoad.LoadQuestData();
 
             //외부에서도 SceneManager.currentScene을 변경해 Scene 상태를 바꿀 수 있음
             while (true)
