@@ -17,8 +17,8 @@
         };
 
         int ClearGold;
-        public Monster(string name,float health, float attackPower,float defense, int lv, int clearGold)
-                        : base(name, health, attackPower, defense, lv)
+        public Monster(string name,float health, float attackPower,float defense, int lv, int clearGold, float hitChance = 0.8f, float dodgeChance = 0.1f)
+                        : base(name, health, attackPower, defense, lv, hitChance, dodgeChance)
         {
             ClearGold = clearGold;
         }
@@ -57,7 +57,7 @@
 
     class Slime : Monster
     {
-        public Slime() : base("슬라임", 20.0f, 5.0f, 2.0f, 1, 10)
+        public Slime() : base("슬라임", 20.0f, 5.0f, 2.0f, 1, 10, 0.7f, 0.2f) // 낮은 명중, 높은 회피
         {
         }
 
@@ -65,21 +65,21 @@
     }
     class Mandrake : Monster
     {
-        public Mandrake() : base("맨드레이크", 40.0f, 9.0f, 4.0f, 5, 25)
+        public Mandrake() : base("맨드레이크", 40.0f, 9.0f, 4.0f, 5, 25, 0.8f, 0.1f)
         {
 
         }
     }
     class Spider : Monster
     {
-        public Spider() : base("거미", 70, 14, 6, 10, 50)
+        public Spider() : base("거미", 70, 14, 6, 10, 50, 0.8f, 0.1f)
         {
 
         }
     }
     class Wolf : Monster
     {
-        public Wolf() : base("늑대", 110, 18, 8, 15, 75)
+        public Wolf() : base("늑대", 110, 18, 8, 15, 75, 0.8f, 0.1f)
         {
 
         }
@@ -93,7 +93,7 @@
     } 
     class Dragon : Monster
     {
-        public Dragon() : base("드래곤", 200, 30, 15, 25, 200)
+        public Dragon() : base("드래곤", 200, 30, 15, 25, 200, 0.95f, 0.05f) // 높은 명중, 낮은 회피
         {
 
         }

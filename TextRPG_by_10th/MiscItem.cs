@@ -30,10 +30,9 @@ public class MiscItem       //기타 아이템 클래스
         Price = price;
     }
 
-    public static List<MiscItem> GetMiscCatalog()                       //기타 도감
+    // Lazy<T>를 사용해 재료 도감을 한 번만 로드
+    private static readonly Lazy<List<MiscItem>> _miscCatalog = new Lazy<List<MiscItem>>(() => new List<MiscItem>
     {
-        return new List<MiscItem>                                       //기타 아이템 데이터 추가하려면 여기에 수정
-        {
             //1티어
             new MiscItem(10001, "슬라임의 점액", "미끌미끌. 만지면 기분이 좋다.", 1, 100),
             new MiscItem(10002, "고블린의 가죽", "더럽고 냄새가 심하다.", 1, 100),
@@ -74,6 +73,15 @@ public class MiscItem       //기타 아이템 클래스
             new MiscItem(10033, "발록의 검은 불꽃", "불이 아니라 마력으로 타오르는 지옥불의 정수.", 1,500),
             new MiscItem(10034, "발록의 지옥불 조각", "모든 것을 불태우는 검붉은 불꽃의 파편.", 1,500),
             new MiscItem(10035, "발록의 불꽃 송곳니", "뜨겁게 타오르는 발록의 강력한 이빨.", 1,500),
-        };
+
+            //상점 판매 물품 각 3티어,4티어,5티어
+            new MiscItem(10050, "철 주괴", "가장 기본적인 금속 주괴. 무기 제작에 사용된다.", 1,2000),
+            new MiscItem(10051, "미스릴 주괴", "강철보다 수십 배 단단한 희귀 금속 주괴. 강력한 무기의 핵심 재료.", 1,4000),
+            new MiscItem(10052, "아다만티움 주괴", "가볍지만 강력한 마법 금속. 뛰어난 내구성과 마력 전도율을 자랑한다.", 1,8000),
+    });
+
+    public static List<MiscItem> GetMiscCatalog()
+    {
+        return _miscCatalog.Value;
     }
 }
