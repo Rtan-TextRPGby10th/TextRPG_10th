@@ -18,8 +18,8 @@ namespace TextRPG_by_10th
         public float DodgeChance { get; set; } // 회피율 (0~1)
 
         public bool isDie = false; // 사망 확인
-        public Creature(string name, float health, float attackPower, float defense, int lv, float hitChance = 0.8f, float dodgeChance = 0.1f) // 크리처 생성자
         public Battle.DebuffType debuffType { get; set; } = Battle.DebuffType.NONE;
+        public Creature(string name, float health, float attackPower, float defense, int lv, float hitChance = 0.8f, float dodgeChance = 0.1f) // 크리처 생성자
 
         {
             Name = name;
