@@ -209,27 +209,7 @@ namespace TextRPG_by_10th
             return true; 
         }
 
-
-        void a()
-        {
-            Quest quest1 = new Quest()
-            {
-                index = 99101,
-                name = "초심자의 목검 업그레이드",
-                canClear = false,
-                gold = 100,
-                baseEquip = Equipment.GetEquipmentCatalog().Where(item => item.Id == 101).First(),
-                resultEquip = Equipment.GetEquipmentCatalog().Where(item => item.Id == 107).First(),
-                Items = { Tuple.Create(10001, 2), Tuple.Create(10002, 3) }
-            };
-
-            allQuest.Add(quest1);
-
-
-        }
-
-
-        void a()
+        void SetOriginQuest()
         {
             Quest quest1 = new Quest()
             {
