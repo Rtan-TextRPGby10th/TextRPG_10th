@@ -214,6 +214,8 @@ namespace TextRPG_by_10th
 
                 AddInventory(1001, 3);
                 AddInventory(1004, 3);
+                AddInventory(10001, 3);
+                AddInventory(10002, 3);
                 isInitialized = true; // 기본아이템은 최초 1회만 지급
             }
 
@@ -276,7 +278,7 @@ namespace TextRPG_by_10th
             }
         }
 
-        private void EquipItem(int index)
+        public void EquipItem(int index)
         {
             Equipment item = equipmentList[index]; // 선택한 장비
             string equipSlot = item.Slot;          // 장비의 착용 슬롯

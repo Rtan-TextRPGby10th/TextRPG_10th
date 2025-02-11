@@ -83,9 +83,6 @@ namespace TextRPG_by_10th
 
             Inventory playerInventory = new Inventory();
 
-            // 퀘스트 테스트용 코드
-            questManager.SetBasicQuest();
-
             while (currentScene == Scene.Town)
             {
                 Console.Clear();
@@ -118,6 +115,7 @@ namespace TextRPG_by_10th
                         currentScene = Scene.Dungeon;
                         break;                    
                     case "5":
+                        Console.WriteLine("장비 업그레이드");
                         currentScene = Scene.Quest;
                         break;
                     case "0":
@@ -195,6 +193,9 @@ namespace TextRPG_by_10th
         }
         void QuestScene()
         {
+            // 퀘스트 테스트용 코드
+            questManager.SetBasicQuest();
+
             questManager.ShowQuestList();
         }
     }
