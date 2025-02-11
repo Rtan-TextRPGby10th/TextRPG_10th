@@ -191,12 +191,14 @@ namespace TextRPG_by_10th
 
             Quest quest2 = new Quest()
             {
-                index = 99201,
-                name = "널빤지 업그레이드",
+                index = 99301,
+                name = "천 두건 업그레이드",
                 des = "설명2",
                 canClear = false,
                 miscItems = new List<MiscItem>(),
-                gold = 300
+                gold = 300,
+                baseEquip = Equipment.GetEquipmentCatalog().Where(item => item.Id == 301).First(),
+                resultEquip = Equipment.GetEquipmentCatalog().Where(item => item.Id == 302).First()
             };
 
 
@@ -211,7 +213,9 @@ namespace TextRPG_by_10th
                 des = "설명3",
                 canClear = false,
                 miscItems = new List<MiscItem>(),
-                gold = 6000000
+                gold = 6000000,
+                baseEquip = Equipment.GetEquipmentCatalog().Where(item => item.Id == 401).First(),
+                resultEquip = Equipment.GetEquipmentCatalog().Where(item => item.Id == 402).First()
             };
             MiscItem item4 = MiscItem.GetMiscCatalog().LastOrDefault();
             item4.Amount = 1;
