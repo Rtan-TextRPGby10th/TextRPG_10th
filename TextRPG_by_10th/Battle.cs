@@ -53,7 +53,7 @@ namespace TextRPG_by_10th
             //전투할 몬스터 배열이 비어있을 경우 몬스터를 소환
             if (monsters == null)
             {
-                SummonMonsters(1); //  ⚠️🔧스테이지 선택 작업 필요
+                SummonMonsters(SelectedStage());
             }
 
             //전투가 끝날 때까지 아래 과정을 반복
@@ -107,6 +107,33 @@ namespace TextRPG_by_10th
 
                 monsters[i] = Monster.LoadMonster[stage - 1](selectedType);
             }
+        }
+
+        int SelectedStage()
+        {
+            int stage;
+            string[] stageStr = new string[] {"술", "던전", "심해", "설산", "화산" };
+            Console.WriteLine("스테이지를 선택해주세요");
+            Console.WriteLine("스테이지 1 : 숲");
+            Console.WriteLine("스테이지 2 : 던전");
+            Console.WriteLine("스테이지 3 : 심해");
+            Console.WriteLine("스테이지 4 : 설산");
+            Console.WriteLine("스테이지 5 : 화산");
+
+            while (true)
+            {
+                string input = Console.ReadLine();
+
+                if (int.TryParse(input, out stage) && stage >= 1 && stage <= 5)
+                {
+                    return stage;
+                }
+                else
+                {
+                    Console.WriteLine("잘못된 입력입니다. 1부터 5까지의 스테이지 번호를 입력해주세요.");
+                }
+            }
+
         }
 
         //전투 상황을 보여줌
