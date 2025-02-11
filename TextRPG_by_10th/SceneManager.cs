@@ -174,7 +174,7 @@ namespace TextRPG_by_10th
                 Console.WriteLine($"{player.playerJob.ToString()}을 선택했습니다.");
                 currentScene = Scene.Town;
             }
-            player.Gold = 1500; // 초기 소지금
+            inventory.GiveStartpack();                //초기장비 지급
         }
 
         void ShopScene()

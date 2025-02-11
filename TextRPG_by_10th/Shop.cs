@@ -19,14 +19,6 @@ namespace TextRPG_by_10th
         {
             inventory = playerInventory;
             //상점에서 판매하는 아이템 추가하기. AddShopItem(도감의 id넘버, 수량)
-
-            //레어도 보기위한 샘플 아이템들
-            AddShopItem(303);
-            AddShopItem(304);
-            AddShopItem(305);
-            AddShopItem(306);
-            //
-            AddShopItem(104);
             AddShopItem(301);                                  
             AddShopItem(401);
             AddShopItem(501);
@@ -220,7 +212,7 @@ namespace TextRPG_by_10th
                 Dictionary<int, object> sellableItems = new Dictionary<int, object>();
                 int index = 1;
 
-                // 🔹 장비 목록 출력
+                /* 장비는 판매 불가
                 foreach (var item in inventory.GetEquipmentList())
                 {
                     if (!item.IsEquipped)  // 장착 중이 아닌 아이템만 출력
@@ -229,14 +221,14 @@ namespace TextRPG_by_10th
                         Console.WriteLine($"{index}. {item.Name} {item.Description} | 판매가 {sellPrice}G");
                         sellableItems[index++] = item;
                     }
-                    
                 }
+                */
 
                 // 🔹 소모품 목록 출력
                 foreach (var item in inventory.GetConsumableList())
 
                 {
-                    Console.WriteLine($"{index}. {item.Name} | {item.Description} | 보유 {item.Amount}개 | 판매가 {item.Price / 2}G");
+                    Console.WriteLine($"{index}. {item.Name} {item.Description} | 보유 {item.Amount}개 | 판매가 {item.Price / 2}G");
                     sellableItems[index++] = item;
                 }
 
@@ -244,7 +236,7 @@ namespace TextRPG_by_10th
                 // 🔹 기타 아이템 목록 출력
                 foreach (var item in inventory.GetMiscList())
                 {
-                    Console.WriteLine($"{index}. {item.Name} | {item.Description} | 보유 {item.Amount}개 | 판매가 {item.Price / 2}G");
+                    Console.WriteLine($"{index}. {item.Name} {item.Description} | 보유 {item.Amount}개 | 판매가 {item.Price / 2}G");
                     sellableItems[index++] = item;
                 }
 
