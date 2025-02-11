@@ -68,9 +68,11 @@ namespace TextRPG_by_10th
             Console.WriteLine($" - {quest.name}\t {str}");
 
             Console.WriteLine("업그레이드 재료 : ");
-            foreach (var item in quest.miscItems)
+            foreach (var item in quest.Items)
             {
-                Console.Write($"{item.Name} {item.Amount}개 \t");
+                MiscItem misc = MiscItem.GetMiscCatalog().Where(x => x.Id == item.Item1).First();
+
+                Console.Write($"{misc.Name} {misc.Amount}개 \t");
             }
             Console.Write($"{quest.gold}G");
 
@@ -86,7 +88,7 @@ namespace TextRPG_by_10th
 
                 foreach (var item in myQuest)
                 {
-                    Console.WriteLine($"{i++}. {item.name}\t{item.des}");
+                    Console.WriteLine($"{i++}. {item.name}\t");
                 }
                 Console.WriteLine("\n0. 나가기");
                 Console.Write(">> ");
@@ -120,9 +122,11 @@ namespace TextRPG_by_10th
             // 새로운 퀘스트 화면 보여주기
             Console.Clear();
             inven.RemoveInventory(q.baseEquip.Id, 1);
-            foreach (var item in q.miscItems)
+            foreach (var item in q.Items)
             {
-                inven.RemoveInventory(item.Id, item.Amount);
+                MiscItem misc = MiscItem.GetMiscCatalog().Where(x => x.Id == item.Item1).First();
+
+                inven.RemoveInventory(misc.Id, misc.Amount);
             }
             player.Gold -= q.gold;
 
@@ -173,78 +177,7 @@ namespace TextRPG_by_10th
         // 저장기능 넣을거면 json으로 가져오는 내용으로 교체 필요
         public void SetBasicQuest()
         {
-            Quest quest1 = new Quest()
-            {
-                index = 99101,
-                name = "초심자의 목검 업그레이드",
-                des = "설명1",
-                canClear = false,
-                miscItems = new List<MiscItem>(),
-                gold = 100,
-                baseEquip=Equipment.GetEquipmentCatalog().Where(item=>item.Id==101).First(),
-                resultEquip=Equipment.GetEquipmentCatalog().Where(item=>item.Id==107).First()
-            };
-
-            MiscItem i = new MiscItem()
-            {
-                Id = 10001,
-                Name = "슬라임의 점액",
-                Amount = 2
-            };
-            MiscItem i2 = new MiscItem()
-            {
-                Id = 10002,
-                Name = "고블린의 가죽",
-                Amount = 3
-            };
-            quest1.miscItems.Add(i);
-            quest1.miscItems.Add(i2);
-
-
-            Quest quest2 = new Quest()
-            {
-                index = 99301,
-                name = "천 두건 업그레이드",
-                des = "설명2",
-                canClear = false,
-                miscItems = new List<MiscItem>(),
-                gold = 300,
-                baseEquip = Equipment.GetEquipmentCatalog().Where(item => item.Id == 301).First(),
-                resultEquip = Equipment.GetEquipmentCatalog().Where(item => item.Id == 302).First()
-            };
-
-            MiscItem i3 = new MiscItem()
-            {
-                Id = 10001,
-                Name = "슬라임의 점액",
-                Amount = 7
-            };
-            quest2.miscItems.Add(i3);
-
-            Quest quest3 = new Quest()
-            {
-                index = 99401,
-                name = "천 옷 업그레이드",
-                des = "설명3",
-                canClear = false,
-                miscItems = new List<MiscItem>(),
-                gold = 6000000,
-                baseEquip = Equipment.GetEquipmentCatalog().Where(item => item.Id == 401).First(),
-                resultEquip = Equipment.GetEquipmentCatalog().Where(item => item.Id == 402).First()
-            };
-            MiscItem i4 = new MiscItem()
-            {
-                Id = 10001,
-                Name = "10052",
-                Amount = 1
-            };
-            quest3.miscItems.Add(i4);
-
-
-            allQuest.Add(quest1);
-            allQuest.Add(quest2);
-            allQuest.Add(quest3);
-
+            a();
             inven = SceneManager.instance.inventory;
             player = SceneManager.instance.player;
             RefreshQuest();
@@ -255,11 +188,11 @@ namespace TextRPG_by_10th
             if (q == null)
                 return false;
 
-            List<MiscItem> list = q.miscItems;
+            List<Tuple<int, int>> itemList = q.Items;
 
-            foreach (MiscItem item in list)
+            foreach (var item in itemList)
             {
-                bool b = inven.GetMiscList().Where(x => x.Id == item.Id).Select(y => y.Amount >= item.Amount).FirstOrDefault();
+                bool b = inven.GetMiscList().Where(x => x.Id == item.Item1).Select(y => y.Amount >= item.Item2).FirstOrDefault();
 
                 b = b && inven.player.Gold > q.gold;
 
@@ -276,13 +209,32 @@ namespace TextRPG_by_10th
             return true; 
         }
 
+
+        void a()
+        {
+            Quest quest1 = new Quest()
+            {
+                index = 99101,
+                name = "초심자의 목검 업그레이드",
+                canClear = false,
+                gold = 100,
+                baseEquip = Equipment.GetEquipmentCatalog().Where(item => item.Id == 101).First(),
+                resultEquip = Equipment.GetEquipmentCatalog().Where(item => item.Id == 107).First(),
+                Items = { Tuple.Create(10001, 2), Tuple.Create(10002, 3) }
+            };
+
+            allQuest.Add(quest1);
+
+
+        }
+
+
     }
 
     public class Quest
     {
         public int index { get; set; }
         public string name { get; set; }
-        public string des { get; set; }
         public bool canClear { get; set; }
 
         // 클리어 조건 데이터 필요
@@ -291,6 +243,7 @@ namespace TextRPG_by_10th
 
         // 임시 퀘스트클리어조건
         public List<MiscItem> miscItems { get; set; }
+        public List<Tuple<int,int>> Items { get; set; }
 
         // 기반 아이템
         public Equipment baseEquip { get; set; }
