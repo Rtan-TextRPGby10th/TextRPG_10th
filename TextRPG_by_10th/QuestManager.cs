@@ -70,7 +70,9 @@ namespace TextRPG_by_10th
             Console.WriteLine("업그레이드 재료 : ");
             foreach (var item in quest.miscItems)
             {
-                Console.Write($"{item.Name} {item.Amount}개 \t");
+                MiscItem misc = MiscItem.GetMiscCatalog().Where(x => x.Id == item.Item1).First();
+
+                Console.Write($"{misc.Name} {item.Item2}개 \t");
             }
             Console.Write($"{quest.gold}G");
 
@@ -122,7 +124,9 @@ namespace TextRPG_by_10th
             inven.RemoveInventory(q.baseEquip.Id, 1);
             foreach (var item in q.miscItems)
             {
-                inven.RemoveInventory(item.Id, item.Amount);
+                MiscItem misc = MiscItem.GetMiscCatalog().Where(x => x.Id == item.Item1).First();
+
+                inven.RemoveInventory(misc.Id, item.Item2);
             }
             player.Gold -= q.gold;
 
@@ -162,7 +166,7 @@ namespace TextRPG_by_10th
             foreach (var item in list)
             {
                 int i = item.Id;
-                i += 99000;
+                i += 100000;
 
                 AddQuest(i);
             }
@@ -255,7 +259,7 @@ namespace TextRPG_by_10th
             if (q == null)
                 return false;
 
-            List<MiscItem> list = q.miscItems;
+            List<(int, int)> itemList = q.Items;
 
             foreach (MiscItem item in list)
             {
@@ -276,6 +280,35 @@ namespace TextRPG_by_10th
             return true; 
         }
 
+
+        void a()
+        {
+            Quest quest1 = new Quest()
+            {
+                index = 100101,
+                name = "초심자의 목검 업그레이드",
+                canClear = false,
+                gold = 100,
+                baseEquip = Equipment.GetEquipmentCatalog().Where(item => item.Id == 101).First(),
+                resultEquip = Equipment.GetEquipmentCatalog().Where(item => item.Id == 107).First(),
+                Items = { (10001, 2), (10002, 3) }
+            };
+
+            Quest quest2 = new Quest()
+            {
+                index = 100301,
+                name = "천 두건 업그레이드",
+                canClear = false,
+                gold = 100,
+                baseEquip = Equipment.GetEquipmentCatalog().Where(item => item.Id == 301).First(),
+                resultEquip = Equipment.GetEquipmentCatalog().Where(item => item.Id == 302).First(),
+                Items = { (10001, 3) }
+            };
+
+            allQuest.Add(quest1);
+            allQuest.Add(quest2);
+        }
+
     }
 
     public class Quest
@@ -290,7 +323,7 @@ namespace TextRPG_by_10th
 
 
         // 임시 퀘스트클리어조건
-        public List<MiscItem> miscItems { get; set; }
+        public List<(int,int)> Items { get; set; } = new List<(int,int)>();
 
         // 기반 아이템
         public Equipment baseEquip { get; set; }
