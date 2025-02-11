@@ -14,18 +14,11 @@ namespace TextRPG_by_10th
         public Player player;
         
 
+
         public Shop(Inventory playerInventory)
         {
             inventory = playerInventory;
             //상점에서 판매하는 아이템 추가하기. AddShopItem(도감의 id넘버, 수량)
-
-            //레어도 보기위한 샘플 아이템들
-            AddShopItem(303);
-            AddShopItem(304);
-            AddShopItem(305);
-            AddShopItem(306);
-            //
-            AddShopItem(104);
             AddShopItem(301);                                  
             AddShopItem(401);
             AddShopItem(501);
@@ -73,6 +66,7 @@ namespace TextRPG_by_10th
             }
         }
 
+                                  
         public void OpenShop()                                      //상점 씬
         {
             player = SceneManager.instance.player;  // ✅ SceneManager에서 player 가져오기
@@ -118,8 +112,9 @@ namespace TextRPG_by_10th
             while (true)
             {
                 Console.Clear();
-                Console.WriteLine("===== 아이템 구매 =====\n");
 
+                Console.WriteLine("===== 아이템 구매 =====\n");
+                Console.WriteLine("[보유 골드] " + player.Gold + " G\n");
                 Dictionary<int, object> itemMap = new Dictionary<int, object>();
                 int index = 1;
 
@@ -132,6 +127,7 @@ namespace TextRPG_by_10th
                 string input = Console.ReadLine();
 
                 if (input == "0") return;
+
 
                 if (int.TryParse(input, out int itemIndex) && itemMap.ContainsKey(itemIndex))
                 {
@@ -156,6 +152,7 @@ namespace TextRPG_by_10th
                             if (player.Gold >= totalPrice)
                             {
                                 player.Gold -= totalPrice;
+
                                 inventory.AddInventory(consumable.Id, amount);
                                 Console.WriteLine($"{consumable.Name} {amount}개 구매완료!");
                                 // ✅ 소모품은 목록에서 삭제하지 않음
@@ -215,7 +212,7 @@ namespace TextRPG_by_10th
                 Dictionary<int, object> sellableItems = new Dictionary<int, object>();
                 int index = 1;
 
-                // 🔹 장비 목록 출력
+                /* 장비는 판매 불가
                 foreach (var item in inventory.GetEquipmentList())
                 {
                     if (!item.IsEquipped)  // 장착 중이 아닌 아이템만 출력
@@ -224,20 +221,22 @@ namespace TextRPG_by_10th
                         Console.WriteLine($"{index}. {item.Name} {item.Description} | 판매가 {sellPrice}G");
                         sellableItems[index++] = item;
                     }
-                    
                 }
+                */
 
                 // 🔹 소모품 목록 출력
                 foreach (var item in inventory.GetConsumableList())
+
                 {
-                    Console.WriteLine($"{index}. {item.Name} | {item.Description} | 보유 {item.Amount}개 | 판매가 {item.Price / 2}G");
+                    Console.WriteLine($"{index}. {item.Name} {item.Description} | 보유 {item.Amount}개 | 판매가 {item.Price / 2}G");
                     sellableItems[index++] = item;
                 }
+
 
                 // 🔹 기타 아이템 목록 출력
                 foreach (var item in inventory.GetMiscList())
                 {
-                    Console.WriteLine($"{index}. {item.Name} | {item.Description} | 보유 {item.Amount}개 | 판매가 {item.Price / 2}G");
+                    Console.WriteLine($"{index}. {item.Name} {item.Description} | 보유 {item.Amount}개 | 판매가 {item.Price / 2}G");
                     sellableItems[index++] = item;
                 }
 
