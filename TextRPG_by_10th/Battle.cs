@@ -170,7 +170,6 @@ namespace TextRPG_by_10th
                         }
                         //타겟이 PARALYZE 상태인 경우 추가 데미지 부여
                         ParalyzeDamage(targetMonster);
-
                     }
                     break;
 
@@ -202,7 +201,7 @@ namespace TextRPG_by_10th
                     break;
             }
 
-            DeathCheck();
+            DeathCount();
         }
         //몬스터 턴에서 이루어지는 과정
         void MonsterTurn()
@@ -287,13 +286,14 @@ namespace TextRPG_by_10th
             Thread.Sleep(1000);
         }
         //몬스터 처치 검사
-        void DeathCheck()
+        void DeathCount()
         {
             //소환된 몬스터 상태를 확인
             foreach (Monster monster in monsters)
             {
                 if (monster.isDie)
                 {
+                    player.AddGold(monster.GetClrearGold(player));
                     deadCount++;
                 }
             }
@@ -305,6 +305,15 @@ namespace TextRPG_by_10th
             }
 
             deadCount = 0;
+        }
+
+        void DeathCheck(Monster targetMonster)
+        {
+            if(targetMonster.isDie)
+            {
+                player.AddGold(targetMonster.GetClrearGold(player));
+                deadCount++;
+            }
         }
 
         void DebuffCheck()
@@ -355,7 +364,7 @@ namespace TextRPG_by_10th
             }
             endDebuffs.Clear();
 
-            DeathCheck();
+            DeathCount();
         }
 
         //입력을 다르게 하여 상태이상을 적용할 수 있음

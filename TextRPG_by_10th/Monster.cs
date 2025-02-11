@@ -5,7 +5,7 @@
         public static List<Equipment> equip = Equipment.GetEquipmentCatalog(); // 아이템 도감에서 장비를 가져온다.
         public static List<ConsumableItem> consum = ConsumableItem.GetItemCatalog(); // 소모품 도감에서 소모품을 가져온다
         public static List<MiscItem> miscItem = MiscItem.GetMiscCatalog(); // 기타템 도감에서 기타템을 가져온다
-
+        //몬스터 소환을 위한 생성자를 저장하는 배열->Battle.cs에서 해당 생성자를 불러와서 몬스터를 소환
         public static Func<Monster>[] LoadMonster =
         {
             () => new Slime(),
@@ -52,6 +52,11 @@
                 return consum[randomIndex]; // 기타템으로 장비 지급
             }
             return null;
+        }
+
+        public int GetClrearGold(Player player)
+        {
+            return ClearGold;
         }
     }
 
