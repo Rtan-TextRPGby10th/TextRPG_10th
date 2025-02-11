@@ -218,7 +218,6 @@ namespace TextRPG_by_10th
                         //타겟이 PARALYZE 상태인 경우 추가 데미지 부여
                         ParalyzeDamage(targetMonster);
 
-
                     }
                     break;
 
