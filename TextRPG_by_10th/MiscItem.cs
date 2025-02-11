@@ -34,8 +34,9 @@ public class MiscItem       //기타 아이템 클래스
         Price = price;
     }
 
-    // Lazy<T>를 사용해 재료 도감을 한 번만 로드
-    private static readonly Lazy<List<MiscItem>> _miscCatalog = new Lazy<List<MiscItem>>(() => new List<MiscItem>
+    private static List<MiscItem> _miscCatalog;
+
+    public static void SetMiscItem(List<MiscItem> list)
     {
             //1티어
             new MiscItem(10001, 1, "슬라임의 점액", "미끌미끌. 만지면 기분이 좋다.", 1, 100),
@@ -129,6 +130,6 @@ public class MiscItem       //기타 아이템 클래스
 
     public static List<MiscItem> GetMiscCatalog()
     {
-        return _miscCatalog.Value;
+        return _miscCatalog;
     }
 }

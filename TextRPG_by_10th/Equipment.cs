@@ -53,8 +53,8 @@ public class Equipment      //장비 아이템 클래스
         Price = price;
     }
 
-    // 싱글턴 패턴 적용: 최초 한 번만 데이터를 로드
-    private static readonly Lazy<List<Equipment>> _equipmentCatalog = new Lazy<List<Equipment>>(() => new List<Equipment>
+    private static List<Equipment> _equipmentCatalog;
+    public static void SetEquipItem(List<Equipment> list)
     {
             //          도감id,티어, 이름           상태이상,공,방,   슬롯  ,   설명               ,장착중?,판매중?,수량,가격
             //무기
@@ -65,21 +65,21 @@ public class Equipment      //장비 아이템 클래스
             new Equipment(105, 1, "더블핑거 대거 [고급]".ColorText(ConsoleColor.Green), 0, 10, 0, "무기", "오우거의 소재로 만든 단검. 가벼워 다루기 좋다.", false, false, 1, 1000),
             new Equipment(106, 1, "쉘 그레이트 보우 [고급]".ColorText(ConsoleColor.Green), 0, 10, 0, "무기", "오우거의 소재로 만든 활. 신축성이 강하다.", false, false, 1, 1000),
 
-            new Equipment(107, 2, "리치 본 소드 [희귀]".ColorText(ConsoleColor.Blue), 2, 20, 0, "무기", "리치의 뼈로 만들어진 대검. 차가운 기운이 감돈다. 공격 시 일정 확률로 빙결 부여.", false, false, 1, 2000),
-            new Equipment(108, 2, "사령의 단검 [희귀]".ColorText(ConsoleColor.Blue), 2, 20, 0, "무기", "리치의 손가락을 이용해 만든 단검. 영혼을 갉아먹는다. 공격 시 일정 확률로 빙결 부여.", false, false, 1, 2000),
-            new Equipment(109, 2, "저주의 장궁 [희귀]".ColorText(ConsoleColor.Blue), 1, 20, 0, "무기", "리치의 마력을 담은 활. 맞은 적은 서서히 체력을 잃는다. 공격 시 일정 확률로 독 부여.", false, false, 1, 2000),
+    //        new Equipment(107, 2, "리치 본 소드 [희귀]".ColorText(ConsoleColor.Blue), 2, 20, 0, "무기", "리치의 뼈로 만들어진 대검. 차가운 기운이 감돈다. 공격 시 일정 확률로 빙결 부여.", false, false, 1, 2000),
+    //        new Equipment(108, 2, "사령의 단검 [희귀]".ColorText(ConsoleColor.Blue), 2, 20, 0, "무기", "리치의 손가락을 이용해 만든 단검. 영혼을 갉아먹는다. 공격 시 일정 확률로 빙결 부여.", false, false, 1, 2000),
+    //        new Equipment(109, 2, "저주의 장궁 [희귀]".ColorText(ConsoleColor.Blue), 1, 20, 0, "무기", "리치의 마력을 담은 활. 맞은 적은 서서히 체력을 잃는다. 공격 시 일정 확률로 독 부여.", false, false, 1, 2000),
 
-            new Equipment(110, 3, "크라켄 슬래셔 [영웅]".ColorText(ConsoleColor.Magenta), 3, 30, 0, "무기", "크라켄의 거대한 발톱을 이용한 대검. 맞은 적을 마비시킨다. 공격 시 일정 확률로 감전 부여.", false, false, 1, 3000),
-            new Equipment(111, 3, "촉수 대거 [영웅]".ColorText(ConsoleColor.Magenta), 1, 30, 0, "무기", "크라켄의 작은 촉수를 이용해 만든 단검. 적을 감아올린다. 공격 시 일정 확률로 독 부여.", false, false, 1, 3000),
-            new Equipment(112, 3, "심연의 활 [영웅]".ColorText(ConsoleColor.Magenta), 1, 30, 0, "무기", "크라켄의 심해 마력을 응축한 활. 화살이 깊이 스며든다. 공격 시 일정 확률로 독 부여.", false, false, 1, 3000),
+    //        new Equipment(110, 3, "크라켄 슬래셔 [영웅]".ColorText(ConsoleColor.Magenta), 3, 30, 0, "무기", "크라켄의 거대한 발톱을 이용한 대검. 맞은 적을 마비시킨다. 공격 시 일정 확률로 감전 부여.", false, false, 1, 3000),
+    //        new Equipment(111, 3, "촉수 대거 [영웅]".ColorText(ConsoleColor.Magenta), 1, 30, 0, "무기", "크라켄의 작은 촉수를 이용해 만든 단검. 적을 감아올린다. 공격 시 일정 확률로 독 부여.", false, false, 1, 3000),
+    //        new Equipment(112, 3, "심연의 활 [영웅]".ColorText(ConsoleColor.Magenta), 1, 30, 0, "무기", "크라켄의 심해 마력을 응축한 활. 화살이 깊이 스며든다. 공격 시 일정 확률로 독 부여.", false, false, 1, 3000),
 
-            new Equipment(113, 4, "아이스 브레이커 [전설]".ColorText(ConsoleColor.Yellow), 2, 40, 0, "무기", "프로스트 드래곤의 송곳니를 깎아 만든 대검. 공격 시 일정 확률로 빙결 부여.", false, false, 1, 4000),
-            new Equipment(114, 4, "아이스 클로 대거 [전설]".ColorText(ConsoleColor.Yellow), 2, 40, 0, "무기", "프로스트 드래곤의 발톱을 활용한 단검. 공격 시 일정 확률로 빙결 부여.", false, false, 1, 4000),
-            new Equipment(115, 4, "프로스트 윙 보우 [전설]".ColorText(ConsoleColor.Yellow), 2, 40, 0, "무기", "프로스트 드래곤의 날개 막으로 제작된 활. 맞은 적은 동작이 둔해진다. 공격 시 일정 확률로 빙결 부여.", false, false, 1, 4000),
+    //        new Equipment(113, 4, "아이스 브레이커 [전설]".ColorText(ConsoleColor.Yellow), 2, 40, 0, "무기", "프로스트 드래곤의 송곳니를 깎아 만든 대검. 공격 시 일정 확률로 빙결 부여.", false, false, 1, 4000),
+    //        new Equipment(114, 4, "아이스 클로 대거 [전설]".ColorText(ConsoleColor.Yellow), 2, 40, 0, "무기", "프로스트 드래곤의 발톱을 활용한 단검. 공격 시 일정 확률로 빙결 부여.", false, false, 1, 4000),
+    //        new Equipment(115, 4, "프로스트 윙 보우 [전설]".ColorText(ConsoleColor.Yellow), 2, 40, 0, "무기", "프로스트 드래곤의 날개 막으로 제작된 활. 맞은 적은 동작이 둔해진다. 공격 시 일정 확률로 빙결 부여.", false, false, 1, 4000),
 
-            new Equipment(116, 5, "발록 헬파이어 블레이드 [유물]".ColorText(ConsoleColor.Red), 4, 50, 0, "무기", "발록의 불길을 담은 대검. 맞은 적을 불태운다. 공격 시 일정 확률로 화상 부여.", false, false, 1, 5000),
-            new Equipment(117, 5, "불타는 단검 [유물]".ColorText(ConsoleColor.Red), 4, 50, 0, "무기", "발록의 불꽃이 깃든 단검. 베인 상처에서 불길이 솟는다. 공격 시 일정 확률로 화상 부여.", false, false, 1, 5000),
-            new Equipment(118, 5, "지옥의 장궁 [유물]".ColorText(ConsoleColor.Red), 4, 50, 0, "무기", "발록의 마력을 담은 활. 맞은 적은 불길 속에서 괴로워한다. 공격 시 일정 확률로 화상 부여.", false, false, 1, 5000),
+    //        new Equipment(116, 5, "발록 헬파이어 블레이드 [유물]".ColorText(ConsoleColor.Red), 4, 50, 0, "무기", "발록의 불길을 담은 대검. 맞은 적을 불태운다. 공격 시 일정 확률로 화상 부여.", false, false, 1, 5000),
+    //        new Equipment(117, 5, "불타는 단검 [유물]".ColorText(ConsoleColor.Red), 4, 50, 0, "무기", "발록의 불꽃이 깃든 단검. 베인 상처에서 불길이 솟는다. 공격 시 일정 확률로 화상 부여.", false, false, 1, 5000),
+    //        new Equipment(118, 5, "지옥의 장궁 [유물]".ColorText(ConsoleColor.Red), 4, 50, 0, "무기", "발록의 마력을 담은 활. 맞은 적은 불길 속에서 괴로워한다. 공격 시 일정 확률로 화상 부여.", false, false, 1, 5000),
             
 
             //투구
@@ -118,7 +118,7 @@ public class Equipment      //장비 아이템 클래스
     // 캐싱된 리스트 반환 (매번 새로 만들지 않음)
     public static List<Equipment> GetEquipmentCatalog()
     {
-        return _equipmentCatalog.Value;
+        return _equipmentCatalog;
     }
 }
 
