@@ -106,6 +106,7 @@ namespace TextRPG_by_10th
         
         public static void LoadQuestData()
         {
+            // 퀘스트 데이터 로드
             string path = QuestPath;
 
             if (File.Exists(path))
@@ -114,7 +115,6 @@ namespace TextRPG_by_10th
 
                 SceneManager.instance.questManager.SetQuestList(JsonConvert.DeserializeObject<List<Quest>>(json));
 
-                SceneManager.instance.questManager.GetQuestList();
             }
         }
     }

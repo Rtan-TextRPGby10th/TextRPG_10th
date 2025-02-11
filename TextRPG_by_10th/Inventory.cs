@@ -205,6 +205,14 @@ namespace TextRPG_by_10th
                 }
                 AddInventory(1001, 3);              // 힐링포션 3개
                 AddInventory(1004, 3);              // 맹독포션 3개
+
+            // 테스트 데이터
+            AddInventory(10001, 30);
+            AddInventory(10002, 20);
+            AddInventory(10004, 20);
+            AddInventory(10008, 20);
+            AddInventory(10010, 20);
+
                 player.Gold = 1500;
         }
 
