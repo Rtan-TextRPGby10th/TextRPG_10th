@@ -9,7 +9,7 @@ using System.Xml.Linq;
 
 namespace TextRPG_by_10th
 {
-
+    
     public class Inventory
     {
         static List<Equipment> equipmentList = new List<Equipment>();
