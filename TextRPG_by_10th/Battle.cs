@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -52,7 +53,7 @@ namespace TextRPG_by_10th
             //전투할 몬스터 배열이 비어있을 경우 몬스터를 소환
             if (monsters == null)
             {
-                SummonMonsters();
+                SummonMonsters(2);
             }
 
             //전투가 끝날 때까지 아래 과정을 반복
@@ -88,7 +89,7 @@ namespace TextRPG_by_10th
         }
 
         //몬스터 소환
-        void SummonMonsters()
+        void SummonMonsters(int stage)
         {
             //1~4마리의 몬스터가 소환됨
             int monsterCount = random.Next(1, 5);
@@ -97,11 +98,17 @@ namespace TextRPG_by_10th
             //해당 배열에 Monster 클래스에서 몬스터를 불러와 소환
             for (int i = 0; i < monsterCount; i++)
             {
-                int monsterIndex = random.Next(0, 2);
+                // 선택된 스테이지에 해당하는 몬스터 리스트를 가져옴
+                List<MonsterType> stageMonsterTypes = Monster.StageMonsters[stage];
+                // 해당 스테이지의 랜덤한 몬스터 인덱스 선택
+                int monsterIndex = random.Next(1, stageMonsterTypes.Count);
+                
+                MonsterType selectedType = stageMonsterTypes[monsterIndex];
 
-                monsters[i] = Monster.LoadMonster[monsterIndex]();
+                monsters[i] = Monster.LoadMonster[stage - 1](selectedType);
             }
         }
+
         //전투 상황을 보여줌
         void ShowBattleInfo()
         {
