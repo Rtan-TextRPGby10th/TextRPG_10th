@@ -194,10 +194,10 @@ namespace TextRPG_by_10th
                         AddInventory(101, 1);        // 전사용 무기
                         break;
                     case Job.도적:
-                        AddInventory(102, 1);        // 도적용 무기
+                        AddInventory(111, 1);        // 도적용 무기
                         break;
                     case Job.궁수:
-                        AddInventory(103, 1);        // 궁수용 무기
+                        AddInventory(121, 1);        // 궁수용 무기
                         break;
                     default:
                         Console.WriteLine("잘못된 직업입니다.");
