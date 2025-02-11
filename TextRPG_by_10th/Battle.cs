@@ -103,28 +103,23 @@ namespace TextRPG_by_10th
             //해당 배열에 Monster 클래스에서 몬스터를 불러와 소환
             for (int i = 0; i < monsterCount; i++)
             {
-
-                int monsterIndex = random.Next(0, 2);
-
-                monsters[i] = Monster.LoadMonster[monsterIndex]();
-            }
-        }
-
                 // 선택된 스테이지에 해당하는 몬스터 리스트를 가져옴
                 List<MonsterType> stageMonsterTypes = Monster.StageMonsters[stage];
                 // 해당 스테이지의 랜덤한 몬스터 인덱스 선택
-                int monsterIndex = random.Next(0, stageMonsterTypes.Count);
-                
+                int monsterIndex = random.Next(1, stageMonsterTypes.Count);
+
                 MonsterType selectedType = stageMonsterTypes[monsterIndex];
 
                 monsters[i] = Monster.LoadMonster[stage - 1](selectedType);
             }
         }
 
+
+
         int SelectedStage()
         {
             int stage;
-            string[] stageStr = new string[] {"술", "던전", "심해", "설산", "화산" };
+            string[] stageStr = new string[] { "술", "던전", "심해", "설산", "화산" };
             Console.WriteLine("스테이지를 선택해주세요");
             Console.WriteLine("스테이지 1 : 숲");
             Console.WriteLine("스테이지 2 : 던전");
@@ -334,7 +329,7 @@ namespace TextRPG_by_10th
             {
                 Console.WriteLine($"{attacker.Name}의 공격이 빗나갔다!");
             }
-            
+
             Thread.Sleep(1000);
         }
         //몬스터 처치 검사
@@ -366,7 +361,7 @@ namespace TextRPG_by_10th
 
         void DeathCheck(Monster targetMonster)
         {
-            if(targetMonster.isDie)
+            if (targetMonster.isDie)
             {
                 player.AddGold(targetMonster.GetClrearGold(player));
                 deadCount++;
@@ -508,7 +503,7 @@ namespace TextRPG_by_10th
             Console.WriteLine($"{target.Name}에 {buffType.ToString()} 을 적용했다.");
 
         }
-        
+
         void BuffCheck()
         {
             //전투가 종료된 상황에서는 확인하지 않음
@@ -556,37 +551,39 @@ namespace TextRPG_by_10th
             }
         }
 
- 
-    //상태이상 정보를 저장하는 형식
-    class DebuffData : Battle
-    {
-        public Creature statusSource;
-        public Creature statusTarget;
-        public DebuffType debuff;
-        public int turns;
 
-        public DebuffData(Creature statusSource, Creature statusTarget, DebuffType debuff, int turns)
+        //상태이상 정보를 저장하는 형식
+        class DebuffData : Battle
         {
-            this.statusSource = statusSource;
-            this.statusTarget = statusTarget;
-            this.debuff = debuff;
-            this.turns = turns;
+            public Creature statusSource;
+            public Creature statusTarget;
+            public DebuffType debuff;
+            public int turns;
 
-            statusTarget.debuffType = debuff;
+            public DebuffData(Creature statusSource, Creature statusTarget, DebuffType debuff, int turns)
+            {
+                this.statusSource = statusSource;
+                this.statusTarget = statusTarget;
+                this.debuff = debuff;
+                this.turns = turns;
+
+                statusTarget.debuffType = debuff;
+            }
+        }
+
+        class BuffData : Battle
+        {
+            public Creature statusTarget;
+            public BuffType buff;
+            public int turns;
+
+            public BuffData(Creature statusTarget, BuffType buff, int turns)
+            {
+                this.statusTarget = statusTarget;
+                this.buff = buff;
+                this.turns = turns;
+            }
         }
     }
-
-    class BuffData : Battle
-    {
-        public Creature statusTarget;
-        public BuffType buff;
-        public int turns;
-
-        public BuffData(Creature statusTarget, BuffType buff, int turns)
-        {
-            this.statusTarget = statusTarget;
-            this.buff = buff;
-            this.turns = turns;
-        }
-    }
+}
 
