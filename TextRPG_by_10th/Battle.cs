@@ -53,7 +53,7 @@ namespace TextRPG_by_10th
             //전투할 몬스터 배열이 비어있을 경우 몬스터를 소환
             if (monsters == null)
             {
-                SummonMonsters(2);
+                SummonMonsters(1); //  ⚠️🔧스테이지 선택 작업 필요
             }
 
             //전투가 끝날 때까지 아래 과정을 반복
