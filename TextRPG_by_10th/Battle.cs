@@ -101,7 +101,7 @@ namespace TextRPG_by_10th
                 // 선택된 스테이지에 해당하는 몬스터 리스트를 가져옴
                 List<MonsterType> stageMonsterTypes = Monster.StageMonsters[stage];
                 // 해당 스테이지의 랜덤한 몬스터 인덱스 선택
-                int monsterIndex = random.Next(1, stageMonsterTypes.Count);
+                int monsterIndex = random.Next(0, stageMonsterTypes.Count);
                 
                 MonsterType selectedType = stageMonsterTypes[monsterIndex];
 
