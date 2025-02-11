@@ -67,7 +67,7 @@ namespace TextRPG_by_10th
 
             Console.WriteLine($" - {quest.name}\t {str}");
 
-            Console.WriteLine("퀘스트 클리어 조건 : ");
+            Console.WriteLine("업그레이드 재료 : ");
             foreach (var item in quest.miscItems)
             {
                 Console.Write($"{item.Name} {item.Amount}개 \t");
@@ -86,7 +86,7 @@ namespace TextRPG_by_10th
 
                 foreach (var item in myQuest)
                 {
-                    Console.WriteLine($"{i}. {item.name}\t{item.des}");
+                    Console.WriteLine($"{i++}. {item.name}\t{item.des}");
                 }
                 Console.WriteLine("\n0. 나가기");
                 Console.Write(">> ");
@@ -146,6 +146,10 @@ namespace TextRPG_by_10th
                 Console.WriteLine("이미 가지고 있는 퀘스트입니다.");
                 return;
             }
+            else if(q==null)
+            {
+                return;
+            }
 
             myQuest.Add(q);
         }
@@ -181,12 +185,20 @@ namespace TextRPG_by_10th
                 resultEquip=Equipment.GetEquipmentCatalog().Where(item=>item.Id==107).First()
             };
 
-            MiscItem item = MiscItem.GetMiscCatalog().First();
-            MiscItem item3 = MiscItem.GetMiscCatalog().ElementAt(1);
-            item.Amount = 2;
-            item3.Amount = 3;
-            quest1.miscItems.Add(item);
-            quest1.miscItems.Add(item3);
+            MiscItem i = new MiscItem()
+            {
+                Id = 10001,
+                Name = "슬라임의 점액",
+                Amount = 2
+            };
+            MiscItem i2 = new MiscItem()
+            {
+                Id = 10002,
+                Name = "고블린의 가죽",
+                Amount = 3
+            };
+            quest1.miscItems.Add(i);
+            quest1.miscItems.Add(i2);
 
 
             Quest quest2 = new Quest()
@@ -201,10 +213,13 @@ namespace TextRPG_by_10th
                 resultEquip = Equipment.GetEquipmentCatalog().Where(item => item.Id == 302).First()
             };
 
-
-            MiscItem item2 = MiscItem.GetMiscCatalog().First();
-            item2.Amount = 7;
-            quest2.miscItems.Add(item2);
+            MiscItem i3 = new MiscItem()
+            {
+                Id = 10001,
+                Name = "슬라임의 점액",
+                Amount = 7
+            };
+            quest2.miscItems.Add(i3);
 
             Quest quest3 = new Quest()
             {
@@ -217,10 +232,13 @@ namespace TextRPG_by_10th
                 baseEquip = Equipment.GetEquipmentCatalog().Where(item => item.Id == 401).First(),
                 resultEquip = Equipment.GetEquipmentCatalog().Where(item => item.Id == 402).First()
             };
-            MiscItem item4 = MiscItem.GetMiscCatalog().LastOrDefault();
-            item4.Amount = 1;
-            quest3.miscItems.Add(item4);
-
+            MiscItem i4 = new MiscItem()
+            {
+                Id = 10001,
+                Name = "10052",
+                Amount = 1
+            };
+            quest3.miscItems.Add(i4);
 
 
             allQuest.Add(quest1);
