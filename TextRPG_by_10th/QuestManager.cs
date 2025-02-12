@@ -103,7 +103,7 @@ namespace TextRPG_by_10th
                 if (CheckQuestClear(q))
                 {
                     Console.WriteLine($"장비 강화");
-                    UpgradeEquip(q);
+                    UpgradeEquip(q,index);
                     return;
                 }
                 else
@@ -113,14 +113,19 @@ namespace TextRPG_by_10th
             }
         }
 
-        private void UpgradeEquip(Quest q)
+        private void UpgradeEquip(Quest q,int index)
         {
-            // 원래 아이템(equip 삭제)
+            // 원래 아이템(equip) 해제 및 삭제
             // 그에 맞는 재료 삭제, 돈 감소
             // 업그레이드 아이템 획득 및 장착 
             // 퀘스트 리스트에서 삭제
             // 새로운 퀘스트 화면 보여주기
             Console.Clear();
+            if(inven.IsEquipped(q.baseEquip.Id))
+            {
+                inven.EquipItem(index);
+            }
+
             inven.RemoveInventory(q.baseEquip.Id, 1);
             foreach (var item in q.Items)
             {
