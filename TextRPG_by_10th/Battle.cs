@@ -260,7 +260,6 @@ namespace TextRPG_by_10th
                         if (targetMonster != null)
                         {
                             player.AtkSkill(selecetSkill - 1, targetMonster);
-                            player.EndTurn();
                             AudioManager.Instance.PlaySFX("skill");
                             //상태이상 테스트를 위해 임시로 사용
                             //ApplyDebuff(player, targetMonster, DebuffType.FROST);
