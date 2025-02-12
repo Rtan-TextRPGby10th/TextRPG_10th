@@ -1,4 +1,6 @@
-﻿using System;
+
+
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -52,7 +54,9 @@ namespace TextRPG_by_10th
             //전투할 몬스터 배열이 비어있을 경우 몬스터를 소환
             if (monsters == null)
             {
-                SummonMonsters();
+
+                SummonMonsters(SelectedStage());
+
             }
 
             //전투가 끝날 때까지 아래 과정을 반복
@@ -88,7 +92,9 @@ namespace TextRPG_by_10th
         }
 
         //몬스터 소환
-        void SummonMonsters()
+
+        void SummonMonsters(int stage)
+
         {
             //1~4마리의 몬스터가 소환됨
             int monsterCount = random.Next(1, 5);
@@ -97,11 +103,45 @@ namespace TextRPG_by_10th
             //해당 배열에 Monster 클래스에서 몬스터를 불러와 소환
             for (int i = 0; i < monsterCount; i++)
             {
-                int monsterIndex = random.Next(0, 2);
+                // 선택된 스테이지에 해당하는 몬스터 리스트를 가져옴
+                List<MonsterType> stageMonsterTypes = Monster.StageMonsters[stage];
+                // 해당 스테이지의 랜덤한 몬스터 인덱스 선택
+                int monsterIndex = random.Next(0, stageMonsterTypes.Count);
 
-                monsters[i] = Monster.LoadMonster[monsterIndex]();
+                MonsterType selectedType = stageMonsterTypes[monsterIndex];
+
+                monsters[i] = Monster.LoadMonster[stage - 1](selectedType);
             }
         }
+
+        int SelectedStage()
+        {
+            int stage;
+            string[] stageStr = new string[] { "술", "던전", "심해", "설산", "화산" };
+            Console.WriteLine("스테이지를 선택해주세요");
+            Console.WriteLine("스테이지 1 : 숲");
+            Console.WriteLine("스테이지 2 : 던전");
+            Console.WriteLine("스테이지 3 : 심해");
+            Console.WriteLine("스테이지 4 : 설산");
+            Console.WriteLine("스테이지 5 : 화산");
+
+            while (true)
+            {
+                string input = Console.ReadLine();
+
+                if (int.TryParse(input, out stage) && stage >= 1 && stage <= 5)
+                {
+                    return stage;
+                }
+                else
+                {
+                    Console.WriteLine("잘못된 입력입니다. 1부터 5까지의 스테이지 번호를 입력해주세요.");
+                }
+            }
+
+        }
+
+
         //전투 상황을 보여줌
         void ShowBattleInfo()
         {
@@ -170,6 +210,7 @@ namespace TextRPG_by_10th
                         }
                         //타겟이 PARALYZE 상태인 경우 추가 데미지 부여
                         ParalyzeDamage(targetMonster);
+
                     }
                     break;
 
@@ -201,7 +242,10 @@ namespace TextRPG_by_10th
                     break;
             }
 
+
+
             DeathCount();
+
         }
         //몬스터 턴에서 이루어지는 과정
         void MonsterTurn()
@@ -262,7 +306,6 @@ namespace TextRPG_by_10th
         void Attack(Creature attacker, Creature target)
         {
             ShowBattleInfo();
-
             Console.WriteLine($"{attacker.Name}의 {target.Name} 공격");
 
             Random random = new Random();
@@ -271,8 +314,8 @@ namespace TextRPG_by_10th
             // 공격자의 명중률과 대상의 회피율을 비교하여 공격 성공 여부 결정
             if (hitRoll < attacker.HitChance - target.DodgeChance)
             {
+                float damage = CalculateDamage(attacker, target);
                 float previousHp = target.Health;
-                float damage = MathF.Max(0, attacker.AttackPower - target.Defense);
                 target.TakeDamage(damage);
 
                 Console.WriteLine($"명중! {attacker.Name}이(가) {target.Name}에게 {damage} 데미지를 입혔다.");
@@ -282,18 +325,39 @@ namespace TextRPG_by_10th
             {
                 Console.WriteLine($"{attacker.Name}의 공격이 빗나갔다!");
             }
-            
+
             Thread.Sleep(1000);
         }
+        float CalculateDamage(Creature attacker, Creature target)
+        {
+            Random random = new Random();
+            float critRoll = (float)random.NextDouble();  // 0.0 ~ 1.0 사이 랜덤 값
+            bool isCritical = critRoll < attacker.CritChance;
+
+            float baseDamage = MathF.Max(0, attacker.AttackPower - target.Defense);
+            float finalDamage = isCritical ? baseDamage * 2.0f : baseDamage; // 크리티컬 시 2배 피해
+
+            if (isCritical)
+            {
+                Console.WriteLine($"크리티컬 히트! {attacker.Name}이(가) {"치명적인 일격".ColorText(ConsoleColor.Red)}을 가했다!");
+            }
+
+            return finalDamage;
+        }
+
+
         //몬스터 처치 검사
         void DeathCount()
+
         {
             //소환된 몬스터 상태를 확인
             foreach (Monster monster in monsters)
             {
                 if (monster.isDie)
                 {
+
                     player.AddGold(monster.GetClrearGold(player));
+
                     deadCount++;
                 }
             }
@@ -307,14 +371,16 @@ namespace TextRPG_by_10th
             deadCount = 0;
         }
 
+
         void DeathCheck(Monster targetMonster)
         {
-            if(targetMonster.isDie)
+            if (targetMonster.isDie)
             {
                 player.AddGold(targetMonster.GetClrearGold(player));
                 deadCount++;
             }
         }
+
 
         void DebuffCheck()
         {
@@ -364,7 +430,9 @@ namespace TextRPG_by_10th
             }
             endDebuffs.Clear();
 
+
             DeathCount();
+
         }
 
         //입력을 다르게 하여 상태이상을 적용할 수 있음
@@ -448,7 +516,7 @@ namespace TextRPG_by_10th
             Console.WriteLine($"{target.Name}에 {buffType.ToString()} 을 적용했다.");
 
         }
-        
+
         void BuffCheck()
         {
             //전투가 종료된 상황에서는 확인하지 않음
@@ -496,38 +564,39 @@ namespace TextRPG_by_10th
             }
         }
 
-    }
-    //상태이상 정보를 저장하는 형식
-    class DebuffData : Battle
-    {
-        public Creature statusSource;
-        public Creature statusTarget;
-        public DebuffType debuff;
-        public int turns;
 
-        public DebuffData(Creature statusSource, Creature statusTarget, DebuffType debuff, int turns)
+        //상태이상 정보를 저장하는 형식
+        class DebuffData : Battle
         {
-            this.statusSource = statusSource;
-            this.statusTarget = statusTarget;
-            this.debuff = debuff;
-            this.turns = turns;
+            public Creature statusSource;
+            public Creature statusTarget;
+            public DebuffType debuff;
+            public int turns;
 
-            statusTarget.debuffType = debuff;
+            public DebuffData(Creature statusSource, Creature statusTarget, DebuffType debuff, int turns)
+            {
+                this.statusSource = statusSource;
+                this.statusTarget = statusTarget;
+                this.debuff = debuff;
+                this.turns = turns;
+
+                statusTarget.debuffType = debuff;
+            }
+        }
+
+        class BuffData : Battle
+        {
+            public Creature statusTarget;
+            public BuffType buff;
+            public int turns;
+
+            public BuffData(Creature statusTarget, BuffType buff, int turns)
+            {
+                this.statusTarget = statusTarget;
+                this.buff = buff;
+                this.turns = turns;
+            }
         }
     }
-
-    class BuffData : Battle
-    {
-        public Creature statusTarget;
-        public BuffType buff;
-        public int turns;
-
-        public BuffData(Creature statusTarget, BuffType buff, int turns)
-        {
-            this.statusTarget = statusTarget;
-            this.buff = buff;
-            this.turns = turns;
-        }
-    }
-
 }
+

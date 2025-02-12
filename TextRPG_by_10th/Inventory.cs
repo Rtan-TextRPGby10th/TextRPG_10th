@@ -9,13 +9,9 @@ using System.Xml.Linq;
 
 namespace TextRPG_by_10th
 {
-
+    
     public class Inventory
     {
-
-
-        private static bool isInitialized = false;           //최초 실행시 인벤토리에 기본아이템 추가.
-
         static List<Equipment> equipmentList = new List<Equipment>();
         static List<ConsumableItem> consumableList = new List<ConsumableItem>();
         static List<MiscItem> miscList = new List<MiscItem>();
@@ -189,35 +185,42 @@ namespace TextRPG_by_10th
             }
         }
 
-
-        public void ShowInventory()                                         //상태 보기(스테이터스+인벤토리+장착관리 통합) 씬 
+        public void GiveStartpack()                 //초기장비 지급
         {
-            player = SceneManager.instance.player;  // ✅ SceneManager에서 player 가져오기
-            
-            if (!isInitialized)
-            {
-                switch (player.playerJob)
-                {
+            player = SceneManager.instance.player;
+                    switch (player.playerJob)
+                     {
                     case Job.전사:
-                        AddInventory(101, 1); // 전사용 무기
+                        AddInventory(101, 1);        // 전사용 무기
                         break;
                     case Job.도적:
-                        AddInventory(102, 1); // 도적용 무기
+                        AddInventory(111, 1);        // 도적용 무기
                         break;
                     case Job.궁수:
-                        AddInventory(103, 1); // 궁수용 무기
+                        AddInventory(121, 1);        // 궁수용 무기
                         break;
                     default:
                         Console.WriteLine("잘못된 직업입니다.");
                         break;
                 }
+                AddInventory(1001, 3);              // 힐링포션 3개
+                AddInventory(1004, 3);              // 맹독포션 3개
 
-                AddInventory(1001, 3);
-                AddInventory(1004, 3);
-                AddInventory(10001, 3);
-                AddInventory(10002, 3);
-                isInitialized = true; // 기본아이템은 최초 1회만 지급
-            }
+            // 테스트 데이터
+            AddInventory(10001, 30);
+            AddInventory(10002, 20);
+            AddInventory(10004, 20);
+            AddInventory(10008, 20);
+            AddInventory(10010, 20);
+
+                player.Gold = 1500;
+        }
+
+        public void ShowInventory()                                         //상태 보기(스테이터스+인벤토리+장착관리 통합) 씬 
+        {
+            player = SceneManager.instance.player;  // ✅ SceneManager에서 player 가져오기
+            
+            
 
             while (true)
             {
@@ -229,6 +232,9 @@ namespace TextRPG_by_10th
                 {
                     Console.WriteLine($"{slot.Key} : {slot.Value}");
                 }
+
+                Console.WriteLine();
+                Console.WriteLine();
                 Console.WriteLine();
                 Console.WriteLine();
                 Console.WriteLine("\n<소모품>\n");                        //소모품 출력
@@ -243,7 +249,7 @@ namespace TextRPG_by_10th
                     Console.WriteLine("  -");
                 else
                     foreach (var item in miscList)
-                        Console.WriteLine($"        {item.Name} {item.Description} | {item.Amount}개");
+                        Console.WriteLine($"{item.Name} | {item.Description} | {item.Amount}개");
 
                 Console.WriteLine("\n<장비>\n");
                 for (int i = 0; i < equipmentList.Count; i++)           //장비 출력
@@ -291,8 +297,8 @@ namespace TextRPG_by_10th
                 equippedSlots[equipSlot] = "-"; // 슬롯 초기화
 
                 // 🔹 공격력 & 방어력 감소
-                player.AttackPower -= plusAtk;
-                player.Defense -= plusDef;
+                player.AttackPower -= item.Atk;
+                player.Defense -= item.Def;
                 plusAtk -= item.Atk;
                 plusDef -= item.Def;
             }
@@ -312,8 +318,8 @@ namespace TextRPG_by_10th
                             equippedSlots[key] = "-";
 
                             // 🔹 기존 장비의 공격력 & 방어력 제거
-                            player.AttackPower -= plusAtk;
-                            player.Defense -= plusDef;
+                            player.AttackPower -= unequippedItem.Atk;
+                            player.Defense -= unequippedItem.Def;
                             plusAtk -= unequippedItem.Atk;
                             plusDef -= unequippedItem.Def;
                             
@@ -326,6 +332,8 @@ namespace TextRPG_by_10th
                 equippedSlots[equipSlot] = item.Name;
 
                 // 🔹 공격력 & 방어력 추가
+                player.AttackPower += item.Atk;
+                player.Defense += item.Def;
                 plusAtk += item.Atk;
                 plusDef += item.Def;
             }
@@ -336,9 +344,6 @@ namespace TextRPG_by_10th
 
         public void Status()
         {
-            player.AttackPower += plusAtk;
-            player.Defense += plusDef;
-
             Console.SetCursorPosition(30, 3);
             Console.WriteLine($"Lv : {player.Lv}");
             Console.SetCursorPosition(30, 4);
@@ -367,6 +372,8 @@ namespace TextRPG_by_10th
             Console.SetCursorPosition(30, 9);
             Console.WriteLine($"회피율 : {player.DodgeChance * 100} %");
             Console.SetCursorPosition(30, 10);
+            Console.WriteLine($"치명타율 : {player.CritChance * 100} %");
+            Console.SetCursorPosition(30, 11);
             Console.WriteLine($"Gold : {player.Gold}");
             Console.WriteLine("");
         }
@@ -397,10 +404,6 @@ namespace TextRPG_by_10th
             // 무기를 착용하지 않았을 경우 (-1, -1) 반환
             return (-1, -1);
         }
-
-
-        // AddInventory(10001, 1);  인벤에 전리품 추가하기(도감id, 수량);    슬라임 점액 1개가 인벤에 추가됨
-
 
         public string UseConsumableScene()          //전투중 소모품 사용하기 (힐링포션선택시 사용. case2 맹독포션선택시 "poison" 반환.  case3 나가기선택시 "" 반환.)
         {
@@ -462,6 +465,56 @@ namespace TextRPG_by_10th
                     Console.WriteLine("잘못된 입력입니다. 다시 입력하세요.");
                 }
             }
-        }       
+        }
+
+
+        public bool IsEquipped(int itemId)
+        {
+            Equipment item = equipmentList.Find(e => e.Id == itemId);
+
+            if (item != null && equippedItems.ContainsKey(item.Name))
+            {
+                return equippedItems[item.Name];  // 해당 장비가 장착되어 있으면 true, 아니면 false 반환
+            }
+
+            return false;  // 장비가 존재하지 않으면 false
+        }       //강화 전, 해당 아이템이 장착 중이었는지 체크     # QuestManager 
+
+        public void UnequipItemById(int itemId)     //기존 무기가 장착 중이면 해제      # QuestManager
+        {
+            // 인벤토리에서 해당 ID를 가진 장비 찾기
+            Equipment item = equipmentList.Find(e => e.Id == itemId);
+
+            if (item != null && equippedItems.ContainsKey(item.Name) && equippedItems[item.Name])
+            {
+                // 🔹 장착 해제
+                equippedItems[item.Name] = false;
+                equippedSlots[item.Slot] = "-";  // 해당 슬롯 초기화
+
+                // 🔹 공격력 & 방어력 원상복구
+                player.AttackPower -= item.Atk;
+                player.Defense -= item.Def;
+                plusAtk -= item.Atk;
+                plusDef -= item.Def;
+
+                Console.WriteLine($"{item.Name} 장착 해제됨!");
+            }
+        }
+
+
+        /*  //만약 기존 무기가 장착 중이었으면, 새로운 무기도 자동 장착 # QuestManager
+          if (wasEquipped)
+          {
+          List<Equipment> updatedEquipments = inven.GetEquipmentList();
+          int newEquipIndex = updatedEquipments.FindIndex(e => e.Id == q.resultEquip.Id);
+
+          if (newEquipIndex != -1)
+              {
+              inven.EquipItem(newEquipIndex);
+              Console.WriteLine($"{q.resultEquip.Name} 자동 장착 완료!");
+              }
+           } 
+         */
+
     }
 }
