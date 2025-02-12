@@ -55,6 +55,7 @@ namespace TextRPG_by_10th
                     break;
                 case Scene.Town:
                     //마을에서 필요한 기능 실행
+                    AudioManager.Instance.ChangeScene("Town");  // 마을 BGM 유지
                     TownScene();
                     break;
                 case Scene.Shop:
@@ -67,6 +68,7 @@ namespace TextRPG_by_10th
                     break;
                 case Scene.Dungeon:
                     //던전 입장 및 몬스터와의 전투
+                    AudioManager.Instance.ChangeScene("Dungeon");  // 던전 BGM으로 변경
                     DungeonScene();
                     break;
                 case Scene.Quest:

@@ -139,6 +139,7 @@ namespace TextRPG_by_10th
                             inventory.AddInventory(equipment.Id, 1);
                             shopEquipments.Remove(equipment); // ✅ 장비는 매진
                             Console.WriteLine($"{equipment.Name} 구매완료!");
+                            AudioManager.Instance.PlaySFX("money");
                         }
                         else Console.WriteLine("골드가 부족합니다.");
                     }
@@ -155,6 +156,7 @@ namespace TextRPG_by_10th
 
                                 inventory.AddInventory(consumable.Id, amount);
                                 Console.WriteLine($"{consumable.Name} {amount}개 구매완료!");
+                                AudioManager.Instance.PlaySFX("money");
                                 // ✅ 소모품은 목록에서 삭제하지 않음
                             }
                             else Console.WriteLine("골드가 부족합니다.");
@@ -168,6 +170,7 @@ namespace TextRPG_by_10th
                             inventory.AddInventory(misc.Id, 1);
                             shopMiscItems.Remove(misc); // ✅ 기타 아이템은 매진
                             Console.WriteLine($"{misc.Name} 구매완료!");
+                            AudioManager.Instance.PlaySFX("money");
                         }
                         else Console.WriteLine("골드가 부족합니다.");
                     }
@@ -254,6 +257,7 @@ namespace TextRPG_by_10th
                         player.Gold += equipment.Price / 2;
                         inventory.RemoveInventory(equipment.Id, 1);
                         Console.WriteLine($"{equipment.Name} 판매완료! +{equipment.Price / 2}G");
+                        AudioManager.Instance.PlaySFX("money");
                     }
                     // 🔹 소모품 판매 처리
                     else if (sellableItems[itemIndex] is ConsumableItem consumable)
@@ -265,6 +269,7 @@ namespace TextRPG_by_10th
                             player.Gold += (consumable.Price / 2) * amount;
                             inventory.RemoveInventory(consumable.Id, amount);
                             Console.WriteLine($"{consumable.Name} {amount}개 판매완료! +{(consumable.Price / 2) * amount}G");
+                            AudioManager.Instance.PlaySFX("money");
                         }
                         else
                         {
@@ -281,6 +286,7 @@ namespace TextRPG_by_10th
                             player.Gold += (misc.Price / 2) * amount;
                             inventory.RemoveInventory(misc.Id, amount);
                             Console.WriteLine($"{misc.Name} {amount}개 판매완료! +{(misc.Price / 2) * amount}G");
+                            AudioManager.Instance.PlaySFX("money");
                         }
                         else
                         {
