@@ -64,6 +64,10 @@ namespace TextRPG_by_10th
             }
         }
 
+        public void SetPlayer(Player p)
+        {
+            player = p;
+        }
 
         public void AddInventory(int id, int amount)            //인벤토리에 아이템 추가할시, id에따라 종류별 리스트로 분류
         {
@@ -186,6 +190,7 @@ namespace TextRPG_by_10th
         }
 
         public void GiveStartpack()                 //초기장비 지급
+
         {
             player = SceneManager.instance.player;
                     switch (player.playerJob)
@@ -217,12 +222,12 @@ namespace TextRPG_by_10th
             AddInventory(10008, 20);
             AddInventory(10010, 20);
 
-                player.Gold = 1500;
+            player.Gold = 1500;
         }
 
         public void ShowInventory()                                         //상태 보기(스테이터스+인벤토리+장착관리 통합) 씬 
         {
-            player = SceneManager.instance.player;  // ✅ SceneManager에서 player 가져오기
+             // ✅ SceneManager에서 player 가져오기
             
             
 
@@ -374,11 +379,11 @@ namespace TextRPG_by_10th
             Console.WriteLine($"방어력 : {player.Defense} (+{plusDef})");
 
             Console.SetCursorPosition(30, 8);
-            Console.WriteLine($"명중률 : {player.HitChance * 100} %");
+            Console.WriteLine($"명중률 : {(int)(player.HitChance * 100)} %");
             Console.SetCursorPosition(30, 9);
-            Console.WriteLine($"회피율 : {player.DodgeChance * 100} %");
+            Console.WriteLine($"회피율 : {(int)(player.DodgeChance * 100)} %");
             Console.SetCursorPosition(30, 10);
-            Console.WriteLine($"치명타율 : {player.CritChance * 100} %");
+            Console.WriteLine($"치명타율 : {(int)(player.CritChance * 100)} %");
             Console.SetCursorPosition(30, 11);
             Console.WriteLine($"Gold : {player.Gold}");
             Console.WriteLine("");
@@ -511,7 +516,6 @@ namespace TextRPG_by_10th
             }
         }
 
-
         public void AutoEquip(Equipment item)
         { 
             int newEquipIndex = GetEquipmentList().FindIndex(e => e.Id == item.Id);
@@ -523,7 +527,38 @@ namespace TextRPG_by_10th
             }
             
         }
-         
 
+        public void SetEquipList(List<Equipment> list)
+        {
+            equipmentList = list;
+        }
+        public void SetConsumeList(List<ConsumableItem> list)
+        {
+            consumableList = list;
+        }
+        public void SetMiscList(List<MiscItem> list)
+        {
+            miscList = list;
+        }
+        public Dictionary<string,bool> GetEquippedDic()
+        {
+            return equippedItems;
+        }
+        public void SetEquippedDic(Dictionary<string, bool> dic)
+        {
+            equippedItems = dic;
+
+
+            foreach (var item in dic)
+            {
+                if (item.Value)
+                {
+                    int i = equipmentList.FindIndex(x => x.Name == item.Key);
+                    equippedItems[item.Key] = !item.Value;
+                    EquipItem(i);
+                } 
+            }
+            
+        }
     }
 }

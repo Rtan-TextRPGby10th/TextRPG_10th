@@ -18,6 +18,11 @@ namespace TextRPG_by_10th
         // 퀘스트 -> 장비 업그레이드로 변경
         public void ShowQuestList()
         {
+            inven = SceneManager.instance.inventory;
+            player = SceneManager.instance.player;
+            RefreshQuest();
+
+
             // 진행중인 모든 퀘스트 나열하기
             Console.Clear();
             Console.WriteLine("===== 장비 업그레이드 =====");
@@ -187,9 +192,6 @@ namespace TextRPG_by_10th
         public void SetBasicQuest()
         {
             //SetOriginQuest();
-            inven = SceneManager.instance.inventory;
-            player = SceneManager.instance.player;
-            RefreshQuest();
         }
 
         private bool CheckQuestClear(Quest q)
@@ -203,7 +205,7 @@ namespace TextRPG_by_10th
             {
                 bool b = inven.GetMiscList().Where(x => x.Id == item.Item1).Select(y => y.Amount >= item.Item2).FirstOrDefault();
 
-                b = b && inven.player.Gold > q.gold;
+                b = b && player.Gold > q.gold;
 
                 if (b)
                 {
