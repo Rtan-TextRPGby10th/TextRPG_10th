@@ -18,6 +18,8 @@ namespace TextRPG_by_10th
 
         public Player player { get; private set; }  // 수정 전 - Player player 
 
+        public QuestManager questManager = new QuestManager();
+
         SceneManager()
         {
             instance = this;
@@ -37,6 +39,8 @@ namespace TextRPG_by_10th
             Inventory,
             //던전-몬스터와의 전투
             Dungeon,
+            // 
+            Quest
         }
 
         public Scene currentScene = Scene.Start;
@@ -65,6 +69,10 @@ namespace TextRPG_by_10th
                     //던전 입장 및 몬스터와의 전투
                     DungeonScene();
                     break;
+                case Scene.Quest:
+                    //현재 진행중인 퀘스트 확인
+                    QuestScene();
+                    break;
             }
         }
 
@@ -83,6 +91,7 @@ namespace TextRPG_by_10th
                 Console.WriteLine("2. 상태 보기");
                 Console.WriteLine("3. 상점");
                 Console.WriteLine("4. 던전");
+                Console.WriteLine("5. 장비 업그레이드");
                 Console.WriteLine("0. 나가기");
                 Console.Write(">> ");
                 string input = Console.ReadLine();
@@ -104,6 +113,10 @@ namespace TextRPG_by_10th
                         break;
                     case "4":
                         currentScene = Scene.Dungeon;
+                        break;                    
+                    case "5":
+                        Console.WriteLine("장비 업그레이드");
+                        currentScene = Scene.Quest;
                         break;
                     case "0":
                         Console.WriteLine("게임을 종료합니다.");
@@ -129,6 +142,7 @@ namespace TextRPG_by_10th
         void CreatPlayer()
         {
             Console.Clear();
+            Console.SetWindowSize(120, 40);         //인벤토리 짤려서 창 크기 변경
             Console.Write("이름을 입력하세요 : ");
             string playerName = Console.ReadLine();
 
@@ -177,6 +191,13 @@ namespace TextRPG_by_10th
         void DungeonScene()
         {
             battle.BattleProcess(player, inventory);
+        }
+        void QuestScene()
+        {
+            // 퀘스트 테스트용 코드
+            questManager.SetBasicQuest();
+
+            questManager.ShowQuestList();
         }
     }
 }

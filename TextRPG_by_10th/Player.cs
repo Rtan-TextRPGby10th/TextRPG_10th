@@ -28,8 +28,8 @@ namespace TextRPG_by_10th
         public float addItemHealth;
 
         // 캐릭터 생성자, 크리처 생성자를 가져옴
-        public Player(string name, float health, float maxHealth, float attackPower, float defense,  int gold, int lv, Job job, float hitChance, float dodgeChance) 
-                        : base(name, health, attackPower, defense, lv, hitChance, dodgeChance)
+        public Player(string name, float health, float maxHealth, float attackPower, float defense,  int gold, int lv, Job job, float hitChance, float dodgeChance, float critChance) 
+                        : base(name, health, attackPower, defense, lv, hitChance, dodgeChance, critChance)
         {
             Gold = gold;
             playerJob = job;
@@ -101,7 +101,7 @@ namespace TextRPG_by_10th
     public class Warrior : Player 
     {
         public Warrior(string name)
-                        : base(name, 100.0f, 100.0f, 10.0f, 20.0f, 0, 1, Job.전사, 0.9f, 0.05f) // 명중 90%, 회피 5%
+                        : base(name, 100.0f, 100.0f, 10.0f, 20.0f, 0, 1, Job.전사, 0.9f, 0.05f, 0.2f) // 명중 90%, 회피 5% 치명타율 20%
         {
 
         }
@@ -109,7 +109,7 @@ namespace TextRPG_by_10th
     public class Assassin : Player
     {
         public Assassin(string name)
-                        : base(name, 75.0f, 75.0f, 15.0f, 15.0f, 0, 1, Job.도적, 0.85f, 0.2f) // 명중 85%, 회피 20%
+                        : base(name, 75.0f, 75.0f, 15.0f, 15.0f, 0, 1, Job.도적, 0.85f, 0.2f, 0.25f) // 명중 85%, 회피 20% 치명타율 25%
         {
 
         }
@@ -117,7 +117,7 @@ namespace TextRPG_by_10th
     public class Archer : Player
     {
         public Archer(string name)
-                        : base(name, 50.0f, 50.0f, 20.0f, 10.0f, 0, 1, Job.궁수, 0.8f, 0.1f) // 명중 80%, 회피 10%
+                        : base(name, 50.0f, 50.0f, 20.0f, 10.0f, 0, 1, Job.궁수, 0.8f, 0.1f, 0.3f) // 명중 80%, 회피 10% 치명타율 30%
         {
 
         }

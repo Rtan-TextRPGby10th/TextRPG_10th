@@ -106,7 +106,8 @@ namespace TextRPG_by_10th
                 // 선택된 스테이지에 해당하는 몬스터 리스트를 가져옴
                 List<MonsterType> stageMonsterTypes = Monster.StageMonsters[stage];
                 // 해당 스테이지의 랜덤한 몬스터 인덱스 선택
-                int monsterIndex = random.Next(1, stageMonsterTypes.Count);
+
+                int monsterIndex = random.Next(0, stageMonsterTypes.Count);
 
                 MonsterType selectedType = stageMonsterTypes[monsterIndex];
 
@@ -213,7 +214,6 @@ namespace TextRPG_by_10th
                         //타겟이 PARALYZE 상태인 경우 추가 데미지 부여
                         ParalyzeDamage(targetMonster);
 
-
                     }
                     break;
 
@@ -309,7 +309,6 @@ namespace TextRPG_by_10th
         void Attack(Creature attacker, Creature target)
         {
             ShowBattleInfo();
-
             Console.WriteLine($"{attacker.Name}의 {target.Name} 공격");
 
             Random random = new Random();
@@ -318,8 +317,8 @@ namespace TextRPG_by_10th
             // 공격자의 명중률과 대상의 회피율을 비교하여 공격 성공 여부 결정
             if (hitRoll < attacker.HitChance - target.DodgeChance)
             {
+                float damage = CalculateDamage(attacker, target);
                 float previousHp = target.Health;
-                float damage = MathF.Max(0, attacker.AttackPower - target.Defense);
                 target.TakeDamage(damage);
 
                 Console.WriteLine($"명중! {attacker.Name}이(가) {target.Name}에게 {damage} 데미지를 입혔다.");
@@ -332,8 +331,25 @@ namespace TextRPG_by_10th
 
             Thread.Sleep(1000);
         }
-        //몬스터 처치 검사
+        float CalculateDamage(Creature attacker, Creature target)
+        {
+            Random random = new Random();
+            float critRoll = (float)random.NextDouble();  // 0.0 ~ 1.0 사이 랜덤 값
+            bool isCritical = critRoll < attacker.CritChance;
 
+            float baseDamage = MathF.Max(0, attacker.AttackPower - target.Defense);
+            float finalDamage = isCritical ? baseDamage * 2.0f : baseDamage; // 크리티컬 시 2배 피해
+
+            if (isCritical)
+            {
+                Console.WriteLine($"크리티컬 히트! {attacker.Name}이(가) {"치명적인 일격".ColorText(ConsoleColor.Red)}을 가했다!");
+            }
+
+            return finalDamage;
+        }
+
+
+        //몬스터 처치 검사
         void DeathCount()
 
         {

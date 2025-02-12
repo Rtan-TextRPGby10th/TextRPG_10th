@@ -16,10 +16,13 @@ namespace TextRPG_by_10th
         public int Lv { get; set; } // 레벨
         public float HitChance { get; set; } // 명중률 (0~1)
         public float DodgeChance { get; set; } // 회피율 (0~1)
+
+        public float CritChance { get; set; } // 치명타율 (0~1)
+
         public bool isDie = false; // 사망 확인
-         // 크리처 생성자
+
         public Battle.DebuffType debuffType { get; set; } = Battle.DebuffType.NONE;
-        public Creature(string name, float health, float attackPower, float defense, int lv, float hitChance = 0.8f, float dodgeChance = 0.1f)
+        public Creature(string name, float health, float attackPower, float defense, int lv, float hitChance = 0.8f, float dodgeChance = 0.1f, float critChance = 0.1f) // 크리처 생성자
         {
             Name = name;
             Health = health;
@@ -28,9 +31,10 @@ namespace TextRPG_by_10th
             Lv = lv;
             HitChance = hitChance;
             DodgeChance = dodgeChance;
+            CritChance = critChance;
         }
 
-        public virtual void TakeDamage(float damage) // 몬스터나 캐릭터의 공격력을 받아와 데미지를 받는 함수
+        public void TakeDamage(float damage) // 몬스터나 캐릭터의 공격력을 받아와 데미지를 받는 함수
         {
             Health -= damage;
             if (Health <= 0)
