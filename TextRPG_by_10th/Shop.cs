@@ -12,7 +12,7 @@ namespace TextRPG_by_10th
         private List<ConsumableItem> shopConsumables = new List<ConsumableItem>();
         private List<MiscItem> shopMiscItems = new List<MiscItem>();
         public Player player;
-        
+        private HashSet<int> addedItems = new HashSet<int>();  // 판매목록 중복 추가 방지용
 
 
         public Shop(Inventory playerInventory)
@@ -57,20 +57,14 @@ namespace TextRPG_by_10th
                 if (item != null) shopMiscItems.Add(item);
             }
         }
+        
 
-                                  
         public void OpenShop()                                      //상점 씬
         {
             player = SceneManager.instance.player;  // ✅ SceneManager에서 player 가져오기
-                                                    //상점에서 판매하는 아이템 추가하기. AddShopItem(도감의 id넘버, 수량)
-            if (player.Dungeon_Level >= 3)
-                AddShopItem(10050);         //철 주괴
-            if (player.Dungeon_Level >= 4)
-                AddShopItem(10051);         //미스릴 주괴
-            if (player.Dungeon_Level >= 5)
-                AddShopItem(10052);         //아다만티움 주괴
-                AddShopItem(1001);
-                AddShopItem(1004);
+            CheckAndAddShopItems();       
+            
+            
             
             
 
@@ -107,6 +101,28 @@ namespace TextRPG_by_10th
                     SceneManager.instance.GameScecne(SceneManager.Scene.Start);
                     return;
                 }
+            }
+        }
+
+        private void CheckAndAddShopItems()  // ✅ 플레이어 던전 레벨을 확인하고 상점 판매 아이템 추가
+        {
+            if (player.Dungeon_Level >= 1) AddItemIfNotExists(1001); // 힐링포션 (소)
+            if (player.Dungeon_Level >= 2) AddItemIfNotExists(1002); // 힐링포션 (중)
+            if (player.Dungeon_Level >= 3) AddItemIfNotExists(1003); // 힐링포션 (대)
+                                           AddItemIfNotExists(1004);  // 맹독포션
+
+            if (player.Dungeon_Level >= 3) AddItemIfNotExists(10050); // 철 주괴
+            if (player.Dungeon_Level >= 4) AddItemIfNotExists(10051); // 미스릴 주괴
+            if (player.Dungeon_Level >= 5) AddItemIfNotExists(10052); // 아다만티움 주괴
+        }
+
+
+        private void AddItemIfNotExists(int id)  // 중복 추가 방지
+        {
+            if (!addedItems.Contains(id))  // 추가되지 않은 아이템만 추가
+            {
+                AddShopItem(id);
+                addedItems.Add(id);
             }
         }
 

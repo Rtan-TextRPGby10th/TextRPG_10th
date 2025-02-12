@@ -251,6 +251,7 @@ namespace TextRPG_by_10th
                     //타겟이 선정되면 공격
                     if (targetMonster != null)
                     {
+                        AudioManager.Instance.PlaySFX("skill");
                         //상태이상 테스트를 위해 임시로 사용
                         //ApplyDebuff(player, targetMonster, DebuffType.FROST);
                         ApplyDebuff(player, targetMonster, DebuffType.PARALYZE);

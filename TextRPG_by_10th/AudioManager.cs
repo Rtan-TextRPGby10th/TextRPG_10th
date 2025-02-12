@@ -42,6 +42,7 @@ namespace TextRPG_by_10th
             { "money", "money.mp3" },
             { "poison_potion", "poison_potion.mp3" },
             { "skill", "skill.mp3" },
+            { "buff", "buff.mp3" },
             { "upgrade", "upgrade.mp3" },
             { "win", "win.mp3" }
 
