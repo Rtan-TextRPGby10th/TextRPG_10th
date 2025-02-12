@@ -691,7 +691,7 @@ namespace TextRPG_by_10th
                 }
                 else
                 {
-                    Console.WriteLine($"{buffData.statusTarget}의 {buffData.debuff.ToString()} 효과 종료");
+                    Console.WriteLine($"{buffData.statusTarget}의 {buffData.buff.ToString()} 효과 종료");
                     //상태이상 지속이 끝난 목록에 추가
                     endBuffs.Add(buffData);
                 }
