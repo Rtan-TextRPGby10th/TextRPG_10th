@@ -200,6 +200,7 @@ namespace TextRPG_by_10th
             inventory.GiveStartpack();                //초기장비 지급
 
             DataLoad.SaveAllData();
+            DataLoad.LoadShopData();
         }
 
         void ShopScene()
