@@ -25,7 +25,7 @@ namespace TextRPG_by_10th
         SceneManager()
         {
             instance = this;
-            shop = new Shop(inventory);
+            shop = new Shop(inventory); 
         }
 
         public enum Scene
@@ -57,22 +57,28 @@ namespace TextRPG_by_10th
                     break;
                 case Scene.Town:
                     //마을에서 필요한 기능 실행
+                    AudioManager.Instance.ChangeScene("Town");  // 마을 BGM 유지
                     TownScene();
                     break;
                 case Scene.Shop:
                     //상점 기능 실행
+                    AudioManager.Instance.PlaySFX("click");
                     ShopScene();
                     break;
                 case Scene.Inventory:
                     //인벤토리 확인
+                    AudioManager.Instance.PlaySFX("click");
                     InventoryScene();
                     break;
                 case Scene.Dungeon:
                     //던전 입장 및 몬스터와의 전투
+                    AudioManager.Instance.PlaySFX("click");
+                    AudioManager.Instance.ChangeScene("Dungeon");  // 던전 BGM으로 변경
                     DungeonScene();
                     break;
                 case Scene.Quest:
                     //현재 진행중인 퀘스트 확인
+                    AudioManager.Instance.PlaySFX("click");
                     QuestScene();
                     break;
             }
@@ -155,7 +161,7 @@ namespace TextRPG_by_10th
         void CreatPlayer()
         {
             Console.Clear();
-            Console.SetWindowSize(120, 40);         //인벤토리 짤려서 창 크기 변경
+            //Console.SetWindowSize(120, 40);         //인벤토리 짤려서 창 크기 변경
             Console.Write("이름을 입력하세요 : ");
             string playerName = Console.ReadLine();
 
@@ -166,7 +172,7 @@ namespace TextRPG_by_10th
 
             Console.Write(">> ");
             string input = Console.ReadLine();
-
+            AudioManager.Instance.PlaySFX("click");
             switch (input)
             {
                 case "1":

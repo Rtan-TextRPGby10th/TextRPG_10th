@@ -21,6 +21,16 @@ namespace TextRPG_by_10th
 
         public bool isDie = false; // 사망 확인
 
+        
+
+        public enum CreatureType
+        {
+            Player,
+            Monster
+        }
+
+        public CreatureType creatureType { get; set; }
+
         public Battle.DebuffType debuffType { get; set; } = Battle.DebuffType.NONE;
         public Creature(string name, float health, float attackPower, float defense, int lv, float hitChance = 0.8f, float dodgeChance = 0.1f, float critChance = 0.1f) // 크리처 생성자
         {
@@ -37,11 +47,12 @@ namespace TextRPG_by_10th
         public void TakeDamage(float damage) // 몬스터나 캐릭터의 공격력을 받아와 데미지를 받는 함수
         {
             Health -= damage;
+
             if (Health <= 0)
             {
                 Health = 0; // 체력의 최소값으로 강제 설정
                 isDie = true;
-                Console.WriteLine($"{Name} 사망하였습니다.");
+                Console.WriteLine($"{Name}이(가) 사망하였습니다.");
             } 
         }
 
@@ -51,7 +62,7 @@ namespace TextRPG_by_10th
             if(isDie)
             {
                 isDie = false;
-                Console.WriteLine($"{Name} 부활하였습니다.");
+                Console.WriteLine($"{Name}이(가) 부활하였습니다.");
 
                 if (Health > MaxHealth)
                 {

@@ -1,10 +1,12 @@
 
 
 
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -20,6 +22,7 @@ namespace TextRPG_by_10th
             FROST,
             PARALYZE
         }
+        //추가 효과 목록
         public enum BuffType
         {
             NONE,
@@ -40,6 +43,8 @@ namespace TextRPG_by_10th
         int deadCount = 0;
         //전투 종료 판단 변수
         bool battleEnd = false;
+        //현재 던전 레벨
+        int stageLevel = 0;
 
         //전체 전투 과정
         public void BattleProcess(Player player, Inventory inventory)
@@ -62,13 +67,16 @@ namespace TextRPG_by_10th
             //전투가 끝날 때까지 아래 과정을 반복
             while (!battleEnd)
             {
-                BuffCheck();
                 //플레이어 공격 차례
                 PlayerTurn();
                 //몬스터 공격 차례
                 MonsterTurn();
                 //상태이상효과 지속상태 확인
                 DebuffCheck();
+                //추가 효과 지속 상태 확인
+                BuffCheck();
+                //승리조건 확인
+                //VictoryCondition();
 
                 Thread.Sleep(1000);
             }
@@ -116,22 +124,39 @@ namespace TextRPG_by_10th
 
         int SelectedStage()
         {
+            Console.Clear();
             int stage;
             string[] stageStr = new string[] { "술", "던전", "심해", "설산", "화산" };
             Console.WriteLine("스테이지를 선택해주세요");
-            Console.WriteLine("스테이지 1 : 숲");
-            Console.WriteLine("스테이지 2 : 던전");
-            Console.WriteLine("스테이지 3 : 심해");
-            Console.WriteLine("스테이지 4 : 설산");
-            Console.WriteLine("스테이지 5 : 화산");
+            string[] stageNames =
+            { player.Dungeon_Level >= 1 ? "스테이지 1 : 숲" : "스테이지 1 : 숲".ColorText(ConsoleColor.Red),
+              player.Dungeon_Level >= 2 ? "스테이지 2 : 던전" : "스테이지 2 : 던전".ColorText(ConsoleColor.Red),
+              player.Dungeon_Level >= 3 ? "스테이지 3 : 심해" : "스테이지 3 : 심해".ColorText(ConsoleColor.Red),
+              player.Dungeon_Level >= 4 ? "스테이지 4 : 설산" : "스테이지 4 : 설산".ColorText(ConsoleColor.Red),
+              player.Dungeon_Level >= 4 ? "스테이지 5 : 화산" : "스테이지 5 : 화산".ColorText(ConsoleColor.Red),
+            };
+            foreach (string stageName in stageNames)
+            {
+                Console.WriteLine(stageName);
+            }
 
             while (true)
             {
                 string input = Console.ReadLine();
-
+                AudioManager.Instance.PlaySFX("click");
                 if (int.TryParse(input, out stage) && stage >= 1 && stage <= 5)
                 {
-                    return stage;
+                    //플레이어 던전 레벨에 맞지 않는 던전 입장 불가
+                    if(stage <= player.Dungeon_Level)
+                    {
+                        stageLevel = stage;
+                        return stage;
+                    }  
+                    else
+                    {
+                        Console.WriteLine("이 던전은 너무 어려워서 갈 수 없다.");
+                    }
+                        
                 }
                 else
                 {
@@ -140,7 +165,6 @@ namespace TextRPG_by_10th
             }
 
         }
-
 
         //전투 상황을 보여줌
         void ShowBattleInfo()
@@ -153,7 +177,7 @@ namespace TextRPG_by_10th
                 string monsterStatus = monsters[i].isDie ? "[Dead]" : $"HP {monsters[i].Health}";
                 Console.Write(monsterStatus);
                 //몬스터가 상태이상에 속해있을 경우 해당 상태이상을 표시
-                if (monsters[i].debuffType != DebuffType.NONE)
+                if (monsters[i].debuffType != DebuffType.NONE && !monsters[i].isDie)
                 {
                     Console.Write($" [{monsters[i].debuffType.ToString()}]");
                 }
@@ -178,6 +202,7 @@ namespace TextRPG_by_10th
             Console.WriteLine("3. 아이템 사용");
             Console.Write(">> ");
             string input = Console.ReadLine();
+            AudioManager.Instance.PlaySFX("click");
 
             switch (input)
             {
@@ -189,7 +214,10 @@ namespace TextRPG_by_10th
                     if (targetMonster != null)
                     {
                         //몬스터에게 일반공격
-                        Attack(player, targetMonster);
+                        bool hasHit = Attack(player, targetMonster);
+
+                        if (!hasHit)
+                            break;
 
                         //독 바름 상태일 경우 상대에게 독 적용
                         ToxicWeapon(player, targetMonster);
@@ -210,7 +238,8 @@ namespace TextRPG_by_10th
                         }
                         //타겟이 PARALYZE 상태인 경우 추가 데미지 부여
                         ParalyzeDamage(targetMonster);
-
+                        //공격한 몬스터의 사망 여부 체크
+                        DeathCheck(targetMonster);
                     }
                     break;
 
@@ -224,17 +253,18 @@ namespace TextRPG_by_10th
                     {
                         //상태이상 테스트를 위해 임시로 사용
                         //ApplyDebuff(player, targetMonster, DebuffType.FROST);
-                        //ApplyDebuff(player, targetMonster, DebuffType.PARALYZE);
-                        ApllyBuff(player, BuffType.TOXIC_WEAPON);
+                        ApplyDebuff(player, targetMonster, DebuffType.PARALYZE);
+                        //ApllyBuff(player, BuffType.TOXIC_WEAPON);
+                        DeathCheck(targetMonster);
                     }
                     break;
                 case "3":
                     //아이템 사용 창으로 넘어감
-                    ApllyBuff(player, BuffType.TOXIC_WEAPON);
-                    /*string useItem = inventory.UseConsumableScene();
+                    //ApllyBuff(player, BuffType.TOXIC_WEAPON);
+                    string useItem = inventory.UseConsumableScene();
                     if (useItem == "poison")
-                        ApllyBuff(player, BuffType.TOXIC_WEAPON);*/
-
+                        ApllyBuff(player, BuffType.TOXIC_WEAPON);
+                        
                     break;
                 default:
                     Console.WriteLine("잘못된 입력입니다. 다시 입력하세요.");
@@ -242,10 +272,7 @@ namespace TextRPG_by_10th
                     break;
             }
 
-
-
-            DeathCount();
-
+            VictoryCondition();
         }
         //몬스터 턴에서 이루어지는 과정
         void MonsterTurn()
@@ -261,6 +288,8 @@ namespace TextRPG_by_10th
                 //앞선 조건에 해당할 경우 공격 불가
                 else
                 {
+                    Console.Clear();
+                    ShowBattleInfo();
                     Console.WriteLine($"{monsters[i].Name}은(는) 공격할 수 없다.");
                     Thread.Sleep(1000);
                 }
@@ -268,6 +297,7 @@ namespace TextRPG_by_10th
                 //공격으로 플레이어가 사망하면 전투가 종료됨
                 if (player.isDie)
                 {
+                    AudioManager.Instance.PlaySFX("game_over");
                     battleEnd = true;
                     Console.WriteLine($"Lv.{player.Lv} {player.Name}이(가) 패배했습니다.");
                     break;
@@ -284,8 +314,11 @@ namespace TextRPG_by_10th
             Console.Write(">> ");
 
             string input = Console.ReadLine();
+            AudioManager.Instance.PlaySFX("click");
+            int int_input;
+            bool isRightInput = int.TryParse(input, out int_input);
 
-            if (int.Parse(input) <= monsters.Length)
+            if (int_input <= monsters.Length || !isRightInput)
             {
                 targetMonster = monsters[int.Parse(input) - 1];
 
@@ -299,14 +332,17 @@ namespace TextRPG_by_10th
             else
             {
                 Console.WriteLine("잘못된 입력입니다");
+                Thread.Sleep(500);
                 SelectTarget(ref targetMonster);
             }
         }
         //일반 공격 수행
-        void Attack(Creature attacker, Creature target)
+        bool Attack(Creature attacker, Creature target)
         {
             ShowBattleInfo();
             Console.WriteLine($"{attacker.Name}의 {target.Name} 공격");
+
+            bool hasHit = false;
 
             Random random = new Random();
             float hitRoll = (float)random.NextDouble();  // 0.0 ~ 1.0 사이 랜덤 값
@@ -318,16 +354,21 @@ namespace TextRPG_by_10th
                 float previousHp = target.Health;
                 target.TakeDamage(damage);
 
+                AudioManager.Instance.PlaySFX("hit");
                 Console.WriteLine($"명중! {attacker.Name}이(가) {target.Name}에게 {damage} 데미지를 입혔다.");
                 Console.WriteLine($"Lv.{target.Lv} {target.Name} | HP {previousHp} → {target.Health}");
+                hasHit = true;
             }
             else
             {
                 Console.WriteLine($"{attacker.Name}의 공격이 빗나갔다!");
+                hasHit = false;
             }
 
             Thread.Sleep(1000);
+            return hasHit;
         }
+        //공격 데미지 계산(치명타, 10% 오차 적용)
         float CalculateDamage(Creature attacker, Creature target)
         {
             Random random = new Random();
@@ -339,66 +380,71 @@ namespace TextRPG_by_10th
 
             if (isCritical)
             {
+                AudioManager.Instance.PlaySFX("critical");
                 Console.WriteLine($"크리티컬 히트! {attacker.Name}이(가) {"치명적인 일격".ColorText(ConsoleColor.Red)}을 가했다!");
             }
+
+            //10%의 데미지 오차 추가
+            float damageVariance = MathF.Ceiling(finalDamage * 0.1f);
+            finalDamage = (float)random.Next((int)(finalDamage - damageVariance), (int)(finalDamage + damageVariance));
 
             return finalDamage;
         }
 
-
-        //몬스터 처치 검사
-        void DeathCount()
-
-        {
-            //소환된 몬스터 상태를 확인
-            foreach (Monster monster in monsters)
-            {
-                if (monster.isDie)
-                {
-
-                    player.AddGold(monster.GetClrearGold(player));
-
-                    deadCount++;
-                }
-            }
-
-            if (deadCount == monsters.Count())
-            {
-                battleEnd = true;
-                Console.WriteLine($"Lv.{player.Lv} {player.Name}이(가) 승리했습니다.");
-            }
-
-            deadCount = 0;
-        }
-
-
+        //공격한 몬스터의 사망 확인
         void DeathCheck(Monster targetMonster)
         {
             if (targetMonster.isDie)
             {
-                player.AddGold(targetMonster.GetClrearGold(player));
+                AudioManager.Instance.PlaySFX("money");
+                player.AddGold(targetMonster.GetClrearGold());
                 deadCount++;
             }
+
+            VictoryCondition();
         }
 
+        //몬스터 처치 검사
+        void VictoryCondition()
+        {
+            if (deadCount == monsters.Count())
+            {
+                battleEnd = true;
+                AudioManager.Instance.PlaySFX("win");
+                Console.WriteLine($"Lv.{player.Lv} {player.Name}이(가) 승리했습니다.");
+                Console.WriteLine($"{deadCount}마리의 몬스터를 처치했다.");
+                //최대 클리어 던전 레벨과 현재 던전 레벨이 같으면 던전 레벨을 증가
+                if(player.Dungeon_Level == stageLevel && player.Dungeon_Level < 5)
+                {
+                    int previousDungeonLevel = player.Dungeon_Level;
+                    player.Dungeon_Level++;
+                    Console.WriteLine($"이제 더 어려운 던전을 이용할 수 있다 ({previousDungeonLevel} → {player.Dungeon_Level})");
+                }
+
+                deadCount = 0;
+                Thread.Sleep(1000);
+            }
+        }
 
         void DebuffCheck()
         {
             //전투가 종료된 상황에서는 확인하지 않음
             if (battleEnd)
                 return;
-
-            ShowBattleInfo();
             //상태이상인 객체가 없을 때는 확인하지 않음
             if (debuffDatas.Count == 0)
                 return;
+
+            ShowBattleInfo();
+            Console.WriteLine("<상태이상 정보>\n");
+
             //상태 이상 적용이 끝난 객체를 저장
             List<DebuffData> endDebuffs = new List<DebuffData>();
 
             foreach (DebuffData debuffData in debuffDatas)
             {
                 //아직 지속기간이 남았고, 대상이 살아있는 상태이상을 적용
-                if (debuffData.turns >= 0 && !debuffData.statusTarget.isDie)
+                if (debuffData.turns > 0 && !debuffData.statusTarget.isDie)
                 {
                     switch (debuffData.debuff)
                     {
@@ -413,6 +459,7 @@ namespace TextRPG_by_10th
                             break;
                     }
                     Console.WriteLine($"남은 지속 기간 : {debuffData.turns}\n");
+                    //효과를 적용하고 지속 기간을 1 감소
                     debuffData.turns--;
                 }
                 else
@@ -429,9 +476,6 @@ namespace TextRPG_by_10th
                 debuffDatas.Remove(endDebuff);
             }
             endDebuffs.Clear();
-
-
-            DeathCount();
 
         }
 
@@ -455,9 +499,15 @@ namespace TextRPG_by_10th
         {
             float previousHp = target.Health;
             Console.WriteLine("독 데미지 적용");
-            target.TakeDamage(MathF.Round(attacker.AttackPower * 0.1f));
+            target.TakeDamage(MathF.Ceiling(attacker.AttackPower * 0.1f));
             Console.WriteLine($"Lv.{target.Lv} {target.Name}");
             Console.WriteLine($"HP {previousHp}->{target.Health}");
+
+            //독 데미지에 의해 사망할 경우 사망 처리
+            if (target.creatureType == Creature.CreatureType.Monster)
+            {
+                DeathCheck((Monster)(target));
+            }
 
             Thread.Sleep(1000);
         }
@@ -493,14 +543,14 @@ namespace TextRPG_by_10th
             float previousHp = target.Health;
             Console.WriteLine("감전 데미지 적용");
             //감전 데미지 적용
-            target.TakeDamage(MathF.Round(attacker.AttackPower * 0.1f));
+            target.TakeDamage(MathF.Ceiling(attacker.AttackPower * 0.2f));
             Console.WriteLine($"Lv.{target.Lv} {target.Name}");
             Console.WriteLine($"HP {previousHp}->{target.Health}");
 
             Thread.Sleep(1000);
         }
 
-        //버프 효과를 적용
+        //부가 효과를 적용
         void ApllyBuff(Creature target, BuffType buffType)
         {
             foreach (BuffData findingData in buffDatas)
@@ -513,7 +563,7 @@ namespace TextRPG_by_10th
 
             }
             buffDatas.Add(new BuffData(target, buffType, 5));
-            Console.WriteLine($"{target.Name}에 {buffType.ToString()} 을 적용했다.");
+            Console.WriteLine($"{target.Name}에 {buffType.ToString()} 을(를) 적용했다.");
 
         }
 
@@ -524,8 +574,11 @@ namespace TextRPG_by_10th
                 return;
 
             //상태이상인 객체가 없을 때는 확인하지 않음
-            if (debuffDatas.Count == 0)
+            if (buffDatas.Count == 0)
                 return;
+
+            Console.WriteLine("\n<부가효과 정보>");
+
             //상태 이상 적용이 끝난 객체를 저장하는 배열
             List<BuffData> endBuffs = new List<BuffData>();
 
@@ -536,6 +589,7 @@ namespace TextRPG_by_10th
                 {
                     Console.WriteLine($"{buffData.statusTarget.Name}의 {buffData.buff.ToString()} 효과");
                     Console.WriteLine($"남은 지속 기간 : {buffData.turns}\n");
+                    //효과를 적용하고 지속 기간을 1 감소
                     buffData.turns--;
                 }
                 else

@@ -27,6 +27,8 @@ namespace TextRPG_by_10th
         public float addItemDefense;
         public float addItemHealth;
 
+        public int Dungeon_Level = 1; //클리어한 던전 레벨
+
         // 캐릭터 생성자, 크리처 생성자를 가져옴
         public Player(string name, float health, float maxHealth, float attackPower, float defense,  int gold, int lv, Job job, float hitChance, float dodgeChance, float critChance) 
                         : base(name, health, attackPower, defense, lv, hitChance, dodgeChance, critChance)
@@ -34,6 +36,7 @@ namespace TextRPG_by_10th
             Gold = gold;
             playerJob = job;
             MaxHealth = maxHealth;
+            creatureType = CreatureType.Player;
         }
 
         public void AddGold(int addGold) // Monster 클리어 골드를 가져와 캐릭터 보유 골드 증가 함수
@@ -42,6 +45,7 @@ namespace TextRPG_by_10th
             int previousGold = Gold;
             Gold += addGold;
             Console.WriteLine($"{addGold}G를 획득했다! ({previousGold}->{Gold})");
+            Thread.Sleep(1000);
         }
 
         // 몬스터의 레벨, 몬스터의 등장 숫자(등장 랜덤 값)를 가져와 경험치를 증가시키는 함수
@@ -61,6 +65,7 @@ namespace TextRPG_by_10th
         // 레벨업 증가 함수
         public void LevelUp() 
         {
+            AudioManager.Instance.PlaySFX("levelUp");
             Lv++;
             experience = 0;
 

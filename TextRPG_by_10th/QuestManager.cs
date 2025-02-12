@@ -37,7 +37,7 @@ namespace TextRPG_by_10th
             Console.WriteLine("0. 나가기");
             Console.Write(">> ");
             string input = Console.ReadLine();
-
+            AudioManager.Instance.PlaySFX("click");
             if (input == "1")                       // 업그레이드 화면으로 이동
             {
                 ShowUpgradeList();
@@ -98,6 +98,7 @@ namespace TextRPG_by_10th
                 Console.WriteLine("\n0. 나가기");
                 Console.Write(">> ");
                 string input = Console.ReadLine();
+                AudioManager.Instance.PlaySFX("click");
                 if (input == "0") return;
 
                 int index = int.Parse(input);
@@ -142,12 +143,13 @@ namespace TextRPG_by_10th
 
             inven.AddInventory(q.resultEquip.Id, 1);
             inven.AutoEquip(q.resultEquip);
-
+            AudioManager.Instance.PlaySFX("upgrade");
             myQuest.Remove(q);
 
             Console.WriteLine("\n0. 나가기");
             Console.Write(">> ");
             string input = Console.ReadLine();
+            AudioManager.Instance.PlaySFX("click");
             if (input == "0") return;
 
 

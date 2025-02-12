@@ -45,6 +45,7 @@
         {
             ClearGold = clearGold;
             Type = type;
+            creatureType = CreatureType.Monster;
 
         }
 
@@ -80,7 +81,7 @@
         }
 
 
-        public int GetClrearGold(Player player)
+        public int GetClrearGold()
         {
             return ClearGold;
         }
