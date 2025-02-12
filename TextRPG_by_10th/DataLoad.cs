@@ -10,15 +10,16 @@ namespace TextRPG_by_10th
 {
     internal class DataLoad
     {
+
         private static string miscItemPath = "../../../../TextRPG_by_10th/MiscItemData.json";
         private static string equipItemPath = "../../../../TextRPG_by_10th/EquipItemData.json";
         private static string consumeItemPath = "../../../../TextRPG_by_10th/ConsumeItemData.json";
         private static string questPath = "../../../../TextRPG_by_10th/QuestData.json";
-        private static string playerPath = "../../../../TextRPG_by_10th/PlayerData.json";
-        private static string equipPath = "../../../../TextRPG_by_10th/equipData.json";
-        private static string equippedPath = "../../../../TextRPG_by_10th/equippedData.json";
-        private static string consumePath = "../../../../TextRPG_by_10th/consumeData.json";
-        private static string miscPath = "../../../../TextRPG_by_10th/miscData.json";
+        private static string playerPath = Path.GetFullPath("PlayerData.json");
+        private static string equipPath = Path.GetFullPath("equipData.json");
+        private static string equippedPath = Path.GetFullPath("equippedData.json");
+        private static string consumePath = Path.GetFullPath("consumeData.json");
+        private static string miscPath = Path.GetFullPath("miscData.json");
         private static string shopMiscPath = "../../../../TextRPG_by_10th/shopMiscData.json";
         private static string shopConsumePath = "../../../../TextRPG_by_10th/shopConsumeData.json";
 
