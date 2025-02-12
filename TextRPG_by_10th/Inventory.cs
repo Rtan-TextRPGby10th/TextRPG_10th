@@ -203,6 +203,10 @@ namespace TextRPG_by_10th
                         Console.WriteLine("잘못된 직업입니다.");
                         break;
                 }
+                AddInventory(301, 1);               //기초방어구 4부위
+                AddInventory(401, 1);
+                AddInventory(501, 1);
+                AddInventory(601, 1);
                 AddInventory(1001, 3);              // 힐링포션 3개
                 AddInventory(1004, 3);              // 맹독포션 3개
 
@@ -286,8 +290,7 @@ namespace TextRPG_by_10th
             }
         }
 
-        
-        public void EquipItem(int index)   
+        public void EquipItem(int index)
         {
             AudioManager.Instance.PlaySFX("equip_armor");
             Equipment item = equipmentList[index]; // 선택한 장비
@@ -422,6 +425,7 @@ namespace TextRPG_by_10th
                     Console.WriteLine("0. 나가기");
                     Console.Write(">> ");
                     Console.ReadLine();
+                    AudioManager.Instance.PlaySFX("click");
                     return "";
                 }
 
@@ -437,6 +441,7 @@ namespace TextRPG_by_10th
                 Console.WriteLine("\n0. 나가기");
                 Console.Write(">> ");
                 string input = Console.ReadLine();
+                AudioManager.Instance.PlaySFX("click");
 
                 if (input == "0") return ""; // 나가기 선택 시 빈 문자열 반환
 
@@ -447,6 +452,7 @@ namespace TextRPG_by_10th
                     // 힐링 포션 사용 (체력 회복)
                     if (selectedItem.Value > 0)
                     {
+                        AudioManager.Instance.PlaySFX("heal_potion");
                         player.Healing(selectedItem.Value);
                         Console.WriteLine($"{selectedItem.Name}을 사용하여 체력을 {selectedItem.Value} 회복했습니다!");
                         RemoveInventory(selectedItem.Id, 1);
@@ -457,6 +463,7 @@ namespace TextRPG_by_10th
                     // 맹독포션 사용 (전투 중 효과 적용)
                     if (selectedItem.Name.Contains("맹독포션"))
                     {
+                        AudioManager.Instance.PlaySFX("poison_potion");
                         Console.WriteLine("맹독포션을 사용하여 무기에 독을 바릅니다!");
                         RemoveInventory(selectedItem.Id, 1);
                         Console.ReadKey();

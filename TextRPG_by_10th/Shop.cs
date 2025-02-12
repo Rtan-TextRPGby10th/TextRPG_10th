@@ -18,14 +18,6 @@ namespace TextRPG_by_10th
         public Shop(Inventory playerInventory)
         {
             inventory = playerInventory;
-            //상점에서 판매하는 아이템 추가하기. AddShopItem(도감의 id넘버, 수량)
-            AddShopItem(301);                                  
-            AddShopItem(401);
-            AddShopItem(501);
-            AddShopItem(601);
-            AddShopItem(1001);
-            AddShopItem(1004);
-
             
             Console.WriteLine("\n===== [상점 판매 목록] =====");                              // ✅ 상점 판매 목록 출력 (넘버링 없이 표시)
             foreach (var item in shopEquipments)
@@ -70,6 +62,18 @@ namespace TextRPG_by_10th
         public void OpenShop()                                      //상점 씬
         {
             player = SceneManager.instance.player;  // ✅ SceneManager에서 player 가져오기
+                                                    //상점에서 판매하는 아이템 추가하기. AddShopItem(도감의 id넘버, 수량)
+            if (player.Dungeon_Level >= 3)
+                AddShopItem(10050);         //철 주괴
+            if (player.Dungeon_Level >= 4)
+                AddShopItem(10051);         //미스릴 주괴
+            if (player.Dungeon_Level >= 5)
+                AddShopItem(10052);         //아다만티움 주괴
+                AddShopItem(1001);
+                AddShopItem(1004);
+            
+            
+
             while (true)
             {
                 Console.Clear();
@@ -87,7 +91,7 @@ namespace TextRPG_by_10th
                     Console.WriteLine($"- {item.Name} {item.Description} | {item.Price}G");
 
                 foreach (var item in shopMiscItems)
-                    Console.WriteLine($"- {item.Name} {item.Description} | {item.Price}G");
+                    Console.WriteLine($"- {item.Name} | {item.Description} | {item.Price}G");
 
                 Console.WriteLine("\n1. 아이템 구매");
                 Console.WriteLine("2. 아이템 판매");
@@ -167,7 +171,6 @@ namespace TextRPG_by_10th
                         {
                             player.Gold -= misc.Price;
                             inventory.AddInventory(misc.Id, 1);
-                            shopMiscItems.Remove(misc); // ✅ 기타 아이템은 매진
                             Console.WriteLine($"{misc.Name} 구매완료!");
                             AudioManager.Instance.PlaySFX("money");
                         }
