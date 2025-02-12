@@ -317,7 +317,6 @@ namespace TextRPG_by_10th
 
         public static void LoadPlayerItemData()
         {
-            LoadPlayerData();
             LoadShopData();
             LoadInvenData();
         }

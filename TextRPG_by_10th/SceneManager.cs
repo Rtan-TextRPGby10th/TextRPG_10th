@@ -139,18 +139,21 @@ namespace TextRPG_by_10th
 
         void StartScene()
         {
-            DataLoad.LoadPlayerItemData();
-
             while (currentScene == Scene.Start)
             {
                 if (player == null)
+                {
+                    isInit = !isInit;
                     CreatPlayer();
+                }
                 else
                 {
                     inventory.SetPlayer(player);
-                    if(isInit==false)
+                    if (isInit == false)
                     {
                         isInit = !isInit;
+                        DataLoad.LoadPlayerItemData();
+
                         DataLoad.LoadPlayerEquippedData();
                     }
                     currentScene = Scene.Town;
