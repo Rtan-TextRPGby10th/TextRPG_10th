@@ -146,9 +146,6 @@ namespace TextRPG_by_10th
         {
             SavePlayerData();
 
-            SaveShopMiscData();
-            SaveShopConsumeData();
-
             SaveEquippedData();
             SaveEquipData();
             SaveMiscData();
