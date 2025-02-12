@@ -75,8 +75,6 @@ namespace TextRPG_by_10th
                 DebuffCheck();
                 //추가 효과 지속 상태 확인
                 BuffCheck();
-                //승리조건 확인
-                //VictoryCondition();
 
                 Thread.Sleep(1000);
             }
@@ -133,7 +131,7 @@ namespace TextRPG_by_10th
               player.Dungeon_Level >= 2 ? "스테이지 2 : 던전" : "스테이지 2 : 던전".ColorText(ConsoleColor.Red),
               player.Dungeon_Level >= 3 ? "스테이지 3 : 심해" : "스테이지 3 : 심해".ColorText(ConsoleColor.Red),
               player.Dungeon_Level >= 4 ? "스테이지 4 : 설산" : "스테이지 4 : 설산".ColorText(ConsoleColor.Red),
-              player.Dungeon_Level >= 4 ? "스테이지 5 : 화산" : "스테이지 5 : 화산".ColorText(ConsoleColor.Red),
+              player.Dungeon_Level >= 5 ? "스테이지 5 : 화산" : "스테이지 5 : 화산".ColorText(ConsoleColor.Red),
             };
             foreach (string stageName in stageNames)
             {
@@ -253,8 +251,11 @@ namespace TextRPG_by_10th
                     {
                         //상태이상 테스트를 위해 임시로 사용
                         //ApplyDebuff(player, targetMonster, DebuffType.FROST);
-                        ApplyDebuff(player, targetMonster, DebuffType.PARALYZE);
+                        //ApplyDebuff(player, targetMonster, DebuffType.PARALYZE);
                         //ApllyBuff(player, BuffType.TOXIC_WEAPON);
+                        
+                        //상위 던전 진입 및 전리품 테스트
+                        targetMonster.TakeDamage(100);
                         DeathCheck(targetMonster);
                     }
                     break;
@@ -277,6 +278,9 @@ namespace TextRPG_by_10th
         //몬스터 턴에서 이루어지는 과정
         void MonsterTurn()
         {
+            if (battleEnd)
+                return;
+
             //소환된 몬스터들마다 각자 공격을 실행
             for (int i = 0; i < monsters.Length; i++)
             {
@@ -397,7 +401,8 @@ namespace TextRPG_by_10th
             if (targetMonster.isDie)
             {
                 AudioManager.Instance.PlaySFX("money");
-                player.AddGold(targetMonster.GetClrearGold());
+
+                targetMonster.GetClrearReward(player, inventory);
                 deadCount++;
             }
 
@@ -414,7 +419,7 @@ namespace TextRPG_by_10th
                 Console.WriteLine($"Lv.{player.Lv} {player.Name}이(가) 승리했습니다.");
                 Console.WriteLine($"{deadCount}마리의 몬스터를 처치했다.");
                 //최대 클리어 던전 레벨과 현재 던전 레벨이 같으면 던전 레벨을 증가
-                if(player.Dungeon_Level == stageLevel && player.Dungeon_Level < 5)
+                if(player.Dungeon_Level == stageLevel && player.Dungeon_Level <= 5)
                 {
                     int previousDungeonLevel = player.Dungeon_Level;
                     player.Dungeon_Level++;
