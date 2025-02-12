@@ -94,7 +94,7 @@ namespace TextRPG_by_10th
                 Console.WriteLine("0. 나가기");
                 Console.Write(">> ");
                 string input = Console.ReadLine();
-
+                AudioManager.Instance.PlaySFX("click");
                 if (input == "1") BuyItem();                        //구매하기 씬
                 else if (input == "2") SellItem();                  //판매하기 씬
                 else if (input == "0")                              //나가기
@@ -125,7 +125,6 @@ namespace TextRPG_by_10th
                 Console.WriteLine("\n0. 나가기");
                 Console.Write(">> ");
                 string input = Console.ReadLine();
-
                 if (input == "0") return;
 
 

@@ -29,13 +29,22 @@ namespace TextRPG_by_10th
 
         private Dictionary<string, string> sfxFiles = new Dictionary<string, string>
         {
-            { "click", "click.mp3" },
-            { "hit", "hit.mp3" },
-            { "hit_bow", "hit_bow.mp3" },
-            { "levelup", "levelup.mp3" },
+            { "click", "click.mp3" },           // 효과음 호출하기 AudioManager.Instance.PlaySFX("game_over");
+            { "hit1", "hit1.mp3" },
+            { "hit2", "hit2.mp3" },
+            { "hit3", "hit3.mp3" },
+            { "critical1", "critical1.mp3" },
+            { "critical2", "critical2.mp3" },
+            { "equip_armor", "equip_armor.mp3" },
+            { "game_over", "game_over.mp3" },
+            { "heal_potion", "heal_potion.mp3" },
+            { "levelUp", "levelUp.mp3" },
             { "money", "money.mp3" },
+            { "poison_potion", "poison_potion.mp3" },
+            { "skill", "skill.mp3" },
             { "upgrade", "upgrade.mp3" },
             { "win", "win.mp3" }
+
         };
 
         private AudioManager()
@@ -83,7 +92,7 @@ namespace TextRPG_by_10th
                 return;
             }
 
-            Console.WriteLine($"🎵 재생 중: {filePath}");
+            // Console.WriteLine($"재생 중: {filePath}");
 
             currentBGM = new AudioFileReader(filePath);
             bgmPlayer = new WaveOutEvent();
@@ -118,42 +127,45 @@ namespace TextRPG_by_10th
             else if (sceneName == "Town")
                 PlayRandomTownBGM();
         }
-
-        public void PlaySFX(string soundName)
+        private void PlaySFXFile(string filePath)
         {
-            if (sfxFiles.ContainsKey(soundName))
+            if (File.Exists(filePath))
             {
-                string fullPath = Path.Combine(sfxPath, sfxFiles[soundName]);
+                var reader = new AudioFileReader(filePath);
+                var sfxPlayer = new WaveOutEvent();
+                sfxPlayer.Init(reader);
+                sfxPlayer.Play();
+                sfxPlayers.Add(sfxPlayer);
 
-                if (File.Exists(fullPath))
+                Task.Run(() =>
                 {
-                    var reader = new AudioFileReader(fullPath);
-                    var sfxPlayer = new WaveOutEvent();
-                    sfxPlayer.Init(reader);
-                    sfxPlayer.Play();
-                    sfxPlayers.Add(sfxPlayer);
+                    Thread.Sleep((int)reader.TotalTime.TotalMilliseconds);
+                    sfxPlayer.Dispose();
+                    sfxPlayers.Remove(sfxPlayer);
+                });
 
-                    Task.Run(() =>
-                    {
-                        Thread.Sleep((int)reader.TotalTime.TotalMilliseconds);
-                        sfxPlayer.Dispose();
-                        sfxPlayers.Remove(sfxPlayer);
-                    });
-                }
-                else
-                {
-                    Console.WriteLine($"[오류] 효과음 파일 없음: {soundName}");
-                }
+                // Console.WriteLine($"🔊 재생 중: {filePath}");
+            }
+        }
+
+        public void PlaySFX(string soundPattern)
+        {
+            string[] matchingFiles = Directory.GetFiles(sfxPath, soundPattern + "*.mp3");
+
+            if (matchingFiles.Length > 0)
+            {
+                string randomFile = matchingFiles[random.Next(matchingFiles.Length)];
+                PlaySFXFile(randomFile);
             }
             else
             {
-                Console.WriteLine($"[오류] 등록되지 않은 효과음: {soundName}");
+                Console.WriteLine($"[오류] 효과음 파일 없음: {soundPattern}*.mp3");
             }
         }
 
         public void ShowSFXList()
         {
-            Console.WriteLine("🎵 [사용 가능한 효과음 리스트]");
+            Console.WriteLine("[사용 가능한 효과음 리스트]");
             foreach (var sound in sfxFiles)
             {
                 Console.WriteLine($"- {sound.Key} ({sound.Value})");

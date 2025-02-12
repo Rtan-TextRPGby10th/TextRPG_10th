@@ -278,6 +278,7 @@ namespace TextRPG_by_10th
                 }
                 if (input2 == "0")                  // 나가기
                 {
+                    AudioManager.Instance.PlaySFX("click");
                     SceneManager.instance.currentScene = SceneManager.Scene.Start;
                     SceneManager.instance.GameScecne(SceneManager.Scene.Start);
                     return;
@@ -287,6 +288,7 @@ namespace TextRPG_by_10th
 
         public void EquipItem(int index)
         {
+            AudioManager.Instance.PlaySFX("equip_armor");
             Equipment item = equipmentList[index]; // 선택한 장비
             string equipSlot = item.Slot;          // 장비의 착용 슬롯
 
