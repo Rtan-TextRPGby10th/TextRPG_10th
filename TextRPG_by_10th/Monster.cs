@@ -87,8 +87,11 @@
             player.AddGold(ClearGold);
             Random random = new Random();
             int rewardIndex = random.Next(rewardItemArr.Length);
+
+            Console.WriteLine("<전리품 획득>");
+
             inventory.AddInventory(rewardItemArr[rewardIndex], 1);
-            Console.WriteLine("전리품 획득");
+            
             Thread.Sleep(1000);
         }
 
