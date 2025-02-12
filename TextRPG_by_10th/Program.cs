@@ -4,6 +4,9 @@
     {
         static void Main(string[] args)
         {
+
+            ConsoleHelper.SetCurrentFont("D2Coding",16);
+
             DataLoad.LoadMiscItemData();
             DataLoad.LoadEquipItemData();
             DataLoad.LoadConsumeItemData();
