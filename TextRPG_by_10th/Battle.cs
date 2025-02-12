@@ -193,6 +193,7 @@ namespace TextRPG_by_10th
         {
             //전투 상황을 보여줌
             ShowBattleInfo();
+            player.ActiveBuffTurn();
             //선택지 제공
             Console.WriteLine("무엇을 할까?");
             Console.WriteLine("1. 공격");
@@ -267,7 +268,7 @@ namespace TextRPG_by_10th
                             //ApllyBuff(player, BuffType.TOXIC_WEAPON);
 
                             //상위 던전 진입 및 전리품 테스트
-                            targetMonster.TakeDamage(100);
+                            //targetMonster.TakeDamage(100);
                             DeathCheck(targetMonster);
                             player.EndTurn();
                         }
@@ -296,19 +297,20 @@ namespace TextRPG_by_10th
             for (int i = 0; i < player.skills.Count; i++)
             {
                 string skillStatus = player.isSkillUse[i] ? "[스킬 사용 가능]" : $"{player.skills[i].Cooldown - player.skillCooldown[i]}번 후 사용가능";
-                Console.WriteLine($"[스킬 {i}] : [{player.skills[i].Name}]  | 필요한 턴 수 : {player.skills[i].Cooldown} | {skillStatus}");
+                Console.WriteLine($"[스킬 {i + 1}] : [{player.skills[i].Name}]  | 필요한 턴 수 : {player.skills[i].Cooldown} | {skillStatus}");
             }
         }
         int SelecetSkil()
         {
             Console.WriteLine("사용할 스킬을 선택하세요.");
+            Console.WriteLine("0. 나가기");
             Console.Write(">> ");
 
             int inputNum;
             bool isValidInput = false;
             while (!isValidInput)
             {
-                Console.WriteLine("스킬 번호를 입력하세요: ");
+
                 string input = Console.ReadLine();
 
                 // 입력을 정수로 변환
@@ -319,6 +321,10 @@ namespace TextRPG_by_10th
                         // 유효한 입력일 경우
                         isValidInput = true;
                         return inputNum;  // 입력된 번호를 반환
+                    }
+                    else if(inputNum == 0)
+                    {
+                        PlayerTurn();
                     }
                     else
                     {

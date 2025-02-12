@@ -22,6 +22,9 @@ namespace TextRPG_by_10th
         public List<Skill> skills = new List<Skill>();
         public int[] skillCooldown { get; set; }
         public bool[] isSkillUse { get; set; }
+        public bool buffUse { get; set; }
+        public int BuffTrun { get; set; }
+        public float OriginalPower { get; set; }
 
         public int Gold { get; set; } // 캐릭터의 보유 골드
 
@@ -35,7 +38,7 @@ namespace TextRPG_by_10th
         public int Dungeon_Level = 1; //클리어한 던전 레벨
 
         // 캐릭터 생성자, 크리처 생성자를 가져옴
-        public Player(string name, float health, float maxHealth, float attackPower, float defense, int gold, int lv, Job job, float hitChance, float dodgeChance, float critChance, int[] skillCoolDown, bool[] isUseskill)
+        public Player(string name, float health, float maxHealth, float attackPower, float defense, int gold, int lv, Job job, float hitChance, float dodgeChance, float critChance, int[] skillCoolDown, bool[] isUseskill, int buffTrun, bool buffuse, float originalPower)
                                 : base(name, health, attackPower, defense, lv, hitChance, dodgeChance, critChance)
         {
             Gold = gold;
@@ -44,6 +47,9 @@ namespace TextRPG_by_10th
             skillCooldown = skillCoolDown;
             isSkillUse = isUseskill;
             creatureType = CreatureType.Player;
+            BuffTrun = buffTrun;
+            buffUse = buffuse;
+            OriginalPower = originalPower;
         }
 
         public void AddGold(int addGold) // Monster 클리어 골드를 가져와 캐릭터 보유 골드 증가 함수
@@ -142,18 +148,24 @@ namespace TextRPG_by_10th
 
             if (skill.Type == SkillType.Buff)
             {
+                buffUse = true; // 버프 활성화
+                BuffTrun = 0; // 턴 초기화
+
                 if (this.playerJob == Job.전사)
                 {
+                    OriginalPower = this.Defense;
                     this.Defense *= skillPower;
                     Console.WriteLine($"{skill.Name} 사용! 방어력이 {skillPower}만큼 증가!");
                 }
                 else if (this.playerJob == Job.도적)
                 {
+                    OriginalPower = this.DodgeChance;
                     this.DodgeChance += skillPower;
                     Console.WriteLine($"{skill.Name} 사용! 회피율이 {skillPower}만큼 증가!");
                 }
                 else
                 {
+                    OriginalPower = this.CritChance;
                     this.CritChance += skillPower;
                     Console.WriteLine($"{skill.Name} 사용! 치명타 확률이 {skillPower}만큼 증가!");
                 }
@@ -162,13 +174,38 @@ namespace TextRPG_by_10th
             }
             else
             {
-                Console.WriteLine("스킬을 사용할 수 없습니다. 쿨타임 적용중");
+                Console.WriteLine("스킬을 사용할 수 없습니다. 쿨타임 적용 중");
             }
         }
 
         public void ActiveBuffTurn()
         {
+            if(buffUse)
+            {
+                BuffTrun++;
 
+                if(BuffTrun > 3)
+                {
+                    buffUse = false;
+                    BuffTrun = 0;
+
+                    if (this.playerJob == Job.전사)
+                    {
+                        this.Defense = OriginalPower;
+                        Console.WriteLine("버프 효과가 끝나 방어력이 원래대로 돌아왔습니다.");
+                    }
+                    else if (this.playerJob == Job.도적)
+                    {
+                        this.DodgeChance = OriginalPower;
+                        Console.WriteLine("버프 효과가 끝나 회피율 원래대로 돌아왔습니다.");
+                    }
+                    else
+                    {
+                        this.CritChance = OriginalPower;
+                        Console.WriteLine("버프 효과가 끝나 치명타 적중률이 원래대로 돌아왔습니다.");
+                    }
+                }
+            }
         }
         public void EndTurn() // 턴 종료 시 쿨타임 1씩 증가. 
         {
@@ -192,7 +229,7 @@ namespace TextRPG_by_10th
     public class Warrior : Player
     {
         public Warrior(string name)
-                        : base(name, 100.0f, 100.0f, 10.0f, 20.0f, 0, 1, Job.전사, 0.9f, 0.05f, 0.2f, new int[2], new bool[2]) // 명중 90%, 회피 5% 치명타율 20%
+                        : base(name, 100.0f, 100.0f, 10.0f, 20.0f, 0, 1, Job.전사, 0.9f, 0.05f, 0.2f, new int[2], new bool[2], 0, false, 0.0f) // 명중 90%, 회피 5% 치명타율 20%
         {
             skills.Add(new Skill("브레이크 스트라이크", SkillType.SkillAttack, 1.5f, 5));
             skills.Add(new Skill("철벽 방어", SkillType.Buff, 1.5f, 3)); // 방어력 1.5배 증가
@@ -208,7 +245,7 @@ namespace TextRPG_by_10th
     public class Assassin : Player
     {
         public Assassin(string name)
-                    : base(name, 75.0f, 75.0f, 15.0f, 15.0f, 0, 1, Job.도적, 0.85f, 0.2f, 0.25f, new int[2], new bool[2]) // 명중 85%, 회피 20% 치명타율 25%
+                    : base(name, 75.0f, 75.0f, 15.0f, 15.0f, 0, 1, Job.도적, 0.85f, 0.2f, 0.25f, new int[2], new bool[2], 0, false, 0.0f) // 명중 85%, 회피 20% 치명타율 25%
         {
             skills.Add(new Skill("섀도우 스탭", SkillType.SkillAttack, 1.5f, 5));
             skills.Add(new Skill("그림자 걸음", SkillType.Buff, 0.3f, 3)); // 회피 확률 30% 증가
@@ -224,7 +261,7 @@ namespace TextRPG_by_10th
     public class Archer : Player
     {
         public Archer(string name)
-                        : base(name, 50.0f, 50.0f, 20.0f, 10.0f, 0, 1, Job.궁수, 0.8f, 0.1f, 0.3f, new int[2], new bool[2]) // 명중 80%, 회피 10% 치명타율 30%
+                        : base(name, 50.0f, 50.0f, 20.0f, 10.0f, 0, 1, Job.궁수, 0.8f, 0.1f, 0.3f, new int[2], new bool[2], 0, false, 0.0f) // 명중 80%, 회피 10% 치명타율 30%
         {
             skills.Add(new Skill("스나이핑", SkillType.SkillAttack, 1.5f, 5));
             skills.Add(new Skill("치명적 조준", SkillType.Buff, 0.2f, 3)); // 크리티컬 확률 20% 증가
