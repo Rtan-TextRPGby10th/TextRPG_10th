@@ -129,6 +129,7 @@ namespace TextRPG_by_10th
                         break;
                     case "0":
                         Console.WriteLine("게임을 종료합니다.");
+                        Environment.Exit(0);
                         return;
                     default:
                         Console.WriteLine("잘못된 입력입니다. 다시 입력하세요.");
