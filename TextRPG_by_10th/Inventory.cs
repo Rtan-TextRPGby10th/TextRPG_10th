@@ -216,7 +216,6 @@ namespace TextRPG_by_10th
                 AddInventory(1004, 3);              // 맹독포션 3개
 
             // 테스트 데이터
-            AddInventory(301, 1);
             AddInventory(10001, 30);
             AddInventory(10002, 20);
             AddInventory(10004, 20);
