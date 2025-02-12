@@ -113,7 +113,7 @@ namespace TextRPG_by_10th
             return MaxHealth;
         }
 
-        public void UseSkill(int skillIndex, Monster target)
+        public void AtkSkill(int skillIndex, Monster target)
         {
             Skill skill = skills[skillIndex];
 
@@ -126,25 +126,37 @@ namespace TextRPG_by_10th
                     target.TakeDamage(skillPower);
                     Console.WriteLine($"{skill.Name} 사용! {target.Name}에게 {skillPower}의 데미지를 입혔다!");
                 }
-                else if (skill.Type == SkillType.Buff)
-                {
-                    if (this.playerJob == Job.전사)
-                    {
-                        this.Defense *= skillPower;
-                        Console.WriteLine($"{skill.Name} 사용! 방어력이 {skillPower}만큼 증가!");
-                    }
-                    else if (this.playerJob == Job.도적)
-                    {
-                        this.DodgeChance += skillPower;
-                        Console.WriteLine($"{skill.Name} 사용! 회피율이 {skillPower}만큼 증가!");
-                    }
-                    else
-                    {
-                        this.CritChance += skillPower;
-                        Console.WriteLine($"{skill.Name} 사용! 치명타 확률이 {skillPower}만큼 증가!");
-                    }
-                }
+                this.skillCooldown[skillIndex] = 0;
+                this.isSkillUse[skillIndex] = false;
+            }
+            else
+            {
+                Console.WriteLine("스킬을 사용할 수 없습니다. 쿨타임 적용중");
+            }
+        }
+        public void BuffSkill(int skillIndex)
+        {
+            Skill skill = skills[skillIndex];
 
+            float skillPower = skill.CalculatePower(this);
+
+            if (skill.Type == SkillType.Buff)
+            {
+                if (this.playerJob == Job.전사)
+                {
+                    this.Defense *= skillPower;
+                    Console.WriteLine($"{skill.Name} 사용! 방어력이 {skillPower}만큼 증가!");
+                }
+                else if (this.playerJob == Job.도적)
+                {
+                    this.DodgeChance += skillPower;
+                    Console.WriteLine($"{skill.Name} 사용! 회피율이 {skillPower}만큼 증가!");
+                }
+                else
+                {
+                    this.CritChance += skillPower;
+                    Console.WriteLine($"{skill.Name} 사용! 치명타 확률이 {skillPower}만큼 증가!");
+                }
                 this.skillCooldown[skillIndex] = 0;
                 this.isSkillUse[skillIndex] = false;
             }
@@ -154,6 +166,10 @@ namespace TextRPG_by_10th
             }
         }
 
+        public void ActiveBuffTurn()
+        {
+
+        }
         public void EndTurn() // 턴 종료 시 쿨타임 1씩 증가. 
         {
             for (int i = 0; i < skillCooldown.Length; i++)

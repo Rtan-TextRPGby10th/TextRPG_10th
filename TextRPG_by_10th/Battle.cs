@@ -246,24 +246,32 @@ namespace TextRPG_by_10th
                     //스킬 선택 창으로 넘어감
                     SkillAttackInfo();
                     int selecetSkill = SelecetSkil();
-                    //대상 선택으로 넘어감
-                    targetMonster = null;
-                    SelectTarget(ref targetMonster);
-                    //타겟이 선정되면 공격
-                    if (targetMonster != null)
+                    if (player.skills[selecetSkill - 1].Type == SkillType.Buff) // 선택한 스킬이 버프 스킬이라면 사용
                     {
-                        player.UseSkill(selecetSkill - 1, targetMonster);
+                        player.BuffSkill(selecetSkill - 1);
                         player.EndTurn();
-                        AudioManager.Instance.PlaySFX("skill");
-                        //상태이상 테스트를 위해 임시로 사용
-                        //ApplyDebuff(player, targetMonster, DebuffType.FROST);
-                        //ApplyDebuff(player, targetMonster, DebuffType.PARALYZE);
-                        //ApllyBuff(player, BuffType.TOXIC_WEAPON);
-                        
-                        //상위 던전 진입 및 전리품 테스트
-                        targetMonster.TakeDamage(100);
-                        DeathCheck(targetMonster);
-                        player.EndTurn();
+                    }
+                    else
+                    {
+                        //대상 선택으로 넘어감
+                        targetMonster = null;
+                        SelectTarget(ref targetMonster);
+                        //타겟이 선정되면 공격
+                        if (targetMonster != null)
+                        {
+                            player.AtkSkill(selecetSkill - 1, targetMonster);
+                            player.EndTurn();
+                            AudioManager.Instance.PlaySFX("skill");
+                            //상태이상 테스트를 위해 임시로 사용
+                            //ApplyDebuff(player, targetMonster, DebuffType.FROST);
+                            //ApplyDebuff(player, targetMonster, DebuffType.PARALYZE);
+                            //ApllyBuff(player, BuffType.TOXIC_WEAPON);
+
+                            //상위 던전 진입 및 전리품 테스트
+                            targetMonster.TakeDamage(100);
+                            DeathCheck(targetMonster);
+                            player.EndTurn();
+                        }
                     }
                     break;
                 case "3":
