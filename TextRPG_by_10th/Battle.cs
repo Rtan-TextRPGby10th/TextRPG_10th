@@ -238,26 +238,40 @@ namespace TextRPG_by_10th
                         ParalyzeDamage(targetMonster);
                         //공격한 몬스터의 사망 여부 체크
                         DeathCheck(targetMonster);
+                        player.EndTurn();
                     }
                     break;
 
                 case "2":
                     //스킬 선택 창으로 넘어감
-                    //대상 선택으로 넘어감
-                    targetMonster = null;
-                    SelectTarget(ref targetMonster);
-                    //타겟이 선정되면 공격
-                    if (targetMonster != null)
+                    SkillAttackInfo();
+                    int selecetSkill = SelecetSkil();
+                    if (player.skills[selecetSkill - 1].Type == SkillType.Buff) // 선택한 스킬이 버프 스킬이라면 사용
                     {
-                        AudioManager.Instance.PlaySFX("skill");
-                        //상태이상 테스트를 위해 임시로 사용
-                        //ApplyDebuff(player, targetMonster, DebuffType.FROST);
-                        //ApplyDebuff(player, targetMonster, DebuffType.PARALYZE);
-                        //ApllyBuff(player, BuffType.TOXIC_WEAPON);
-                        
-                        //상위 던전 진입 및 전리품 테스트
-                        targetMonster.TakeDamage(100);
-                        DeathCheck(targetMonster);
+                        player.BuffSkill(selecetSkill - 1);
+                        player.EndTurn();
+                    }
+                    else
+                    {
+                        //대상 선택으로 넘어감
+                        targetMonster = null;
+                        SelectTarget(ref targetMonster);
+                        //타겟이 선정되면 공격
+                        if (targetMonster != null)
+                        {
+                            player.AtkSkill(selecetSkill - 1, targetMonster);
+                            player.EndTurn();
+                            AudioManager.Instance.PlaySFX("skill");
+                            //상태이상 테스트를 위해 임시로 사용
+                            //ApplyDebuff(player, targetMonster, DebuffType.FROST);
+                            //ApplyDebuff(player, targetMonster, DebuffType.PARALYZE);
+                            //ApllyBuff(player, BuffType.TOXIC_WEAPON);
+
+                            //상위 던전 진입 및 전리품 테스트
+                            targetMonster.TakeDamage(100);
+                            DeathCheck(targetMonster);
+                            player.EndTurn();
+                        }
                     }
                     break;
                 case "3":
@@ -266,7 +280,7 @@ namespace TextRPG_by_10th
                     string useItem = inventory.UseConsumableScene();
                     if (useItem == "poison")
                         ApllyBuff(player, BuffType.TOXIC_WEAPON);
-                        
+                    player.EndTurn();
                     break;
                 default:
                     Console.WriteLine("잘못된 입력입니다. 다시 입력하세요.");
@@ -276,6 +290,50 @@ namespace TextRPG_by_10th
 
             VictoryCondition();
         }
+        void SkillAttackInfo()
+        {
+            ShowBattleInfo();
+
+            for (int i = 0; i < player.skills.Count; i++)
+            {
+                string skillStatus = player.isSkillUse[i] ? "[스킬 사용 가능]" : $"{player.skills[i].Cooldown - player.skillCooldown[i]}번 후 사용가능";
+                Console.WriteLine($"[스킬 {i}] : [{player.skills[i].Name}]  | 필요한 턴 수 : {player.skills[i].Cooldown} | {skillStatus}");
+            }
+        }
+        int SelecetSkil()
+        {
+            Console.WriteLine("사용할 스킬을 선택하세요.");
+            Console.Write(">> ");
+
+            int inputNum;
+            bool isValidInput = false;
+            while (!isValidInput)
+            {
+                Console.WriteLine("스킬 번호를 입력하세요: ");
+                string input = Console.ReadLine();
+
+                // 입력을 정수로 변환
+                if (int.TryParse(input, out inputNum))
+                {
+                    if (inputNum > 0 && inputNum <= player.skills.Count)
+                    {
+                        // 유효한 입력일 경우
+                        isValidInput = true;
+                        return inputNum;  // 입력된 번호를 반환
+                    }
+                    else
+                    {
+                        Console.WriteLine("잘못된 입력입니다. 범위 내의 숫자를 입력하세요.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("잘못된 입력입니다. 숫자를 입력하세요.");
+                }
+            }
+            return 0;
+        }
+
         //몬스터 턴에서 이루어지는 과정
         void MonsterTurn()
         {
