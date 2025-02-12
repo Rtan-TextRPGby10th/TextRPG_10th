@@ -20,7 +20,7 @@ namespace TextRPG_by_10th
         public Job playerJob { get; set; }
 
         public List<Skill> skills = new List<Skill>();
-        public int[] skillCooldown { get; set; }
+        public int skillCooldown { get; set; }
         public bool[] isSkillUse { get; set; }
         public bool buffUse { get; set; }
         public int BuffTrun { get; set; }
@@ -38,7 +38,7 @@ namespace TextRPG_by_10th
         public int Dungeon_Level = 1; //클리어한 던전 레벨
 
         // 캐릭터 생성자, 크리처 생성자를 가져옴
-        public Player(string name, float health, float maxHealth, float attackPower, float defense, int gold, int lv, Job job, float hitChance, float dodgeChance, float critChance, int[] skillCoolDown, bool[] isUseskill, int buffTrun, bool buffuse, float originalPower)
+        public Player(string name, float health, float maxHealth, float attackPower, float defense, int gold, int lv, Job job, float hitChance, float dodgeChance, float critChance, int skillCoolDown, bool[] isUseskill, int buffTrun, bool buffuse, float originalPower)
                                 : base(name, health, attackPower, defense, lv, hitChance, dodgeChance, critChance)
         {
             Gold = gold;
@@ -50,6 +50,13 @@ namespace TextRPG_by_10th
             BuffTrun = buffTrun;
             buffUse = buffuse;
             OriginalPower = originalPower;
+
+            skillCooldown = 0;
+            for (int i = 0; i < skills.Count; i++)
+            {
+
+                isSkillUse[i] = false;
+            }
         }
 
         public void AddGold(int addGold) // Monster 클리어 골드를 가져와 캐릭터 보유 골드 증가 함수
@@ -78,6 +85,8 @@ namespace TextRPG_by_10th
                     maxexperience.Append(50 + 10 * Lv);
                 }
             }
+
+            Thread.Sleep(1000);
         }
 
         // 레벨업 증가 함수
@@ -125,14 +134,14 @@ namespace TextRPG_by_10th
 
             float skillPower = skill.CalculatePower(this);
 
-            if (skill.Cooldown <= this.skillCooldown[skillIndex])
+            if (skill.Cooldown <= this.skillCooldown)
             {
                 if (skill.Type == SkillType.SkillAttack)
                 {
                     target.TakeDamage(skillPower);
                     Console.WriteLine($"{skill.Name} 사용! {target.Name}에게 {skillPower}의 데미지를 입혔다!");
                 }
-                this.skillCooldown[skillIndex] = 0;
+                this.skillCooldown = 0;
                 this.isSkillUse[skillIndex] = false;
             }
             else
@@ -169,13 +178,15 @@ namespace TextRPG_by_10th
                     this.CritChance += skillPower;
                     Console.WriteLine($"{skill.Name} 사용! 치명타 확률이 {skillPower}만큼 증가!");
                 }
-                this.skillCooldown[skillIndex] = 0;
+                this.skillCooldown = 0;
                 this.isSkillUse[skillIndex] = false;
             }
             else
             {
                 Console.WriteLine("스킬을 사용할 수 없습니다. 쿨타임 적용 중");
             }
+
+            Thread.Sleep(1000);
         }
 
         public void ActiveBuffTurn()
@@ -209,105 +220,54 @@ namespace TextRPG_by_10th
         }
         public void EndTurn() // 턴 종료 시 쿨타임 1씩 증가. 
         {
-            for (int i = 0; i < skillCooldown.Length; i++)
+            skillCooldown++;
+
+            for (int i = 0; i < skills.Count; i++)
             {
-                if (skillCooldown[i] < this.skills[i].Cooldown)
-                {
-                    skillCooldown[i]++;
-                    if (skillCooldown[i] == this.skills[i].Cooldown)
+                if (skillCooldown < this.skills[i].Cooldown)
+
+                    if (skillCooldown == this.skills[i].Cooldown)
                     {
                         isSkillUse[i] = true;
                     }
                 }
             }
         }
-    }
-
+    
 
 
     // 직업 클래스
     public class Warrior : Player
     {
         public Warrior(string name)
-                        : base(name, 100.0f, 100.0f, 10.0f, 20.0f, 0, 1, Job.전사, 0.9f, 0.05f, 0.2f, new int[2], new bool[2], 0, false, 0.0f) // 명중 90%, 회피 5% 치명타율 20%
+                        : base(name, 100.0f, 100.0f, 10.0f, 20.0f, 0, 1, Job.전사, 0.9f, 0.05f, 0.2f, 0, new bool[2], 0, false, 0.0f) // 명중 90%, 회피 5% 치명타율 20%
         {
             skills.Add(new Skill("브레이크 스트라이크", SkillType.SkillAttack, 1.5f, 5));
+
             skills.Add(new Skill("철벽 방어", SkillType.Buff, 1.5f, 3)); // 방어력 1.5배 증가
 
-            for (int i = 0; i < skillCooldown.Length; i++)
-            {
-                skillCooldown[i] = 0;
-                isSkillUse[i] = false;
-            }
         }
     }
 
     public class Assassin : Player
     {
         public Assassin(string name)
-                    : base(name, 75.0f, 75.0f, 15.0f, 15.0f, 0, 1, Job.도적, 0.85f, 0.2f, 0.25f, new int[2], new bool[2], 0, false, 0.0f) // 명중 85%, 회피 20% 치명타율 25%
+                    : base(name, 75.0f, 75.0f, 15.0f, 15.0f, 0, 1, Job.도적, 0.85f, 0.2f, 0.25f, 0, new bool[2], 0, false, 0.0f) // 명중 85%, 회피 20% 치명타율 25%
         {
             skills.Add(new Skill("섀도우 스탭", SkillType.SkillAttack, 1.5f, 5));
             skills.Add(new Skill("그림자 걸음", SkillType.Buff, 0.3f, 3)); // 회피 확률 30% 증가
 
-            for (int i = 0; i < skillCooldown.Length; i++)
-            {
-                skillCooldown[i] = 0; //this.skills[i].Cooldown;
-                isSkillUse[i] = false;
-            }
         }
     }
 
     public class Archer : Player
     {
         public Archer(string name)
-                        : base(name, 50.0f, 50.0f, 20.0f, 10.0f, 0, 1, Job.궁수, 0.8f, 0.1f, 0.3f, new int[2], new bool[2], 0, false, 0.0f) // 명중 80%, 회피 10% 치명타율 30%
+                        : base(name, 50.0f, 50.0f, 20.0f, 10.0f, 0, 1, Job.궁수, 0.8f, 0.1f, 0.3f, 0, new bool[2], 0, false, 0.0f) // 명중 80%, 회피 10% 치명타율 30%
         {
             skills.Add(new Skill("스나이핑", SkillType.SkillAttack, 1.5f, 5));
             skills.Add(new Skill("치명적 조준", SkillType.Buff, 0.2f, 3)); // 크리티컬 확률 20% 증가
 
-            for (int i = 0; i < skillCooldown.Length; i++)
-            {
-                skillCooldown[i] = 0;
-                isSkillUse[i] = false;
-            }
         }
     }
 }
- 
-
-//// 이름 및 직업 선택 예시
-//Console.WriteLine("이름을 정해주세요");
-//string nameInput = Console.ReadLine();
-//Console.WriteLine("직업을 선택해 주세요");
-//Console.WriteLine("1. 전사, 2. 도적, 3. 궁수");
-//Console.Write(">> ");
-//int jobInput;
-//Player player = null;
-//if (int.TryParse(Console.ReadLine(), out jobInput) && 0 < jobInput && jobInput < 4)
-//{
-//    Job selectedJob = (Job)(jobInput);
-//    if (jobInput > 0 && jobInput < 4)
-//    {
-//        if (jobInput == 1)
-//        {
-//            player = new Warrior(nameInput, 100, 50, 20, 1000, 1, selectedJob);
-//            Console.WriteLine($"{player.Name},  {player.playerJob}");
-//        }
-//        else if (jobInput == 2)
-//        {
-//            player = new Assassin(nameInput, 100, 50, 20, 1000, 1, selectedJob);
-//            Console.WriteLine($"{player.Name},  {player.playerJob}");
-//        }
-//        else if (jobInput == 3)
-//        {
-//            player = new Archer(nameInput, 100, 50, 20, 1000, 1, selectedJob);
-//            Console.WriteLine($"{player.Name},  {player.playerJob}");
-//        }
-//    }
-//}
-
-//// 장비 장착 예시
-//float itemvalue = 10.0f;
-//player.ItemAtkPower(itemvalue);
-//Console.WriteLine($"{player.Name},  {player.playerJob}, {player.AttackPower}");

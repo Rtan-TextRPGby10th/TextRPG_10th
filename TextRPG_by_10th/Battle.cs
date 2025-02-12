@@ -27,6 +27,10 @@ namespace TextRPG_by_10th
         {
             NONE,
             TOXIC_WEAPON,
+            DEF_UP,
+            EVA_UP,
+            ACC_UP
+
         }
 
         //디버프 적용받는 객체 정보를 저장하는 리스트
@@ -92,6 +96,8 @@ namespace TextRPG_by_10th
             battleEnd = false;
             //몬스터 소환 배열을 초기화
             monsters = null;
+            //스킬 사용을 위한 수치를 초기화
+            player.skillCooldown = 0;
             //Scene을 마을로 변경
             SceneManager.instance.currentScene = SceneManager.Scene.Town;
 
@@ -186,7 +192,19 @@ namespace TextRPG_by_10th
             Console.WriteLine("[내정보]");
             Console.WriteLine($"Lv.{player.Lv} {player.Name} ({player.playerJob.ToString()}) ");
             string playerStatus = player.isDie ? "[Dead]" : $"HP {player.Health}";
-            Console.WriteLine(playerStatus + "\n");
+            
+            Console.WriteLine(playerStatus);
+            Console.Write($"기력 수치 :");
+            if(player.skillCooldown == 0)
+                Console.WriteLine(" (사용 가능한 기력이 없습니다.)");
+            else
+            {
+                for (int i = 0; i < player.skillCooldown; i++)
+                {
+                    Console.Write(" ●");
+                }
+            }   
+            Console.WriteLine("\n");
         }
         //플레이어 턴에서 이루어지는 과정
         void PlayerTurn()
@@ -239,7 +257,6 @@ namespace TextRPG_by_10th
                         ParalyzeDamage(targetMonster);
                         //공격한 몬스터의 사망 여부 체크
                         DeathCheck(targetMonster);
-                        player.EndTurn();
                     }
                     break;
 
@@ -249,8 +266,22 @@ namespace TextRPG_by_10th
                     int selecetSkill = SelecetSkil();
                     if (player.skills[selecetSkill - 1].Type == SkillType.Buff) // 선택한 스킬이 버프 스킬이라면 사용
                     {
-                        player.BuffSkill(selecetSkill - 1);
-                        player.EndTurn();
+                        player.BuffSkill(selecetSkill - 1); 
+
+                        switch(player.playerJob)
+                        {
+                            case Job.전사:
+                                ApllyBuff(player, BuffType.DEF_UP);
+                                break;
+
+                            case Job.도적:
+                                ApllyBuff(player, BuffType.EVA_UP);
+                                break;
+
+                            case Job.궁수:
+                                ApllyBuff(player, BuffType.ACC_UP);
+                                break;
+                        }
                     }
                     else
                     {
@@ -260,17 +291,10 @@ namespace TextRPG_by_10th
                         //타겟이 선정되면 공격
                         if (targetMonster != null)
                         {
+                            //공격형 스킬
                             player.AtkSkill(selecetSkill - 1, targetMonster);
                             AudioManager.Instance.PlaySFX("skill");
-                            //상태이상 테스트를 위해 임시로 사용
-                            //ApplyDebuff(player, targetMonster, DebuffType.FROST);
-                            //ApplyDebuff(player, targetMonster, DebuffType.PARALYZE);
-                            //ApllyBuff(player, BuffType.TOXIC_WEAPON);
-
-                            //상위 던전 진입 및 전리품 테스트
-                            //targetMonster.TakeDamage(100);
                             DeathCheck(targetMonster);
-                            player.EndTurn();
                         }
                     }
                     break;
@@ -280,14 +304,13 @@ namespace TextRPG_by_10th
                     string useItem = inventory.UseConsumableScene();
                     if (useItem == "poison")
                         ApllyBuff(player, BuffType.TOXIC_WEAPON);
-                    player.EndTurn();
                     break;
                 default:
                     Console.WriteLine("잘못된 입력입니다. 다시 입력하세요.");
                     PlayerTurn();
                     break;
             }
-
+            player.EndTurn();
             VictoryCondition();
         }
         void SkillAttackInfo()
@@ -296,7 +319,7 @@ namespace TextRPG_by_10th
 
             for (int i = 0; i < player.skills.Count; i++)
             {
-                string skillStatus = player.isSkillUse[i] ? "[스킬 사용 가능]" : $"{player.skills[i].Cooldown - player.skillCooldown[i]}번 후 사용가능";
+                string skillStatus = player.isSkillUse[i] ? "[스킬 사용 가능]" : $"{player.skills[i].Cooldown - player.skillCooldown}턴 후 스킬 사용을 위한 기력 획득";
                 Console.WriteLine($"[스킬 {i + 1}] : [{player.skills[i].Name}]  | 필요한 턴 수 : {player.skills[i].Cooldown} | {skillStatus}");
             }
         }
@@ -537,6 +560,7 @@ namespace TextRPG_by_10th
                 }
                 else
                 {
+                    Console.WriteLine($"{debuffData.statusTarget}의 {debuffData.debuff.ToString()} 효과 종료");
                     //상태이상 지속이 끝난 객체의 상태를 NONE으로 변경
                     debuffData.statusTarget.debuffType = DebuffType.NONE;
                     //상태이상 지속이 끝난 목록에 추가
@@ -635,7 +659,7 @@ namespace TextRPG_by_10th
                 }
 
             }
-            buffDatas.Add(new BuffData(target, buffType, 5));
+            buffDatas.Add(new BuffData(target, buffType, 3));
             Console.WriteLine($"{target.Name}에 {buffType.ToString()} 을(를) 적용했다.");
 
         }
@@ -667,6 +691,7 @@ namespace TextRPG_by_10th
                 }
                 else
                 {
+                    Console.WriteLine($"{buffData.statusTarget}의 {buffData.debuff.ToString()} 효과 종료");
                     //상태이상 지속이 끝난 목록에 추가
                     endBuffs.Add(buffData);
                 }
