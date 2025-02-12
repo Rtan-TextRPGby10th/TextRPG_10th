@@ -49,15 +49,20 @@ namespace TextRPG_by_10th
         }
 
         // 몬스터의 레벨, 몬스터의 등장 숫자(등장 랜덤 값)를 가져와 경험치를 증가시키는 함수
-        public void AddExperience(Monster[] monster, int lenght)
+        public void AddExperience(Monster monster)
         {
-            for (int i = 0; i < lenght; i++)
-            {
-                experience += monster[i].Lv; // 여기서 Lv은 해당 몬스터의 레벨
+            int previoutExp = experience;
+            experience += monster.Lv; // 여기서 Lv은 해당 몬스터의 레벨
 
-                if(experience > maxexperience[Lv]) // 여기서 Lv은 캐릭터의 레벨
+            Console.WriteLine($"경험치를 획득했다. ({previoutExp} → {experience})");
+
+            if (Lv < maxexperience.Length && experience > maxexperience[Lv]) // 여기서 Lv은 캐릭터의 레벨
+            {
+                LevelUp();
+                //레벨 제한 범위를 초과할 경우에도 지속적으로 레벨 상한을 확장
+                if(Lv > maxexperience.Length)
                 {
-                    LevelUp();
+                    maxexperience.Append( 50 + 10 * Lv);
                 }
             }
         }
