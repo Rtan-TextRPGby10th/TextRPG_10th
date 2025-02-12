@@ -39,14 +39,14 @@
 
         public MonsterType Type { get; set; }
 
-        int ClearGold;
+        protected int ClearGold;
         public Monster(MonsterType type, string name,float health, float attackPower,float defense, int lv, int clearGold ,float hitChance = 0.8f, float dodgeChance = 0.1f)
                         : base(name, health, attackPower, defense, lv, hitChance, dodgeChance)
         {
             ClearGold = clearGold;
             Type = type;
             creatureType = CreatureType.Monster;
-
+            rewardItemArr = SetRewardItem(type);
         }
 
         public Equipment GetRewardEquipment() // 장비 리워드 지급
@@ -69,21 +69,33 @@
             }
             return null;
         }
-        public ConsumableItem GetRewardMiscItem() // 기타템 리워드 지급
+        public MiscItem GetRewardMiscItem(int itemIndex) // 기타템 리워드 지급
         {
-            if (equip.Count > 0)
+            if (miscItem.Count > 0 && itemIndex < miscItem.Count)
             {
-                Random random = new Random();
-                int randomIndex = random.Next(miscItem.Count);
-                return consum[randomIndex]; // 기타템으로 장비 지급
+                //Random random = new Random();
+                //int randomIndex = random.Next(miscItem.Count);
+                return miscItem[itemIndex]; // 기타템으로 장비 지급
             }
             return null;
         }
 
+        protected int[] rewardItemArr;
 
-        public int GetClrearGold()
+        public void GetClrearReward(Player player, Inventory inventory)
         {
-            return ClearGold;
+            player.AddGold(ClearGold);
+            Random random = new Random();
+            int rewardIndex = random.Next(rewardItemArr.Length);
+            inventory.AddInventory(rewardItemArr[rewardIndex], 1);
+            Console.WriteLine("전리품 획득");
+            Thread.Sleep(1000);
+        }
+
+        public virtual int[] SetRewardItem(MonsterType type) 
+        { 
+            int[] rewards = Array.Empty<int>(); 
+            return rewards; 
         }
     }
 
@@ -91,7 +103,6 @@
     {
         public ForestMonsters(MonsterType type) : base(type, type.ToString(), GetHealth(type), GetAttack(type), GetDefense(type), GetLevel(type), GetClearGold(type), HitChance(type), DodgeChance(type))
         {
-
         }
 
         public static float GetHealth(MonsterType type)
@@ -173,6 +184,17 @@
             };
         }
 
+        public override int[] SetRewardItem(MonsterType type)
+        {
+            return type switch
+            {
+                MonsterType.슬라임 => [10001],
+                MonsterType.고블린 => [10002],
+                MonsterType.거대애벌레 => [10003],
+                MonsterType.뿌리정령 => [10004],
+                MonsterType.오우거 => [10005, 10006, 10007]
+            };
+        }
     }
     class DungeonMonsters : Monster
     {
@@ -257,6 +279,18 @@
                 MonsterType.미믹 => 0.1f,
                 MonsterType.망령 => 0.1f,
                 MonsterType.리치 => 0.1f
+            };
+        }
+
+        public override int[] SetRewardItem(MonsterType type)
+        {
+            return type switch
+            {
+                MonsterType.스켈레톤 => [10008],
+                MonsterType.임프 => [10009],
+                MonsterType.미믹 => [10010],
+                MonsterType.망령 => [10011],
+                MonsterType.리치 => [10012,10013,10014]
             };
         }
     }
@@ -345,6 +379,18 @@
                 MonsterType.크라켄 => 0.1f
             };
         }
+
+        public override int[] SetRewardItem(MonsterType type)
+        {
+            return type switch
+            {
+                MonsterType.심연의전갈 => [10015],
+                MonsterType.머맨 => [10016],
+                MonsterType.크라켄의촉수 => [10017],
+                MonsterType.유령해적 => [10018],
+                MonsterType.크라켄 => [10019,10020,10021]
+            };
+        }
     }
     class FrozenPeaksMonsters : Monster
     {
@@ -431,6 +477,20 @@
                 MonsterType.프로스트드래곤 => 0.1f
             };
         }
+
+        public override int[] SetRewardItem(MonsterType type)
+        {
+            return type switch
+            {
+                MonsterType.설인 => [10022],
+                MonsterType.울프 => [10023],
+                MonsterType.얼음정령 => [10024],
+                MonsterType.눈보라망령 => [10025],
+                MonsterType.프로스트드래곤 => [10026,10027,10028]
+            };
+        }
+
+
     }
     class VolcanicCoreMonsters : Monster
     {
@@ -515,6 +575,18 @@
                 MonsterType.살아있는불꽃 => 0.1f,
                 MonsterType.지옥의사냥개 => 0.1f,
                 MonsterType.발록 => 0.1f
+            };
+        }
+
+        public override int[] SetRewardItem(MonsterType type)
+        {
+            return type switch
+            {
+                MonsterType.마그마골렘 => [10029],
+                MonsterType.불의정령 => [10030],
+                MonsterType.살아있는불꽃 => [10032],
+                MonsterType.지옥의사냥개 => [10033],
+                MonsterType.발록 => [10034, 10035, 10036]
             };
         }
     }
