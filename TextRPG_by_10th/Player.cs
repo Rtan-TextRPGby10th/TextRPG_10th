@@ -41,7 +41,7 @@ namespace TextRPG_by_10th
 
         public void AddGold(int addGold) // Monster 클리어 골드를 가져와 캐릭터 보유 골드 증가 함수
         {
-
+            Console.WriteLine("\n<골드 획득>");
             int previousGold = Gold;
             Gold += addGold;
             Console.WriteLine($"{addGold}G를 획득했다! ({previousGold}->{Gold})");
@@ -51,6 +51,7 @@ namespace TextRPG_by_10th
         // 몬스터의 레벨, 몬스터의 등장 숫자(등장 랜덤 값)를 가져와 경험치를 증가시키는 함수
         public void AddExperience(Monster monster)
         {
+            Console.WriteLine("\n<경험치 획득>");
             int previoutExp = experience;
             experience += monster.Lv; // 여기서 Lv은 해당 몬스터의 레벨
 
@@ -70,13 +71,14 @@ namespace TextRPG_by_10th
         // 레벨업 증가 함수
         public void LevelUp() 
         {
+            Console.WriteLine("\n<레벨 업>");
             AudioManager.Instance.PlaySFX("levelUp");
             Lv++;
             experience = 0;
 
             AttackPower += 0.5f;
             Defense += 1.0f;
-            Console.WriteLine("레벨이 증가하였습니다");
+            Console.WriteLine("레벨이 증가하였습니다!");
         }
         // 아이템을 착용 및 해제를 통한 방어력 증가
         // Defense : 기본 능력치면서 통합 방어력을 표시

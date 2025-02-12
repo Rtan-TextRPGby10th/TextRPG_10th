@@ -88,7 +88,7 @@
             Random random = new Random();
             int rewardIndex = random.Next(rewardItemArr.Length);
 
-            Console.WriteLine("<전리품 획득>");
+            Console.WriteLine("\n<전리품 획득>");
 
             inventory.AddInventory(rewardItemArr[rewardIndex], 1);
             

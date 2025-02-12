@@ -94,7 +94,7 @@ namespace TextRPG_by_10th
             monsters = null;
             //Scene을 마을로 변경
             SceneManager.instance.currentScene = SceneManager.Scene.Town;
-
+            Thread.Sleep(1000);
         }
 
         //몬스터 소환
