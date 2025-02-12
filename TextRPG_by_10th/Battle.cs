@@ -404,6 +404,9 @@ namespace TextRPG_by_10th
                 AudioManager.Instance.PlaySFX("money");
 
                 targetMonster.GetClrearReward(player, inventory);
+
+                player.AddExperience(targetMonster);
+
                 deadCount++;
             }
 
@@ -419,8 +422,9 @@ namespace TextRPG_by_10th
                 AudioManager.Instance.PlaySFX("win");
                 Console.WriteLine($"Lv.{player.Lv} {player.Name}이(가) 승리했습니다.");
                 Console.WriteLine($"{deadCount}마리의 몬스터를 처치했다.");
+
                 //최대 클리어 던전 레벨과 현재 던전 레벨이 같으면 던전 레벨을 증가
-                if(player.Dungeon_Level == stageLevel && player.Dungeon_Level <= 5)
+                if (player.Dungeon_Level == stageLevel && player.Dungeon_Level <= 5)
                 {
                     int previousDungeonLevel = player.Dungeon_Level;
                     player.Dungeon_Level++;

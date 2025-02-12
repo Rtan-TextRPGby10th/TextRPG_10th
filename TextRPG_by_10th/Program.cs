@@ -4,15 +4,11 @@
     {
         static void Main(string[] args)
         {
-            //DataLoad.SaveMiscItemData();
-            //DataLoad.SaveEquipItemData();
-            //DataLoad.SaveConsumeItemData();
-
             DataLoad.LoadMiscItemData();
             DataLoad.LoadEquipItemData();
             DataLoad.LoadConsumeItemData();
             DataLoad.LoadQuestData();
-
+            DataLoad.LoadPlayerData();
             // 게임 시작할 때 BGM 자동 재생
             AudioManager.Instance.ChangeScene("Town");
 

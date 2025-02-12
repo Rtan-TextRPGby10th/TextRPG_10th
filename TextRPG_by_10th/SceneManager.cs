@@ -12,7 +12,7 @@ namespace TextRPG_by_10th
 
         public Inventory inventory = new Inventory();
 
-        Shop shop;
+        public Shop shop;
 
         Battle battle = new Battle();
 
@@ -20,6 +20,8 @@ namespace TextRPG_by_10th
 
         public QuestManager questManager = new QuestManager();
 
+        private bool isInit=false;
+        
         SceneManager()
         {
             instance = this;
@@ -106,6 +108,7 @@ namespace TextRPG_by_10th
                 {
                     case "1":
                         Console.WriteLine("-");
+                        DataLoad.SaveAllData();
                         Console.WriteLine("아무 키나 누르면 돌아갑니다...");
                         Console.ReadKey();
                         break;
@@ -139,9 +142,22 @@ namespace TextRPG_by_10th
             while (currentScene == Scene.Start)
             {
                 if (player == null)
+                {
+                    isInit = !isInit;
                     CreatPlayer();
+                }
                 else
+                {
+                    inventory.SetPlayer(player);
+                    if (isInit == false)
+                    {
+                        isInit = !isInit;
+                        DataLoad.LoadPlayerItemData();
+
+                        DataLoad.LoadPlayerEquippedData();
+                    }
                     currentScene = Scene.Town;
+                }
             }
         }
 
@@ -182,6 +198,8 @@ namespace TextRPG_by_10th
                 currentScene = Scene.Town;
             }
             inventory.GiveStartpack();                //초기장비 지급
+
+            DataLoad.SaveAllData();
         }
 
         void ShopScene()
@@ -201,9 +219,15 @@ namespace TextRPG_by_10th
         void QuestScene()
         {
             // 퀘스트 테스트용 코드
-            questManager.SetBasicQuest();
+            //questManager.SetBasicQuest();
 
             questManager.ShowQuestList();
         }
+
+        public void SetPlayerData(Player p)
+        {
+            player=p;
+        }
+
     }
 }

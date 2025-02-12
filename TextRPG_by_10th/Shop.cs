@@ -18,6 +18,8 @@ namespace TextRPG_by_10th
         public Shop(Inventory playerInventory)
         {
             inventory = playerInventory;
+            player = SceneManager.instance.player;
+
             
             Console.WriteLine("\n===== [상점 판매 목록] =====");                              // ✅ 상점 판매 목록 출력 (넘버링 없이 표시)
             foreach (var item in shopEquipments)
@@ -320,6 +322,24 @@ namespace TextRPG_by_10th
             }
         }
 
+        public List<ConsumableItem> GetConsumableItemList()
+        {
+            return shopConsumables;
+        }
+        public List<MiscItem> GetMiscItemList()
+        {
+            return shopMiscItems;
+        }
+
+        public void SetConsumeableItemList(List<ConsumableItem> list)
+        {
+            shopConsumables = list;
+        }
+
+        public void SetMiscItemList(List<MiscItem> list)
+        {
+            shopMiscItems = list;
+        }
     }
 }
 
