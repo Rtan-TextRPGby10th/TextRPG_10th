@@ -379,11 +379,11 @@ namespace TextRPG_by_10th
             Console.WriteLine($"방어력 : {player.Defense} (+{plusDef})");
 
             Console.SetCursorPosition(30, 8);
-            Console.WriteLine($"명중률 : {player.HitChance * 100} %");
+            Console.WriteLine($"명중률 : {(int)(player.HitChance * 100)} %");
             Console.SetCursorPosition(30, 9);
-            Console.WriteLine($"회피율 : {player.DodgeChance * 100} %");
+            Console.WriteLine($"회피율 : {(int)(player.DodgeChance * 100)} %");
             Console.SetCursorPosition(30, 10);
-            Console.WriteLine($"치명타율 : {player.CritChance * 100} %");
+            Console.WriteLine($"치명타율 : {(int)(player.CritChance * 100)} %");
             Console.SetCursorPosition(30, 11);
             Console.WriteLine($"Gold : {player.Gold}");
             Console.WriteLine("");
