@@ -192,7 +192,7 @@ namespace TextRPG_by_10th
                 }
                 else if (item is MiscItem misc)
                 {
-                    Console.WriteLine($"{index}. {misc.Name} {misc.Description} | {misc.Price}G");
+                    Console.WriteLine($"{index}. {misc.Name} | {misc.Description} | {misc.Price}G");
                     itemMap[index++] = misc;
                 }
             }
@@ -236,7 +236,7 @@ namespace TextRPG_by_10th
                 // 🔹 기타 아이템 목록 출력
                 foreach (var item in inventory.GetMiscList())
                 {
-                    Console.WriteLine($"{index}. {item.Name} {item.Description} | 보유 {item.Amount}개 | 판매가 {item.Price / 2}G");
+                    Console.WriteLine($"{index}. {item.Name} | {item.Description} | 보유 {item.Amount}개 | 판매가 {item.Price / 2}G");
                     sellableItems[index++] = item;
                 }
 
