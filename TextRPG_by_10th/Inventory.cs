@@ -502,19 +502,18 @@ namespace TextRPG_by_10th
         }
 
 
-        /*  //만약 기존 무기가 장착 중이었으면, 새로운 무기도 자동 장착 # QuestManager
-          if (wasEquipped)
-          {
-          List<Equipment> updatedEquipments = inven.GetEquipmentList();
-          int newEquipIndex = updatedEquipments.FindIndex(e => e.Id == q.resultEquip.Id);
+        public void AutoEquip(Equipment item)
+        { 
+            int newEquipIndex = GetEquipmentList().FindIndex(e => e.Id == item.Id);
 
-          if (newEquipIndex != -1)
-              {
-              inven.EquipItem(newEquipIndex);
-              Console.WriteLine($"{q.resultEquip.Name} 자동 장착 완료!");
-              }
-           } 
-         */
+            if (newEquipIndex != -1)
+            {
+                EquipItem(newEquipIndex);
+                Console.WriteLine($"{item.Name} 자동 장착 완료!");
+            }
+            
+        }
+         
 
     }
 }
