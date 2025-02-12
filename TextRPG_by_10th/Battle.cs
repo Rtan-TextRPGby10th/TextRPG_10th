@@ -250,8 +250,8 @@ namespace TextRPG_by_10th
                     if (targetMonster != null)
                     {
                         //상태이상 테스트를 위해 임시로 사용
-                        ApplyDebuff(player, targetMonster, DebuffType.FROST);
-                        //ApplyDebuff(player, targetMonster, DebuffType.PARALYZE);
+                        //ApplyDebuff(player, targetMonster, DebuffType.FROST);
+                        ApplyDebuff(player, targetMonster, DebuffType.PARALYZE);
                         //ApllyBuff(player, BuffType.TOXIC_WEAPON);
                         DeathCheck(targetMonster);
                     }
@@ -269,6 +269,8 @@ namespace TextRPG_by_10th
                     PlayerTurn();
                     break;
             }
+
+            VictoryCondition();
         }
         //몬스터 턴에서 이루어지는 과정
         void MonsterTurn()
@@ -403,13 +405,17 @@ namespace TextRPG_by_10th
             {
                 battleEnd = true;
                 Console.WriteLine($"Lv.{player.Lv} {player.Name}이(가) 승리했습니다.");
+                Console.WriteLine($"{deadCount}마리의 몬스터를 처치했다.");
                 //최대 클리어 던전 레벨과 현재 던전 레벨이 같으면 던전 레벨을 증가
                 if(player.Dungeon_Level == stageLevel && player.Dungeon_Level < 5)
                 {
+                    int previousDungeonLevel = player.Dungeon_Level;
                     player.Dungeon_Level++;
+                    Console.WriteLine($"이제 더 어려운 던전을 이용할 수 있다 ({previousDungeonLevel} → {player.Dungeon_Level})");
                 }
 
                 deadCount = 0;
+                Thread.Sleep(1000);
             }
         }
 
@@ -423,7 +429,7 @@ namespace TextRPG_by_10th
                 return;
 
             ShowBattleInfo();
-            Console.WriteLine("<상태이상 정보>");
+            Console.WriteLine("<상태이상 정보>\n");
 
             //상태 이상 적용이 끝난 객체를 저장
             List<DebuffData> endDebuffs = new List<DebuffData>();
@@ -564,7 +570,7 @@ namespace TextRPG_by_10th
             if (buffDatas.Count == 0)
                 return;
 
-            Console.WriteLine("<부가효과 정보>");
+            Console.WriteLine("\n<부가효과 정보>");
 
             //상태 이상 적용이 끝난 객체를 저장하는 배열
             List<BuffData> endBuffs = new List<BuffData>();
