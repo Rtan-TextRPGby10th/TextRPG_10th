@@ -286,7 +286,8 @@ namespace TextRPG_by_10th
             }
         }
 
-        public void EquipItem(int index)
+        
+        public void EquipItem(int index)   
         {
             AudioManager.Instance.PlaySFX("equip_armor");
             Equipment item = equipmentList[index]; // 선택한 장비

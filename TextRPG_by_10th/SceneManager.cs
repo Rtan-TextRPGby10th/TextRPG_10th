@@ -148,7 +148,7 @@ namespace TextRPG_by_10th
         void CreatPlayer()
         {
             Console.Clear();
-            Console.SetWindowSize(120, 40);         //인벤토리 짤려서 창 크기 변경
+            //Console.SetWindowSize(120, 40);         //인벤토리 짤려서 창 크기 변경
             Console.Write("이름을 입력하세요 : ");
             string playerName = Console.ReadLine();
 
