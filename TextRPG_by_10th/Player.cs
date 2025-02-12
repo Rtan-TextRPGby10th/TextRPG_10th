@@ -65,6 +65,7 @@ namespace TextRPG_by_10th
         // 레벨업 증가 함수
         public void LevelUp() 
         {
+            AudioManager.Instance.PlaySFX("levelUp");
             Lv++;
             experience = 0;
 

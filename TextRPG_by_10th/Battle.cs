@@ -1,6 +1,7 @@
 
 
 
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -142,7 +143,7 @@ namespace TextRPG_by_10th
             while (true)
             {
                 string input = Console.ReadLine();
-
+                AudioManager.Instance.PlaySFX("click");
                 if (int.TryParse(input, out stage) && stage >= 1 && stage <= 5)
                 {
                     //플레이어 던전 레벨에 맞지 않는 던전 입장 불가
@@ -201,6 +202,7 @@ namespace TextRPG_by_10th
             Console.WriteLine("3. 아이템 사용");
             Console.Write(">> ");
             string input = Console.ReadLine();
+            AudioManager.Instance.PlaySFX("click");
 
             switch (input)
             {
@@ -262,7 +264,7 @@ namespace TextRPG_by_10th
                     string useItem = inventory.UseConsumableScene();
                     if (useItem == "poison")
                         ApllyBuff(player, BuffType.TOXIC_WEAPON);
-
+                        
                     break;
                 default:
                     Console.WriteLine("잘못된 입력입니다. 다시 입력하세요.");
@@ -295,6 +297,7 @@ namespace TextRPG_by_10th
                 //공격으로 플레이어가 사망하면 전투가 종료됨
                 if (player.isDie)
                 {
+                    AudioManager.Instance.PlaySFX("game_over");
                     battleEnd = true;
                     Console.WriteLine($"Lv.{player.Lv} {player.Name}이(가) 패배했습니다.");
                     break;
@@ -311,6 +314,7 @@ namespace TextRPG_by_10th
             Console.Write(">> ");
 
             string input = Console.ReadLine();
+            AudioManager.Instance.PlaySFX("click");
             int int_input;
             bool isRightInput = int.TryParse(input, out int_input);
 
@@ -350,6 +354,7 @@ namespace TextRPG_by_10th
                 float previousHp = target.Health;
                 target.TakeDamage(damage);
 
+                AudioManager.Instance.PlaySFX("hit");
                 Console.WriteLine($"명중! {attacker.Name}이(가) {target.Name}에게 {damage} 데미지를 입혔다.");
                 Console.WriteLine($"Lv.{target.Lv} {target.Name} | HP {previousHp} → {target.Health}");
                 hasHit = true;
@@ -375,6 +380,7 @@ namespace TextRPG_by_10th
 
             if (isCritical)
             {
+                AudioManager.Instance.PlaySFX("critical");
                 Console.WriteLine($"크리티컬 히트! {attacker.Name}이(가) {"치명적인 일격".ColorText(ConsoleColor.Red)}을 가했다!");
             }
 
@@ -390,8 +396,8 @@ namespace TextRPG_by_10th
         {
             if (targetMonster.isDie)
             {
+                AudioManager.Instance.PlaySFX("money");
                 player.AddGold(targetMonster.GetClrearGold());
-
                 deadCount++;
             }
 
@@ -404,6 +410,7 @@ namespace TextRPG_by_10th
             if (deadCount == monsters.Count())
             {
                 battleEnd = true;
+                AudioManager.Instance.PlaySFX("win");
                 Console.WriteLine($"Lv.{player.Lv} {player.Name}이(가) 승리했습니다.");
                 Console.WriteLine($"{deadCount}마리의 몬스터를 처치했다.");
                 //최대 클리어 던전 레벨과 현재 던전 레벨이 같으면 던전 레벨을 증가

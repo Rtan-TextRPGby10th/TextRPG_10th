@@ -23,7 +23,7 @@ namespace TextRPG_by_10th
         SceneManager()
         {
             instance = this;
-            shop = new Shop(inventory);
+            shop = new Shop(inventory); 
         }
 
         public enum Scene
