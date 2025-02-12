@@ -355,7 +355,7 @@ namespace TextRPG_by_10th
 
         public void Status()
         {
-            Console.SetCursorPosition(30, 3);
+            Console.SetCursorPosition(30, 0);
             Console.WriteLine($"Lv : {player.Lv}");
             Console.SetCursorPosition(30, 4);
             Console.WriteLine($"{player.Name} ( {player.playerJob} )");
