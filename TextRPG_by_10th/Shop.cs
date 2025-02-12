@@ -18,6 +18,7 @@ namespace TextRPG_by_10th
         public Shop(Inventory playerInventory)
         {
             inventory = playerInventory;
+            player = SceneManager.instance.player;
             //상점에서 판매하는 아이템 추가하기. AddShopItem(도감의 id넘버, 수량)
             AddShopItem(301);                                  
             AddShopItem(401);
@@ -296,6 +297,24 @@ namespace TextRPG_by_10th
             }
         }
 
+        public List<ConsumableItem> GetConsumableItemList()
+        {
+            return shopConsumables;
+        }
+        public List<MiscItem> GetMiscItemList()
+        {
+            return shopMiscItems;
+        }
+
+        public void SetConsumeableItemList(List<ConsumableItem> list)
+        {
+            shopConsumables = list;
+        }
+
+        public void SetMiscItemList(List<MiscItem> list)
+        {
+            shopMiscItems = list;
+        }
     }
 }
 

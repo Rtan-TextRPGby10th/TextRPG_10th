@@ -64,6 +64,10 @@ namespace TextRPG_by_10th
             }
         }
 
+        public void SetPlayer(Player p)
+        {
+            player = p;
+        }
 
         public void AddInventory(int id, int amount)            //인벤토리에 아이템 추가할시, id에따라 종류별 리스트로 분류
         {
@@ -187,38 +191,41 @@ namespace TextRPG_by_10th
 
         public void GiveStartpack()                 //초기장비 지급
         {
-            player = SceneManager.instance.player;
-                    switch (player.playerJob)
-                     {
-                    case Job.전사:
-                        AddInventory(101, 1);        // 전사용 무기
-                        break;
-                    case Job.도적:
-                        AddInventory(111, 1);        // 도적용 무기
-                        break;
-                    case Job.궁수:
-                        AddInventory(121, 1);        // 궁수용 무기
-                        break;
-                    default:
-                        Console.WriteLine("잘못된 직업입니다.");
-                        break;
-                }
-                AddInventory(1001, 3);              // 힐링포션 3개
-                AddInventory(1004, 3);              // 맹독포션 3개
+            if(player==null)
+                SetPlayer(SceneManager.instance.player);
+
+            switch (player.playerJob)
+            {
+                case Job.전사:
+                    AddInventory(101, 1);        // 전사용 무기
+                    break;
+                case Job.도적:
+                    AddInventory(111, 1);        // 도적용 무기
+                    break;
+                case Job.궁수:
+                    AddInventory(121, 1);        // 궁수용 무기
+                    break;
+                default:
+                    Console.WriteLine("잘못된 직업입니다.");
+                    break;
+            }
+            AddInventory(1001, 3);              // 힐링포션 3개
+            AddInventory(1004, 3);              // 맹독포션 3개
 
             // 테스트 데이터
+            AddInventory(301, 1);
             AddInventory(10001, 30);
             AddInventory(10002, 20);
             AddInventory(10004, 20);
             AddInventory(10008, 20);
             AddInventory(10010, 20);
 
-                player.Gold = 1500;
+            player.Gold = 1500;
         }
 
         public void ShowInventory()                                         //상태 보기(스테이터스+인벤토리+장착관리 통합) 씬 
         {
-            player = SceneManager.instance.player;  // ✅ SceneManager에서 player 가져오기
+             // ✅ SceneManager에서 player 가져오기
             
             
 
@@ -501,7 +508,6 @@ namespace TextRPG_by_10th
             }
         }
 
-
         public void AutoEquip(Equipment item)
         { 
             int newEquipIndex = GetEquipmentList().FindIndex(e => e.Id == item.Id);
@@ -513,7 +519,38 @@ namespace TextRPG_by_10th
             }
             
         }
-         
 
+        public void SetEquipList(List<Equipment> list)
+        {
+            equipmentList = list;
+        }
+        public void SetConsumeList(List<ConsumableItem> list)
+        {
+            consumableList = list;
+        }
+        public void SetMiscList(List<MiscItem> list)
+        {
+            miscList = list;
+        }
+        public Dictionary<string,bool> GetEquippedDic()
+        {
+            return equippedItems;
+        }
+        public void SetEquippedDic(Dictionary<string, bool> dic)
+        {
+            equippedItems = dic;
+
+
+            foreach (var item in dic)
+            {
+                if (item.Value)
+                {
+                    int i = equipmentList.FindIndex(x => x.Name == item.Key);
+                    equippedItems[item.Key] = !item.Value;
+                    EquipItem(i);
+                } 
+            }
+            
+        }
     }
 }

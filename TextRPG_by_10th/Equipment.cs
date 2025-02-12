@@ -119,11 +119,11 @@ public class Equipment      //장비 아이템 클래스
     }
 
 
-// 캐싱된 리스트 반환 (매번 새로 만들지 않음)
-public static List<Equipment> GetEquipmentCatalog()
-    {
-        return _equipmentCatalog;
-    }
+    // 캐싱된 리스트 반환 (매번 새로 만들지 않음)
+    public static List<Equipment> GetEquipmentCatalog()
+        {
+            return _equipmentCatalog;
+        }
 }
 
 public static class ConsoleExtensions
