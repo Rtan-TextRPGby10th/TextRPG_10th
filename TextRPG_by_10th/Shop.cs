@@ -21,17 +21,6 @@ namespace TextRPG_by_10th
             player = SceneManager.instance.player;
 
             
-            Console.WriteLine("\n===== [상점 판매 목록] =====");                              // ✅ 상점 판매 목록 출력 (넘버링 없이 표시)
-            foreach (var item in shopEquipments)
-                Console.WriteLine($"- {item.Name} |  {item.Description} | {item.Price}G");
-
-            foreach (var item in shopConsumables)
-                Console.WriteLine($"- {item.Name} | {item.Description} | {item.Price}G");
-
-            foreach (var item in shopMiscItems)
-                Console.WriteLine($"- {item.Name} | {item.Description} | {item.Price}G");
-
-            Console.WriteLine("============================\n");
         }
         
 
@@ -64,11 +53,22 @@ namespace TextRPG_by_10th
         public void OpenShop()                                      //상점 씬
         {
             player = SceneManager.instance.player;  // ✅ SceneManager에서 player 가져오기
-            CheckAndAddShopItems();       
-            
-            
-            
-            
+            CheckAndAddShopItems();
+
+
+            Console.WriteLine("\n===== [상점 판매 목록] =====");                              // ✅ 상점 판매 목록 출력 (넘버링 없이 표시)
+            foreach (var item in shopEquipments)
+                Console.WriteLine($"- {item.Name} |  {item.Description} | {item.Price}G");
+
+            foreach (var item in shopConsumables)
+                Console.WriteLine($"- {item.Name} | {item.Description} | {item.Price}G");
+
+            foreach (var item in shopMiscItems)
+                Console.WriteLine($"- {item.Name} | {item.Description} | {item.Price}G");
+
+            Console.WriteLine("============================\n");
+
+
 
             while (true)
             {
