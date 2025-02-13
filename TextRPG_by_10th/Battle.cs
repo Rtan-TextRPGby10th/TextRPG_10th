@@ -255,6 +255,7 @@ namespace TextRPG_by_10th
                                 break;
 
                         }
+
                         //타겟이 PARALYZE 상태인 경우 추가 데미지 부여
                         ParalyzeDamage(targetMonster);
                         //공격한 몬스터의 사망 여부 체크
@@ -562,7 +563,7 @@ namespace TextRPG_by_10th
                 }
                 else
                 {
-                    Console.WriteLine($"{debuffData.statusTarget}의 {debuffData.debuff.ToString()} 효과 종료");
+                    Console.WriteLine($"{debuffData.statusTarget.Name}의 {debuffData.debuff.ToString()} 효과 종료");
                     //상태이상 지속이 끝난 객체의 상태를 NONE으로 변경
                     debuffData.statusTarget.debuffType = DebuffType.NONE;
                     //상태이상 지속이 끝난 목록에 추가
