@@ -92,6 +92,8 @@ namespace TextRPG_by_10th
             battleEnd = false;
             //몬스터 소환 배열을 초기화
             monsters = null;
+            // 데이터 저장
+            DataLoad.SaveAllData();
             //Scene을 마을로 변경
             SceneManager.instance.currentScene = SceneManager.Scene.Town;
 

@@ -194,6 +194,7 @@ namespace TextRPG_by_10th
                         }
                         else Console.WriteLine("골드가 부족합니다.");
                     }
+                    DataLoad.SaveAllData();
                 }
             }
         }
