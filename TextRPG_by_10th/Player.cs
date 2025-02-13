@@ -183,7 +183,7 @@ namespace TextRPG_by_10th
             }
             else
             {
-                Console.WriteLine("스킬을 사용할 수 없습니다. 쿨타임 적용 중");
+                Console.WriteLine("스킬을 사용할 수 없습니다. 기력이 부족합니다.");
             }
 
             Thread.Sleep(1000);
