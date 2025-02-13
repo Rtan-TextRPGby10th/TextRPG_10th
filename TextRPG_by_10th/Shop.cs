@@ -53,7 +53,7 @@ namespace TextRPG_by_10th
         public void OpenShop()                                      //상점 씬
         {
             player = SceneManager.instance.player;  // ✅ SceneManager에서 player 가져오기
-            //CheckAndAddShopItems();
+            CheckAndAddShopItems();
 
 
             Console.WriteLine("\n===== [상점 판매 목록] =====");                              // ✅ 상점 판매 목록 출력 (넘버링 없이 표시)
@@ -194,7 +194,6 @@ namespace TextRPG_by_10th
                         }
                         else Console.WriteLine("골드가 부족합니다.");
                     }
-                    DataLoad.SaveAllData();
                 }
             }
         }

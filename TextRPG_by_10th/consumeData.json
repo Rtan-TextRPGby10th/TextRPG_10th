@@ -1,0 +1,1 @@
+[{"Id":1001,"Name":"힐링포션(소)","Turn":0,"Value":30,"Description":"| 30의 체력을 회복하는 포션.","Amount":3,"Price":100},{"Id":1004,"Name":"맹독포션","Turn":5,"Value":-1,"Description":"| 무기에 바를 수 있는 맹독성 포션.","Amount":3,"Price":120}]

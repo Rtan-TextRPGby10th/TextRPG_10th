@@ -10,18 +10,17 @@ namespace TextRPG_by_10th
 {
     internal class DataLoad
     {
-
-        private static string miscItemPath = "../../../../TextRPG_by_10th/data/MiscItemData.json";
-        private static string equipItemPath = "../../../../TextRPG_by_10th/data/EquipItemData.json";
-        private static string consumeItemPath = "../../../../TextRPG_by_10th/data/ConsumeItemData.json";
-        private static string questPath = "../../../../TextRPG_by_10th/data/QuestData.json";
-        private static string shopMiscPath = "../../../../TextRPG_by_10th/data/shopMiscData.json";
-        private static string shopConsumePath = "../../../../TextRPG_by_10th/data/shopConsumeData.json";
-        private static string playerPath = Path.GetFullPath("PlayerData.json");
-        private static string equipPath = Path.GetFullPath("equipData.json");
-        private static string equippedPath = Path.GetFullPath("equippedData.json");
-        private static string consumePath = Path.GetFullPath("consumeData.json");
-        private static string miscPath = Path.GetFullPath("miscData.json");
+        private static string miscItemPath = "../../../../TextRPG_by_10th/MiscItemData.json";
+        private static string equipItemPath = "../../../../TextRPG_by_10th/EquipItemData.json";
+        private static string consumeItemPath = "../../../../TextRPG_by_10th/ConsumeItemData.json";
+        private static string questPath = "../../../../TextRPG_by_10th/QuestData.json";
+        private static string playerPath = "../../../../TextRPG_by_10th/PlayerData.json";
+        private static string equipPath = "../../../../TextRPG_by_10th/equipData.json";
+        private static string equippedPath = "../../../../TextRPG_by_10th/equippedData.json";
+        private static string consumePath = "../../../../TextRPG_by_10th/consumeData.json";
+        private static string miscPath = "../../../../TextRPG_by_10th/miscData.json";
+        private static string shopMiscPath = "../../../../TextRPG_by_10th/shopMiscData.json";
+        private static string shopConsumePath = "../../../../TextRPG_by_10th/shopConsumeData.json";
 
 
 
@@ -146,6 +145,9 @@ namespace TextRPG_by_10th
         public static void SaveAllData()
         {
             SavePlayerData();
+
+            SaveShopMiscData();
+            SaveShopConsumeData();
 
             SaveEquippedData();
             SaveEquipData();
@@ -306,7 +308,7 @@ namespace TextRPG_by_10th
             LoadShopConsumeData();
         }
 
-        private static void LoadInvenData()
+        public static void LoadInvenData()
         {
             LoadEquipData();
             LoadConsumeData();
@@ -315,6 +317,7 @@ namespace TextRPG_by_10th
 
         public static void LoadPlayerItemData()
         {
+            LoadShopData();
             LoadInvenData();
         }
         public static void LoadPlayerEquippedData()

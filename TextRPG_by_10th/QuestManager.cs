@@ -146,8 +146,6 @@ namespace TextRPG_by_10th
             AudioManager.Instance.PlaySFX("upgrade");
             myQuest.Remove(q);
 
-            DataLoad.SaveAllData();
-
             Console.WriteLine("\n0. 나가기");
             Console.Write(">> ");
             string input = Console.ReadLine();

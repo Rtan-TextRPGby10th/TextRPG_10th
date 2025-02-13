@@ -95,7 +95,7 @@ namespace TextRPG_by_10th
             {
                 Console.Clear();
                 Console.WriteLine("===== Sparta Dungeon =====");
-                Console.WriteLine("1. 저장하기");
+                Console.WriteLine("1. -");
                 Console.WriteLine("2. 상태 보기");
                 Console.WriteLine("3. 상점");
                 Console.WriteLine("4. 던전");
@@ -107,7 +107,7 @@ namespace TextRPG_by_10th
                 switch (input)
                 {
                     case "1":
-                        Console.WriteLine("저장중");
+                        Console.WriteLine("-");
                         DataLoad.SaveAllData();
                         Console.WriteLine("아무 키나 누르면 돌아갑니다...");
                         Console.ReadKey();
@@ -129,7 +129,6 @@ namespace TextRPG_by_10th
                         break;
                     case "0":
                         Console.WriteLine("게임을 종료합니다.");
-                        Environment.Exit(0);
                         return;
                     default:
                         Console.WriteLine("잘못된 입력입니다. 다시 입력하세요.");
@@ -153,7 +152,6 @@ namespace TextRPG_by_10th
                     if (isInit == false)
                     {
                         isInit = !isInit;
-                        DataLoad.LoadShopData();
                         DataLoad.LoadPlayerItemData();
 
                         DataLoad.LoadPlayerEquippedData();
@@ -202,7 +200,6 @@ namespace TextRPG_by_10th
             inventory.GiveStartpack();                //초기장비 지급
 
             DataLoad.SaveAllData();
-            DataLoad.LoadShopData();
         }
 
         void ShopScene()
